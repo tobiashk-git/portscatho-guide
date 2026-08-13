@@ -1,0 +1,14 @@
+{
+  "name": "Portscatho — Roseland Guide",
+  "short_name": "Portscatho",
+  "description": "Your holiday companion for Portscatho and the Roseland Peninsula, Cornwall.",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b4f6c",
+  "theme_color": "#0b4f6c",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

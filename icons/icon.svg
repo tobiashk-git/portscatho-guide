@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fc4d8"/><stop offset="1" stop-color="#3f9bbb"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f7d9c"/><stop offset="1" stop-color="#0b4f6c"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#sky)"/>
+  <circle cx="380" cy="130" r="46" fill="#fff3d6" opacity="0.9"/>
+  <path d="M0 330 Q128 300 256 330 T512 330 V512 H0 Z" fill="url(#sea)"/>
+  <path d="M0 360 Q128 335 256 360 T512 360 V512 H0 Z" fill="#0b4f6c" opacity="0.55"/>
+  <!-- little sailboat -->
+  <path d="M210 300 h92 l-18 34 h-56 z" fill="#fff"/>
+  <path d="M256 210 l40 82 h-40 z" fill="#ffffff"/>
+  <path d="M256 210 l-34 82 h34 z" fill="#e07a3f"/>
+  <rect x="252" y="200" width="8" height="96" fill="#10262e"/>
+</svg>

@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#0b4f6c" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Portscatho" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icons/icon.svg" />
+<title>Portscatho — Roseland Guide</title>
+<style>
+  :root{
+    --sea:#0b4f6c; --sea2:#12789c; --teal:#1f9e8f; --sand:#f3ead6; --sand2:#e7d8b5;
+    --ink:#10262e; --ink2:#3d5560; --paper:#fbf7ef; --card:#ffffff; --line:#e5ddc9;
+    --gull:#f6f3ec; --accent:#e07a3f; --good:#2f9e5f; --bad:#c0492f;
+    --shadow:0 6px 22px rgba(11,79,108,.14);
+    --safe-top:env(safe-area-inset-top); --safe-bot:env(safe-area-inset-bottom);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper); color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--sea2)}
+  h1,h2,h3{line-height:1.2; margin:0 0 .3em}
+  h2{font-size:1.35rem}
+  .app{max-width:640px; margin:0 auto; min-height:100vh}
+
+  /* Header */
+  header{
+    position:sticky; top:0; z-index:40;
+    background:linear-gradient(150deg,var(--sea) 0%, var(--sea2) 70%, var(--teal) 130%);
+    color:#fff; padding:calc(var(--safe-top) + 14px) 18px 14px;
+    box-shadow:var(--shadow);
+  }
+  header .kw{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; opacity:.85}
+  header h1{font-size:1.5rem; margin:2px 0 0; font-weight:800; letter-spacing:.3px}
+  header .sub{font-size:.85rem; opacity:.9; margin-top:2px}
+
+  main{padding:14px 14px 96px}
+  .view{display:none; animation:fade .28s ease}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:15px; margin:0 0 13px; box-shadow:var(--shadow)}
+  .card h2{font-size:1.15rem; display:flex; align-items:center; gap:8px}
+  .card h3{font-size:1rem; margin-top:14px}
+  .muted{color:var(--ink2)}
+  .small{font-size:.85rem}
+  .tag{display:inline-block; font-size:.72rem; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--sand); color:#7a5a2e; margin:2px 4px 2px 0}
+  .tag.sea{background:#dceef4; color:#0b5a76}
+  .tag.grn{background:#dff0e4; color:#1f6b40}
+
+  .hero{
+    border-radius:16px; overflow:hidden; margin-bottom:13px; box-shadow:var(--shadow);
+    background:
+      radial-gradient(120% 80% at 20% 0%, rgba(255,255,255,.25), transparent 60%),
+      linear-gradient(180deg,#7fc4d8 0%, #3f9bbb 45%, #1f7d9c 100%);
+    color:#fff; position:relative; min-height:150px;
+  }
+  .hero .band{position:absolute; left:0; right:0; bottom:0; height:46px;
+    background:linear-gradient(180deg, transparent, rgba(11,79,108,.55))}
+  .hero .wave{position:absolute; left:0; right:0; bottom:-2px; display:block}
+  .hero .txt{position:relative; padding:16px 16px 20px}
+  .hero .txt b{font-size:1.15rem}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:11px}
+  .stat{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px; box-shadow:var(--shadow)}
+  .stat .lab{font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink2)}
+  .stat .val{font-size:1.5rem; font-weight:800; color:var(--sea); line-height:1.1; margin-top:2px}
+  .stat .sub{font-size:.78rem; color:var(--ink2)}
+
+  .btn{display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:13px 14px;
+    font-size:.95rem; color:var(--ink); text-decoration:none; margin-bottom:9px; box-shadow:var(--shadow)}
+  .btn .em{font-size:1.35rem; width:26px; text-align:center}
+  .btn .arr{margin-left:auto; color:var(--ink2)}
+  .btn b{display:block}
+  .btn small{color:var(--ink2)}
+
+  .list{margin:0; padding:0; list-style:none}
+  .list li{padding:10px 0; border-bottom:1px dashed var(--line); display:flex; gap:11px}
+  .list li:last-child{border-bottom:0}
+  .list .em{font-size:1.3rem; width:26px; text-align:center; flex:none}
+  .list b{display:block}
+
+  .season{border-radius:12px; padding:11px 12px; margin:9px 0; border:1px solid var(--line)}
+  .season.in{background:#e7f5ea; border-color:#bfe3c9}
+  .season.out{background:#f6f0e6; border-color:#e6d6ba}
+  .season .st{font-weight:800; font-size:.8rem; text-transform:uppercase; letter-spacing:.05em}
+  .season.in .st{color:var(--good)} .season.out .st{color:#9a7b3a}
+
+  .mapwrap{border-radius:16px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); background:#dfeef2}
+  .mapwrap iframe{display:block; width:100%; height:300px; border:0}
+
+  .walk{border-left:4px solid var(--teal); padding-left:12px; margin:16px 0}
+  .walk h3{margin:0}
+  .walk .meta{font-size:.8rem; color:var(--ink2); margin:3px 0 6px}
+  .walk .meta span{margin-right:12px}
+
+  .fact{display:flex; gap:11px; padding:11px 0; border-bottom:1px dashed var(--line)}
+  .fact:last-child{border-bottom:0}
+  .fact .n{flex:none; width:28px; height:28px; border-radius:50%; background:var(--sea); color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:.85rem}
+
+  .callout{background:linear-gradient(180deg,#fff8ee,#fdf1dc); border:1px solid #f0dcb6; border-radius:14px; padding:12px 14px; font-size:.9rem}
+  .callout b{color:#8a5a1e}
+
+  /* Bottom nav */
+  nav.tabs{
+    position:fixed; left:0; right:0; bottom:0; z-index:50;
+    display:flex; max-width:640px; margin:0 auto;
+    background:rgba(251,247,239,.92); backdrop-filter:saturate(1.6) blur(12px);
+    border-top:1px solid var(--line); padding-bottom:var(--safe-bot);
+  }
+  nav.tabs button{
+    flex:1; background:none; border:0; padding:8px 2px 7px; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--ink2); font-size:.66rem; font-weight:600;
+  }
+  nav.tabs button .ic{font-size:1.32rem; line-height:1}
+  nav.tabs button.active{color:var(--sea)}
+  nav.tabs button.active .ic{transform:translateY(-1px)}
+
+  .loading{color:var(--ink2); font-size:.9rem}
+  .err{color:var(--bad); font-size:.85rem}
+  .refresh{font-size:.8rem; color:var(--sea2); background:none; border:0; padding:0; cursor:pointer; text-decoration:underline}
+  .wx-days{display:flex; gap:8px; overflow-x:auto; padding:4px 0 2px; -webkit-overflow-scrolling:touch}
+  .wx-day{flex:none; width:78px; text-align:center; background:var(--gull); border:1px solid var(--line); border-radius:12px; padding:9px 6px}
+  .wx-day .d{font-size:.72rem; color:var(--ink2); font-weight:700}
+  .wx-day .i{font-size:1.5rem; margin:3px 0}
+  .wx-day .t{font-size:.82rem; font-weight:700}
+  .wx-day .t small{color:var(--ink2); font-weight:500}
+  .divider{height:1px; background:var(--line); margin:14px 0}
+  .pill-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px}
+  footer{padding:18px 14px calc(90px + var(--safe-bot)); text-align:center; color:var(--ink2); font-size:.75rem}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="kw">Roseland Peninsula · Cornwall</div>
+    <h1>Portscatho</h1>
+    <div class="sub" id="hdr-sub">Your holiday companion by the sea</div>
+  </header>
+
+  <main>
+    <!-- ================= HOME ================= -->
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <div class="txt">
+          <div style="font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.9">Welcome to</div>
+          <b>A little fishing village on Gerrans Bay</b>
+          <div class="small" style="opacity:.95;margin-top:5px">Whitewashed cottages, a working harbour, and the South West Coast Path on your doorstep. Everything you need for a Roseland holiday is in here.</div>
+        </div>
+        <div class="band"></div>
+      </div>
+
+      <div class="grid" style="margin-bottom:13px">
+        <div class="stat">
+          <div class="lab">Weather now</div>
+          <div class="val" id="home-temp">—°</div>
+          <div class="sub" id="home-wx">Loading…</div>
+        </div>
+        <div class="stat">
+          <div class="lab">Sea / waves</div>
+          <div class="val" id="home-wave">—</div>
+          <div class="sub" id="home-wave-sub">Loading…</div>
+        </div>
+      </div>
+
+      <div class="stat" style="margin-bottom:13px">
+        <div class="lab">In season right now</div>
+        <div class="val" id="home-season" style="font-size:1.15rem">—</div>
+        <div class="sub" id="home-season-sub"></div>
+      </div>
+
+      <h2 style="margin:6px 2px 10px">Jump in</h2>
+      <a class="btn" href="#" data-go="explore"><span class="em">🗺️</span><span><b>Explore & map</b><small>Beaches, the Hidden Hut, St Mawes & more</small></span><span class="arr">›</span></a>
+      <a class="btn" href="#" data-go="walks"><span class="em">🥾</span><span><b>Coastal walks</b><small>Cliff-path routes from the village</small></span><span class="arr">›</span></a>
+      <a class="btn" href="#" data-go="nature"><span class="em">🐦</span><span><b>Nature & wildlife</b><small>Birds, seals, and what's in the sea</small></span><span class="arr">›</span></a>
+      <a class="btn" href="#" data-go="tides"><span class="em">🌊</span><span><b>Weather & tides</b><small>Forecast, sea state & tide tables</small></span><span class="arr">›</span></a>
+      <a class="btn" href="#" data-go="facts"><span class="em">💡</span><span><b>Fun facts & tips</b><small>Local lore and practical know-how</small></span><span class="arr">›</span></a>
+    </section>
+
+    <!-- ================= EXPLORE ================= -->
+    <section class="view" id="view-explore">
+      <h2 style="margin:2px 2px 12px">Explore</h2>
+
+      <div class="card">
+        <h2>🗺️ Map of the area</h2>
+        <div class="mapwrap">
+          <iframe title="Map of Portscatho" loading="lazy"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=-5.06%2C50.14%2C-4.93%2C50.23&layer=mapnik&marker=50.1873%2C-4.9985"></iframe>
+        </div>
+        <div class="pill-row" style="margin-top:10px">
+          <a class="btn" style="margin:0" target="_blank" rel="noopener"
+             href="https://www.google.com/maps/search/?api=1&query=Portscatho%2C+Cornwall">
+            <span class="em">📍</span><span><b>Open in Google Maps</b><small>Directions & Street View</small></span><span class="arr">›</span></a>
+        </div>
+        <p class="small muted" style="margin-bottom:0">Pinch to zoom. Portscatho sits mid-way along the Roseland's east coast, on Gerrans Bay.</p>
+      </div>
+
+      <div class="card">
+        <h2>🏖️ Beaches & swimming</h2>
+        <ul class="list">
+          <li><span class="em">🌅</span><span><b>Porthcurnick Beach</b><small>Sheltered sandy cove a 10-min walk north. Home of <b>The Hidden Hut</b>. Great at low tide.</small></span></li>
+          <li><span class="em">⛵</span><span><b>Tatams / the harbour beach</b><small>Right in the village — sand at low tide, slipway, rock pools for the kids.</small></span></li>
+          <li><span class="em">🏄</span><span><b>Towan Beach</b><small>Wide sandy beach near Porth Farm, ~1.5 mi south. National Trust car park.</small></span></li>
+          <li><span class="em">🐚</span><span><b>Pendower & Carne</b><small>Long golden sweep across the bay — join up at low tide for a mile of sand.</small></span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>🍴 Eat & drink</h2>
+        <ul class="list">
+          <li><span class="em">🔥</span><span><b>The Hidden Hut</b><small>Legendary beach café at Porthcurnick. Day menu of pasties, wraps & cake; famous <b>Feast Nights</b> book out fast online.</small></span></li>
+          <li><span class="em">🍺</span><span><b>The Plume of Feathers</b><small>Village pub in Portscatho — pints, pub food and a proper local welcome.</small></span></li>
+          <li><span class="em">☕</span><span><b>The Boathouse / village shops</b><small>Deli, gallery and general store on the harbour for supplies and ice cream.</small></span></li>
+          <li><span class="em">🦞</span><span><b>Fresh seafood</b><small>Crab and lobster still landed locally — ask on the harbour or at the shop.</small></span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>🚗 Days out nearby</h2>
+        <ul class="list">
+          <li><span class="em">⛵</span><span><b>St Mawes</b><small>Pretty harbour town with castle & ferry. ~15 min drive or a coast-path expedition.</small></span></li>
+          <li><span class="em">🌿</span><span><b>St Just in Roseland</b><small>One of the most beautiful churchyards in England, tumbling to a tidal creek.</small></span></li>
+          <li><span class="em">⛴️</span><span><b>King Harry Ferry → Trelissick</b><small>Chain ferry across the Fal to NT gardens and the road to Truro/Falmouth.</small></span></li>
+          <li><span class="em">🏰</span><span><b>Falmouth</b><small>Maritime museum, beaches and shops — around 45 min via the ferry.</small></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================= WALKS ================= -->
+    <section class="view" id="view-walks">
+      <h2 style="margin:2px 2px 6px">Coastal walks</h2>
+      <p class="small muted" style="margin:0 2px 12px">The South West Coast Path runs right through the village. Cliffs, wildflowers and sea views in both directions. Wear grippy shoes — paths can be muddy and near cliff edges.</p>
+
+      <div class="card">
+        <div class="walk">
+          <h3>Portscatho → Porthcurnick → Towan Beach</h3>
+          <div class="meta"><span>📏 ~2.5 mi return</span><span>⏱️ 1–1.5 hrs</span><span>🥾 Easy</span></div>
+          <p class="small">Head north on the coast path past Porthcurnick Beach (pause at the Hidden Hut) and on to the sands at Towan. Big open sea views across Gerrans Bay. Return the same way or loop inland via Rosevine.</p>
+        </div>
+        <div class="walk">
+          <h3>Portscatho → Gerrans → St Anthony Head</h3>
+          <div class="meta"><span>📏 ~7 mi</span><span>⏱️ 3–4 hrs</span><span>🥾 Moderate</span></div>
+          <p class="small">A proper day's walk south to the tip of the peninsula. Lighthouse, WWII gun batteries, and views to St Mawes and Falmouth. Loop back inland through fields and lanes.</p>
+        </div>
+        <div class="walk">
+          <h3>Gerrans Bay circular via Rosevine</h3>
+          <div class="meta"><span>📏 ~4 mi</span><span>⏱️ 2 hrs</span><span>🥾 Easy–Moderate</span></div>
+          <p class="small">Coast path one way, quiet country lanes and footpaths back. Good for a shorter afternoon leg-stretch with a café stop.</p>
+        </div>
+        <div class="walk">
+          <h3>Nare Head & Carne Beacon</h3>
+          <div class="meta"><span>📏 ~4–5 mi</span><span>⏱️ 2–2.5 hrs</span><span>🥾 Moderate</span></div>
+          <p class="small">A short drive to the dramatic headland at Nare, then a wildflower cliff walk. Carne Beacon is one of the largest Bronze Age burial mounds in Britain.</p>
+        </div>
+        <a class="btn" target="_blank" rel="noopener" href="https://www.southwestcoastpath.org.uk/walksfinder/">
+          <span class="em">🧭</span><span><b>South West Coast Path — walk finder</b><small>Official routes, distances & difficulty</small></span><span class="arr">›</span></a>
+        <div class="callout"><b>Tide tip:</b> Some beach-to-beach links (Pendower ⇄ Carne, and rock-hopping stretches) only open up at low tide. Check the Tides tab before setting off.</div>
+      </div>
+    </section>
+
+    <!-- ================= NATURE ================= -->
+    <section class="view" id="view-nature">
+      <h2 style="margin:2px 2px 12px">Nature & wildlife</h2>
+
+      <div class="card">
+        <h2>🐟 What's in the sea now</h2>
+        <div id="fish-list"></div>
+        <p class="small muted" style="margin-bottom:0">Seasons are guides — Cornish weather and local conditions shift them a little each year. 🎣 <b>Right now</b> is highlighted.</p>
+      </div>
+
+      <div class="card">
+        <h2>🐦 Birds on the cliff walks</h2>
+        <div id="bird-note" class="small muted" style="margin-bottom:8px"></div>
+        <ul class="list">
+          <li><span class="em">🖤</span><span><b>Chough</b><small>Cornwall's emblem — glossy black with a red curved bill & legs. Recovering along Roseland cliffs. Listen for the "chee-ow" call.</small></span></li>
+          <li><span class="em">🪶</span><span><b>Fulmar</b><small>Stiff-winged "tube-nose" gliding along the cliff faces spring–summer. Nests on ledges.</small></span></li>
+          <li><span class="em">🎯</span><span><b>Gannet</b><small>Huge white seabird with black wingtips, diving offshore like an arrow — best on breezy summer days.</small></span></li>
+          <li><span class="em">🦅</span><span><b>Peregrine & kestrel</b><small>Peregrine (fastest bird alive) hunts the headlands; kestrels hover over the cliff-top grass.</small></span></li>
+          <li><span class="em">🧡</span><span><b>Stonechat</b><small>Little robin-shaped bird on gorse tops — call sounds like two pebbles knocking together.</small></span></li>
+          <li><span class="em">⚫</span><span><b>Shag & cormorant</b><small>Black diving birds on the rocks, wings spread out to dry.</small></span></li>
+          <li><span class="em">🧡</span><span><b>Oystercatcher</b><small>Black-and-white wader, long orange bill, loud "peep-peep" along the shore.</small></span></li>
+          <li><span class="em">🐧</span><span><b>Guillemots & razorbills</b><small>Auks rafting on the sea offshore, mainly spring/early summer.</small></span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>🦭 Seals, dolphins & more</h2>
+        <ul class="list">
+          <li><span class="em">🦭</span><span><b>Grey seals</b><small>Year-round in Gerrans Bay — often a curious head bobbing near the harbour or off the rocks.</small></span></li>
+          <li><span class="em">🐬</span><span><b>Dolphins & porpoise</b><small>Common & bottlenose dolphins pass offshore; harbour porpoise year-round. Scan the horizon on calm days.</small></span></li>
+          <li><span class="em">🦈</span><span><b>Basking shark</b><small>The world's 2nd-largest fish — occasionally seen feeding at the surface May–July in warm calm spells.</small></span></li>
+          <li><span class="em">🪼</span><span><b>Jellyfish</b><small>Compass, moon & barrel jellyfish drift in during summer. Harmless to admire; don't touch.</small></span></li>
+          <li><span class="em">🦀</span><span><b>Rock pools</b><small>Low tide reveals shore crabs, blennies, anemones, prawns & starfish at Tatams and Porthcurnick.</small></span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>🌸 Wildflowers & plants</h2>
+        <p class="small">The cliff paths blaze with colour spring to autumn: <b>thrift</b> (sea pink), <b>kidney vetch</b>, <b>sea campion</b>, gorse (coconut-scented), foxgloves, and in late summer purple <b>heather</b>. Look for rare lichens on the rocks — a sign of Cornwall's clean Atlantic air.</p>
+      </div>
+
+      <div class="callout">🌙 <b>Stargazing:</b> The Roseland has dark skies. On a clear night away from the harbour lights you can see the Milky Way — best in winter, or look for the summer Perseid meteors in August.</div>
+    </section>
+
+    <!-- ================= TIDES / WEATHER ================= -->
+    <section class="view" id="view-tides">
+      <h2 style="margin:2px 2px 12px">Weather & tides</h2>
+
+      <div class="card">
+        <h2>🌤️ Forecast <button class="refresh" id="wx-refresh">refresh</button></h2>
+        <div id="wx-now" class="loading">Loading live weather…</div>
+        <div id="wx-forecast"></div>
+        <p class="small muted" style="margin:8px 0 0">Live data from Open-Meteo for Portscatho (50.19°N, 5.00°W). Times shown in UK time.</p>
+      </div>
+
+      <div class="card">
+        <h2>🌊 Sea state</h2>
+        <div id="marine" class="loading">Loading sea conditions…</div>
+      </div>
+
+      <div class="card">
+        <h2>🕐 Tide times</h2>
+        <p class="small">Portscatho tides follow <b>Falmouth</b> closely (only a few minutes' difference). For accurate daily high/low water and heights, open a live table:</p>
+        <a class="btn" target="_blank" rel="noopener" href="https://www.tidetimes.org.uk/falmouth-tide-times">
+          <span class="em">📈</span><span><b>Falmouth tide times</b><small>Today's high & low water (tidetimes.org.uk)</small></span><span class="arr">›</span></a>
+        <a class="btn" target="_blank" rel="noopener" href="https://easytide.admiralty.co.uk/?PortID=0033">
+          <span class="em">⚓</span><span><b>Admiralty EasyTide — Falmouth</b><small>Official UKHO 7-day predictions</small></span><span class="arr">›</span></a>
+        <div class="callout"><b>Rule of twelfths:</b> the tide moves slowest around high & low water and fastest in the middle two hours — handy for timing a beach walk or a swim.</div>
+      </div>
+    </section>
+
+    <!-- ================= FACTS ================= -->
+    <section class="view" id="view-facts">
+      <h2 style="margin:2px 2px 12px">Fun facts & tips</h2>
+
+      <div class="card">
+        <h2>💡 Did you know?</h2>
+        <div class="fact"><div class="n">1</div><div><b>Two villages, one place.</b> Portscatho (the harbour) and Gerrans (up the hill, around the church) effectively merge into one community — the parish is "Gerrans".</div></div>
+        <div class="fact"><div class="n">2</div><div><b>A pilchard past.</b> Like much of Cornwall, Portscatho thrived on pilchard fishing. Old "fish cellars" once salted and pressed the catch for export.</div></div>
+        <div class="fact"><div class="n">3</div><div><b>Roseland ≠ roses.</b> The name likely comes from the Cornish <i>"rosinis"</i> — meaning "promontory / heath isle" — not the flower.</div></div>
+        <div class="fact"><div class="n">4</div><div><b>On screen.</b> The Roseland's timeless lanes and coves have featured in TV and film — its unspoilt look is the whole appeal.</div></div>
+        <div class="fact"><div class="n">5</div><div><b>Bronze Age giants.</b> Carne Beacon above the bay is one of the largest Bronze Age barrows in Britain — legend says a king was buried there in a golden boat.</div></div>
+        <div class="fact"><div class="n">6</div><div><b>Gig racing country.</b> Cornish pilot gigs (six-oared rowing boats) are a proud local tradition — you may spot crews training in the bay.</div></div>
+      </div>
+
+      <div class="card">
+        <h2>🎒 Practical tips</h2>
+        <ul class="list">
+          <li><span class="em">🅿️</span><span><b>Parking</b><small>Village parking is limited — use the car park at the top and walk down. National Trust car parks at Porth Farm (Towan) & Carne.</small></span></li>
+          <li><span class="em">📶</span><span><b>Signal</b><small>Mobile coverage is patchy on the cliffs — download maps offline before you set out.</small></span></li>
+          <li><span class="em">🐕</span><span><b>Dogs</b><small>Welcome on the coast path; seasonal restrictions on some beaches in summer. Watch for cliff edges.</small></span></li>
+          <li><span class="em">🚿</span><span><b>Swimming</b><small>Harbour & Porthcurnick are lovely, but there are no lifeguards — swim near others & respect the tide.</small></span></li>
+          <li><span class="em">🌡️</span><span><b>Sea temp</b><small>Warmest Aug–Sep (~16–17°C); bracing but swimmable May–Oct. A wetsuit extends the season.</small></span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>🆘 Useful in an emergency</h2>
+        <ul class="list">
+          <li><span class="em">☎️</span><span><b>999 or 112</b><small>For coastguard emergencies ask for the <b>Coastguard</b>. Note the nearest coast-path marker or beach name.</small></span></li>
+          <li><span class="em">🩹</span><span><b>NHS 111</b><small>Non-emergency medical help. Nearest minor injuries / hospital is in Truro (Royal Cornwall).</small></span></li>
+          <li><span class="em">🌊</span><span><b>Rip currents</b><small>If caught, don't fight it — float, raise an arm, and swim parallel to shore.</small></span></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <button data-go="home" class="active"><span class="ic">🏠</span>Home</button>
+    <button data-go="explore"><span class="ic">🗺️</span>Explore</button>
+    <button data-go="walks"><span class="ic">🥾</span>Walks</button>
+    <button data-go="nature"><span class="ic">🐦</span>Nature</button>
+    <button data-go="tides"><span class="ic">🌊</span>Tides</button>
+    <button data-go="facts"><span class="ic">💡</span>Facts</button>
+  </nav>
+</div>
+
+<script>
+/* ---------- Navigation ---------- */
+const views = document.querySelectorAll('.view');
+const tabs = document.querySelectorAll('nav.tabs button');
+function go(name){
+  views.forEach(v=>v.classList.toggle('active', v.id==='view-'+name));
+  tabs.forEach(t=>t.classList.toggle('active', t.dataset.go===name));
+  window.scrollTo({top:0, behavior:'instant'});
+}
+document.querySelectorAll('[data-go]').forEach(el=>{
+  el.addEventListener('click', e=>{ e.preventDefault(); go(el.dataset.go); });
+});
+
+/* ---------- Season logic ---------- */
+const MONTH = new Date().getMonth(); // 0=Jan
+const MONTH_NAME = new Date().toLocaleString('en-GB',{month:'long'});
+
+// Cornish seafood / fish seasons (months are 0-indexed, inclusive ranges may wrap)
+const FISH = [
+  {name:'Mackerel', emoji:'🐟', months:[4,5,6,7,8,9], note:'Peak summer — shoals right off the rocks. Classic feathers-from-the-harbour catch.'},
+  {name:'Cornish sardine (pilchard)', emoji:'🐠', months:[7,8,9,10,11], note:'Landed late summer into autumn — the modern name for the historic pilchard.'},
+  {name:'Sea bass', emoji:'🎣', months:[5,6,7,8,9,10], note:'Prized sport fish around estuary mouths & rocky ground (catch limits apply).'},
+  {name:'Pollack', emoji:'🐟', months:[3,4,5,6,7,8,9,10], note:'Reliable around reefs and wrecks much of the year.'},
+  {name:'Brown crab', emoji:'🦀', months:[3,4,5,6,7,8,9,10], note:'Best and sweetest through the warmer months — landed in local pots.'},
+  {name:'Lobster', emoji:'🦞', months:[3,4,5,6,7,8,9,10], note:'Summer is prime; a real Roseland treat straight off the boats.'},
+  {name:'Sand eels & sprats', emoji:'🐠', months:[3,4,5,6,7,8], note:'Baitfish that draw in the bigger fish, birds and dolphins.'},
+  {name:'Herring', emoji:'🐟', months:[9,10,11,0,1], note:'A cold-season fish, traditionally netted in winter.'},
+  {name:'Scallops', emoji:'🐚', months:[9,10,11,0,1,2], note:'At their best in the cooler months (roughly Sep–Mar).'}
+];
+
+function inSeason(f){ return f.months.includes(MONTH); }
+
+function renderFish(){
+  const box = document.getElementById('fish-list');
+  const inS = FISH.filter(inSeason);
+  const outS = FISH.filter(f=>!inSeason(f));
+  let html = '';
+  inS.forEach(f=>{
+    html += `<div class="season in"><div class="st">In season · ${MONTH_NAME}</div>
+      <div style="font-weight:700;margin-top:2px">${f.emoji} ${f.name}</div>
+      <div class="small muted">${f.note}</div></div>`;
+  });
+  if(outS.length){
+    html += `<h3>Out of season now</h3><div class="pill-row">`;
+    outS.forEach(f=> html += `<span class="tag">${f.emoji} ${f.name}</span>`);
+    html += `</div>`;
+  }
+  box.innerHTML = html;
+
+  // Home summary
+  const names = inS.slice(0,3).map(f=>f.name).join(', ');
+  document.getElementById('home-season').textContent = names || '—';
+  document.getElementById('home-season-sub').textContent =
+    (MONTH>=4 && MONTH<=8) ? "It's mackerel season — grab some feathers!" : "Seafood & wildlife highlights for "+MONTH_NAME;
+}
+renderFish();
+
+// Bird seasonal note
+(function(){
+  let note;
+  if(MONTH>=2 && MONTH<=6) note = "🌱 Spring/early summer — seabirds are nesting on the ledges. Best time for fulmars, auks and cliff drama.";
+  else if(MONTH>=7 && MONTH<=8) note = "☀️ High summer — watch offshore for gannets diving and dolphins passing on calm days.";
+  else if(MONTH>=9 && MONTH<=10) note = "🍂 Autumn — passage migrants move through; storms can push seabirds close inshore.";
+  else note = "❄️ Winter — quieter cliffs, but great for divers, grebes and hardy shore waders.";
+  document.getElementById('bird-note').textContent = note;
+})();
+
+/* ---------- Live weather (Open-Meteo, no key) ---------- */
+const LAT=50.1873, LON=-4.9985;
+function wcode(c){
+  const m={0:['☀️','Clear'],1:['🌤️','Mainly clear'],2:['⛅','Partly cloudy'],3:['☁️','Overcast'],
+    45:['🌫️','Fog'],48:['🌫️','Rime fog'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],55:['🌧️','Heavy drizzle'],
+    61:['🌦️','Light rain'],63:['🌧️','Rain'],65:['🌧️','Heavy rain'],66:['🌨️','Freezing rain'],67:['🌨️','Freezing rain'],
+    71:['🌨️','Light snow'],73:['🌨️','Snow'],75:['❄️','Heavy snow'],77:['❄️','Snow grains'],
+    80:['🌦️','Showers'],81:['🌧️','Showers'],82:['⛈️','Heavy showers'],85:['🌨️','Snow showers'],86:['🌨️','Snow showers'],
+    95:['⛈️','Thunderstorm'],96:['⛈️','Thunderstorm'],99:['⛈️','Severe storm']};
+  return m[c]||['🌡️','—'];
+}
+function windDir(d){const dirs=['N','NE','E','SE','S','SW','W','NW'];return dirs[Math.round(d/45)%8];}
+
+async function loadWeather(){
+  const nowEl=document.getElementById('wx-now');
+  const fcEl=document.getElementById('wx-forecast');
+  nowEl.className='loading'; nowEl.textContent='Loading live weather…';
+  try{
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`+
+      `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m`+
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset`+
+      `&timezone=Europe%2FLondon&wind_speed_unit=mph`;
+    const r=await fetch(url); const d=await r.json();
+    const c=d.current, [ci,ct]=wcode(c.weather_code);
+    nowEl.className='';
+    nowEl.innerHTML=`<div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:2.6rem">${ci}</div>
+        <div><div style="font-size:1.8rem;font-weight:800;color:var(--sea)">${Math.round(c.temperature_2m)}°C</div>
+        <div class="small muted">${ct} · feels ${Math.round(c.apparent_temperature)}° · 💨 ${Math.round(c.wind_speed_10m)} mph ${windDir(c.wind_direction_10m)}</div></div></div>`;
+    // sun times today
+    const sr=new Date(d.daily.sunrise[0]).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const ss=new Date(d.daily.sunset[0]).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    let days='<div class="small muted" style="margin:10px 0 6px">🌅 Sunrise '+sr+' · 🌇 Sunset '+ss+'</div><div class="wx-days">';
+    for(let i=0;i<d.daily.time.length;i++){
+      const [ic]=wcode(d.daily.weather_code[i]);
+      const dn=new Date(d.daily.time[i]).toLocaleDateString('en-GB',{weekday:'short'});
+      const pr=d.daily.precipitation_probability_max[i];
+      days+=`<div class="wx-day"><div class="d">${i===0?'Today':dn}</div><div class="i">${ic}</div>
+        <div class="t">${Math.round(d.daily.temperature_2m_max[i])}°<small>/${Math.round(d.daily.temperature_2m_min[i])}°</small></div>
+        <div class="small muted">💧${pr??0}%</div></div>`;
+    }
+    days+='</div>'; fcEl.innerHTML=days;
+    // Home card
+    document.getElementById('home-temp').textContent=Math.round(c.temperature_2m)+'°';
+    document.getElementById('home-wx').textContent=ct+' · '+Math.round(c.wind_speed_10m)+' mph '+windDir(c.wind_direction_10m);
+  }catch(e){
+    nowEl.className='err'; nowEl.textContent='Could not load weather (offline?). Pull to refresh when back online.';
+    document.getElementById('home-wx').textContent='Offline';
+  }
+}
+async function loadMarine(){
+  const el=document.getElementById('marine');
+  try{
+    const url=`https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LON}`+
+      `&current=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=Europe%2FLondon`;
+    const r=await fetch(url); const d=await r.json(); const c=d.current;
+    const wh=c.wave_height, sst=c.sea_surface_temperature;
+    let state = wh<0.5?'Calm 🟢':wh<1?'Slight 🟢':wh<1.5?'Moderate 🟡':wh<2.5?'Choppy 🟠':'Rough 🔴';
+    el.className='';
+    el.innerHTML=`<div class="grid">
+      <div class="stat"><div class="lab">Wave height</div><div class="val">${wh?.toFixed(1)??'—'}m</div><div class="sub">${state}</div></div>
+      <div class="stat"><div class="lab">Sea temp</div><div class="val">${sst!=null?Math.round(sst)+'°':'—'}</div><div class="sub">${sst!=null?(sst>=15?'Swimmable 🏊':'Bracing! 🥶'):''}</div></div>
+    </div>
+    <p class="small muted" style="margin:10px 0 0">Wave period ~${c.wave_period?Math.round(c.wave_period):'—'}s. Offshore forecast — sheltered Gerrans Bay is usually calmer than the open coast.</p>`;
+    // home wave card
+    document.getElementById('home-wave').textContent=(wh?.toFixed(1)??'—')+'m';
+    document.getElementById('home-wave-sub').textContent=state+(sst!=null?' · sea '+Math.round(sst)+'°':'');
+  }catch(e){
+    el.className='err'; el.textContent='Sea data unavailable right now.';
+    document.getElementById('home-wave').textContent='—';
+    document.getElementById('home-wave-sub').textContent='Offline';
+  }
+}
+document.getElementById('wx-refresh').addEventListener('click',()=>{loadWeather();loadMarine();});
+loadWeather(); loadMarine();
+
+/* ---------- Service worker (offline) ---------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

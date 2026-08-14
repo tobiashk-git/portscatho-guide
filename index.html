@@ -101,6 +101,8 @@
   .storm-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:11px}
   .storm-grid img{width:100%; height:118px; object-fit:cover; border-radius:10px; display:block; cursor:zoom-in; background:#c7d3d7}
   .storm-grid img.wide{grid-column:1 / -1; height:178px}
+  .storm-vid{width:100%; aspect-ratio:4/3; border-radius:10px; display:block; margin-top:11px; background:#0d2733}
+  .storm-vid-cap{font-size:.75rem; color:var(--ink2); margin-top:5px; text-align:center}
 
   /* Fish-in-season photo */
   .fish-ph{width:100%; height:158px; object-fit:cover; border-radius:10px; margin:2px 0 9px; display:block; cursor:zoom-in; background:#dfeef2}
@@ -425,6 +427,10 @@
         <span class="warn">⚠️ Reality check</span>
         <h2>…but it's not always sunny!</h2>
         <p class="small">Portscatho faces the open Atlantic, and when a winter storm rolls in it really means it — waves crash clean over the harbour wall and the whole bay turns to spray. Magnificent to watch, but stay well back from the edge and the sea front when it's rough.</p>
+        <video class="storm-vid" poster="img/storm/storm-poster.jpg" autoplay muted loop playsinline controls preload="none">
+          <source src="img/storm/storm.mp4" type="video/mp4" />
+        </video>
+        <div class="storm-vid-cap">🎥 A real Portscatho storm, straight over the pier (20s, no sound)</div>
         <div class="storm-grid">
           <img class="wide" src="img/storm/storm1.jpg" alt="Storm waves crashing over Portscatho harbour wall" />
           <img src="img/storm/storm2.jpg" alt="Waves breaking over the pier and navigation marker" />

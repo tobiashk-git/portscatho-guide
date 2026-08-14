@@ -1,4 +1,4 @@
-const CACHE = 'portscatho-v3';
+const CACHE = 'portscatho-v4';
 const ASSETS = ['index.html', 'manifest.webmanifest', 'icons/icon.svg'];
 
 self.addEventListener('install', e => {
@@ -21,6 +21,11 @@ self.addEventListener('fetch', e => {
   }
   if (e.request.mode === 'navigate') {
     e.respondWith(fetch(e.request).catch(() => caches.match('index.html')));
+    return;
+  }
+  // Don't cache video: range/partial (206) responses break the Cache API.
+  if (url.pathname.endsWith('.mp4')) {
+    e.respondWith(fetch(e.request));
     return;
   }
   // Same-origin assets (incl. photos): serve from cache, and cache on first fetch.

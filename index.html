@@ -262,9 +262,19 @@
           <div class="sub" id="home-wx">Loading…</div>
         </div>
         <div class="stat">
+          <div class="lab">Wind 💨</div>
+          <div class="val" id="home-wind">—</div>
+          <div class="sub" id="home-wind-sub">Loading…</div>
+        </div>
+        <div class="stat">
           <div class="lab">Sea / waves</div>
           <div class="val" id="home-wave">—</div>
           <div class="sub" id="home-wave-sub">Loading…</div>
+        </div>
+        <div class="stat">
+          <div class="lab">Next tide 🌊</div>
+          <div class="val" id="home-tide">—</div>
+          <div class="sub" id="home-tide-sub">Loading…</div>
         </div>
       </div>
 
@@ -711,13 +721,16 @@ async function loadWeather(){
       `<div class="wind-spd">${spd} <span style="font-size:1rem;font-weight:600">mph</span></div>`+
       `<div class="wind-sub">from the <b>${dirTxt}</b>${gust>spd+2?` · gusting ${gust} mph`:''}</div></div></div>`+
       `<div class="wind-desc">Force ${b.f} · ${b.name}</div><div class="wind-sub">${b.sea}</div>`;
+    document.getElementById('home-wind').textContent=spd;
+    document.getElementById('home-wind-sub').textContent=`mph from ${dirTxt} · F${b.f}`;
     // Home card
     document.getElementById('home-temp').textContent=Math.round(c.temperature_2m)+'°';
-    document.getElementById('home-wx').textContent=ct+' · '+Math.round(c.wind_speed_10m)+' mph '+windDir(c.wind_direction_10m);
+    document.getElementById('home-wx').textContent=ct+' · feels '+Math.round(c.apparent_temperature)+'°';
   }catch(e){
     nowEl.className='err'; nowEl.textContent='Could not load weather (offline?). Pull to refresh when back online.';
     const w=document.getElementById('wind'); w.className='err'; w.textContent='Wind data unavailable offline.';
     document.getElementById('home-wx').textContent='Offline';
+    document.getElementById('home-wind-sub').textContent='Offline';
   }
 }
 async function loadMarine(){
@@ -771,6 +784,8 @@ loadWeather(); loadMarine();
         nextEl.className='';
         nextEl.innerHTML=`<div class="tide-next"><span class="ar">🌊</span><div><div class="big">Tide table covers Aug–Oct 2026</div><div class="sub">Today is outside the loaded table — tap Admiralty EasyTide below for live times.</div></div></div>`;
         todayEl.innerHTML=''; noteEl.textContent='Falmouth predictions (Portscatho’s reference port). Data via tidetime.org.';
+        document.getElementById('home-tide').textContent='—';
+        document.getElementById('home-tide-sub').textContent='Aug–Oct table';
         return;
       }
       let next=null,nKey=null;
@@ -782,6 +797,11 @@ loadWeather(); loadMarine();
         nextEl.innerHTML=`<div class="tide-next"><span class="ar">${s.ar}</span><div>`+
           `<div class="big">${s.name} tide in ${fmtGap(evDate(nKey,next[1])-now)}</div>`+
           `<div class="sub">at ${next[1]}${when} · ${next[2].toFixed(1)} m · tide ${next[0]==='H'?'rising':'falling'} now</div></div></div>`;
+      }
+      const hT=document.getElementById('home-tide'), hTs=document.getElementById('home-tide-sub');
+      if(next && hT){
+        hT.textContent=`${STATE[next[0]].name} ${next[1]}`;
+        hTs.textContent=`in ${fmtGap(evDate(nKey,next[1])-now)} · ${next[2].toFixed(1)}m`;
       }
       todayEl.innerHTML=`<div class="tide-day-h">Today · ${now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}</div>`+
         todays.map(ev=>row(ev,tKey,now, next&&nKey===tKey&&ev===next)).join('');
@@ -796,7 +816,8 @@ loadWeather(); loadMarine();
       noteEl.innerHTML='Falmouth predictions (Portscatho is within ~5 min). UK local time. Table covers Aug–Oct 2026; data via <a href="https://www.tidetime.org/europe/united-kingdom/falmouth.htm" target="_blank" rel="noopener">tidetime.org</a>. For boating, always confirm with the official Admiralty table.';
     }
     render(); setInterval(render, 60000);
-  }).catch(()=>{ nextEl.className='err'; nextEl.textContent='Tide data unavailable — use Admiralty EasyTide below.'; });
+  }).catch(()=>{ nextEl.className='err'; nextEl.textContent='Tide data unavailable — use Admiralty EasyTide below.';
+    document.getElementById('home-tide-sub').textContent='Unavailable'; });
 })();
 
 /* ---------- Hero photo rotator ---------- */

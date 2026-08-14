@@ -120,6 +120,17 @@
   .tide-row.nextrow{background:#e8f6fc; border:1px solid #c3e4f0; border-radius:9px}
   .tide-day-h{font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink2); font-weight:700; margin:6px 2px 2px}
 
+  /* Wind compass */
+  .wind-main{display:flex; align-items:center; gap:16px}
+  .compass{width:82px; height:82px; flex:none; position:relative; border-radius:50%;
+    background:radial-gradient(circle at 50% 45%,#eef7fb,#d3e8f1); border:1px solid #bfe0ec}
+  .compass .n{position:absolute; top:4px; left:50%; transform:translateX(-50%); font-size:.58rem; font-weight:800; color:var(--ink2)}
+  .compass svg{position:absolute; inset:0; width:100%; height:100%}
+  .wind-spd{font-size:2rem; font-weight:800; color:var(--sea); line-height:1}
+  .wind-desc{font-size:.95rem; color:var(--ink); font-weight:700; margin-top:2px}
+  .wind-sub{font-size:.83rem; color:var(--ink2); margin-top:2px}
+  .wx-day .w{font-size:.72rem; color:var(--ink2); margin-top:2px}
+
   /* Fish-in-season photo */
   .fish-ph{width:100%; height:158px; object-fit:cover; border-radius:10px; margin:2px 0 9px; display:block; cursor:zoom-in; background:#dfeef2}
 
@@ -435,6 +446,11 @@
       </div>
 
       <div class="card">
+        <h2>💨 Wind</h2>
+        <div id="wind" class="loading">Loading wind…</div>
+      </div>
+
+      <div class="card">
         <h2>🌊 Sea state</h2>
         <div id="marine" class="loading">Loading sea conditions…</div>
       </div>
@@ -638,6 +654,21 @@ function wcode(c){
   return m[c]||['🌡️','—'];
 }
 function windDir(d){const dirs=['N','NE','E','SE','S','SW','W','NW'];return dirs[Math.round(d/45)%8];}
+function beaufort(mph){
+  const t=[[1,0,'Calm','Sea like a mirror.'],[4,1,'Light air','Barely a ripple.'],[8,2,'Light breeze','Small wavelets, no white.'],
+    [13,3,'Gentle breeze','A few white crests appear.'],[19,4,'Moderate breeze','Small waves, some white horses.'],
+    [25,5,'Fresh breeze','White horses everywhere — lively.'],[32,6,'Strong breeze','Large waves & spray — small boats stay in.'],
+    [39,7,'Near gale','Sea heaps up; foam blows in streaks.'],[47,8,'Gale','Rough & dangerous — stay off the water.'],
+    [55,9,'Severe gale','Very high seas. Stay well clear.']];
+  for(const[lim,f,name,sea] of t){ if(mph<lim) return {f,name,sea}; }
+  return {f:10,name:'Storm',sea:'Exceptionally wild — keep well away from the sea front.'};
+}
+function compassSVG(fromDeg){ // arrow flies WITH the wind (points downwind)
+  return `<div class="compass"><span class="n">N</span><svg viewBox="0 0 82 82" aria-hidden="true">`+
+    `<circle cx="41" cy="41" r="2.4" fill="#0b4f6c"/>`+
+    `<g transform="rotate(${(fromDeg+180)%360} 41 41)">`+
+    `<path d="M41 13 L49 47 L41 40 L33 47 Z" fill="#0b4f6c"/></g></svg></div>`;
+}
 
 async function loadWeather(){
   const nowEl=document.getElementById('wx-now');
@@ -645,8 +676,8 @@ async function loadWeather(){
   nowEl.className='loading'; nowEl.textContent='Loading live weather…';
   try{
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`+
-      `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m`+
-      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset`+
+      `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,relative_humidity_2m`+
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset`+
       `&timezone=Europe%2FLondon&wind_speed_unit=mph`;
     const r=await fetch(url); const d=await r.json();
     const c=d.current, [ci,ct]=wcode(c.weather_code);
@@ -663,16 +694,29 @@ async function loadWeather(){
       const [ic]=wcode(d.daily.weather_code[i]);
       const dn=new Date(d.daily.time[i]).toLocaleDateString('en-GB',{weekday:'short'});
       const pr=d.daily.precipitation_probability_max[i];
+      const wsp=Math.round(d.daily.wind_speed_10m_max[i]);
+      const wdr=windDir(d.daily.wind_direction_10m_dominant[i]);
       days+=`<div class="wx-day"><div class="d">${i===0?'Today':dn}</div><div class="i">${ic}</div>
         <div class="t">${Math.round(d.daily.temperature_2m_max[i])}°<small>/${Math.round(d.daily.temperature_2m_min[i])}°</small></div>
-        <div class="small muted">💧${pr??0}%</div></div>`;
+        <div class="small muted">💧${pr??0}%</div><div class="w">💨${wsp} ${wdr}</div></div>`;
     }
     days+='</div>'; fcEl.innerHTML=days;
+
+    // Wind card
+    const windEl=document.getElementById('wind');
+    const spd=Math.round(c.wind_speed_10m), gust=Math.round(c.wind_gusts_10m??c.wind_speed_10m);
+    const b=beaufort(spd), dirTxt=windDir(c.wind_direction_10m);
+    windEl.className='';
+    windEl.innerHTML=`<div class="wind-main">${compassSVG(c.wind_direction_10m)}<div>`+
+      `<div class="wind-spd">${spd} <span style="font-size:1rem;font-weight:600">mph</span></div>`+
+      `<div class="wind-sub">from the <b>${dirTxt}</b>${gust>spd+2?` · gusting ${gust} mph`:''}</div></div></div>`+
+      `<div class="wind-desc">Force ${b.f} · ${b.name}</div><div class="wind-sub">${b.sea}</div>`;
     // Home card
     document.getElementById('home-temp').textContent=Math.round(c.temperature_2m)+'°';
     document.getElementById('home-wx').textContent=ct+' · '+Math.round(c.wind_speed_10m)+' mph '+windDir(c.wind_direction_10m);
   }catch(e){
     nowEl.className='err'; nowEl.textContent='Could not load weather (offline?). Pull to refresh when back online.';
+    const w=document.getElementById('wind'); w.className='err'; w.textContent='Wind data unavailable offline.';
     document.getElementById('home-wx').textContent='Offline';
   }
 }

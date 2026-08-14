@@ -131,6 +131,7 @@
   .wind-sub{font-size:.83rem; color:var(--ink2); margin-top:2px}
   .wx-day .w{font-size:.72rem; color:var(--ink2); margin-top:2px}
   .warr{display:inline-block; font-weight:700; color:var(--sea2); font-size:1.05rem; vertical-align:baseline; margin-left:2px}
+  #card-forecast,#card-wind,#card-sea,#card-tide{scroll-margin-top:76px}
   .stat.tap{cursor:pointer; position:relative; transition:transform .1s ease, box-shadow .1s ease}
   .stat.tap:active{transform:scale(.98)}
   .stat.tap::after{content:"›"; position:absolute; top:9px; right:11px; color:var(--ink2); opacity:.5; font-size:1rem}
@@ -576,7 +577,7 @@ document.querySelectorAll('[data-go]').forEach(el=>{
 function goDetail(sel){
   go('tides');
   const el=document.querySelector(sel);
-  if(el){ setTimeout(()=>{ const y=el.getBoundingClientRect().top+window.scrollY-72; window.scrollTo({top:Math.max(0,y), behavior:'smooth'}); }, 50); }
+  if(el){ requestAnimationFrame(()=>requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth', block:'start'}))); }
 }
 document.querySelectorAll('[data-goto]').forEach(el=>{
   const act=()=>goDetail(el.dataset.goto);

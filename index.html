@@ -787,13 +787,17 @@ async function loadWeather(){
       if(diff<=-1.5){ word='Falling'; arrow='▼'; note='often means wind or rain on the way'; col='#b3541e'; }
       else if(diff>=1.5){ word='Rising'; arrow='▲'; note='usually settling / fairer weather'; col='#2f7d3f'; }
     }
-    const lvl = pr>=1023?' · high' : pr<=1000?' · low' : '';
+    let level, levelCol, levelNote;
+    if(pr>=1020){ level='High'; levelCol='#2f7d3f'; levelNote='high pressure — usually settled & dry'; }
+    else if(pr<=1000){ level='Low'; levelCol='#b3541e'; levelNote='low pressure — often unsettled, wet or windy'; }
+    else { level='Average'; levelCol='var(--ink2)'; levelNote='near the 1013 mb average'; }
     baroEl.style.display='';
-    baroEl.innerHTML=`<div><div class="lab">Barometer${lvl}</div><div><span class="bv">${pr}</span> mb</div></div>`+
+    baroEl.innerHTML=`<div><div class="lab">Barometer</div><div><span class="bv">${pr}</span> mb · <span style="color:${levelCol};font-weight:800">${level}</span></div><div class="small muted">${levelNote}</div></div>`+
       `<div class="bt" style="color:${col}">${arrow} ${word}<small>${note}</small></div>`;
+    document.getElementById('home-wx').textContent=`${ct} · ${level} pressure`;
     // Home card
     document.getElementById('home-temp').textContent=Math.round(c.temperature_2m)+'°';
-    document.getElementById('home-wx').textContent=ct+' · feels '+Math.round(c.apparent_temperature)+'°';
+    document.getElementById('home-wx').textContent=ct;
   }catch(e){
     nowEl.className='err'; nowEl.textContent='Could not load weather (offline?). Pull to refresh when back online.';
     const w=document.getElementById('wind'); w.className='err'; w.textContent='Wind data unavailable offline.';

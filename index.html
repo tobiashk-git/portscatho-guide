@@ -78,6 +78,17 @@
   figure.ph img{width:100%; height:172px; object-fit:cover; border-radius:12px; display:block; cursor:zoom-in; background:#dfeef2}
   figure.ph figcaption{font-size:.75rem; color:var(--ink2); margin-top:5px; text-align:center}
 
+  /* Media list (birds) — thumbnail + text */
+  .medialist{margin:0; padding:0; list-style:none}
+  .medialist li{display:flex; gap:12px; padding:11px 0; border-bottom:1px dashed var(--line); align-items:center}
+  .medialist li:last-child{border-bottom:0}
+  .medialist img{width:84px; height:84px; object-fit:cover; border-radius:11px; flex:none; cursor:zoom-in; background:#dfeef2}
+  .medialist b{display:block}
+  details.credits{margin-top:2px}
+  details.credits summary{cursor:pointer; font-size:.82rem; color:var(--sea2); font-weight:600}
+  details.credits ul{margin:8px 0 0; padding-left:16px}
+  details.credits li{font-size:.76rem; color:var(--ink2); margin-bottom:4px}
+
   /* Fish-in-season photo */
   .fish-ph{width:100%; height:158px; object-fit:cover; border-radius:10px; margin:2px 0 9px; display:block; cursor:zoom-in; background:#dfeef2}
 
@@ -341,16 +352,20 @@
       <div class="card">
         <h2>🐦 Birds on the cliff walks</h2>
         <div id="bird-note" class="small muted" style="margin-bottom:8px"></div>
-        <ul class="list">
-          <li><span class="em">🖤</span><span><b>Chough</b><small>Cornwall's emblem — glossy black with a red curved bill & legs. Recovering along Roseland cliffs. Listen for the "chee-ow" call.</small></span></li>
-          <li><span class="em">🪶</span><span><b>Fulmar</b><small>Stiff-winged "tube-nose" gliding along the cliff faces spring–summer. Nests on ledges.</small></span></li>
-          <li><span class="em">🎯</span><span><b>Gannet</b><small>Huge white seabird with black wingtips, diving offshore like an arrow — best on breezy summer days.</small></span></li>
-          <li><span class="em">🦅</span><span><b>Peregrine & kestrel</b><small>Peregrine (fastest bird alive) hunts the headlands; kestrels hover over the cliff-top grass.</small></span></li>
-          <li><span class="em">🧡</span><span><b>Stonechat</b><small>Little robin-shaped bird on gorse tops — call sounds like two pebbles knocking together.</small></span></li>
-          <li><span class="em">⚫</span><span><b>Shag & cormorant</b><small>Black diving birds on the rocks, wings spread out to dry.</small></span></li>
-          <li><span class="em">🧡</span><span><b>Oystercatcher</b><small>Black-and-white wader, long orange bill, loud "peep-peep" along the shore.</small></span></li>
-          <li><span class="em">🐧</span><span><b>Guillemots & razorbills</b><small>Auks rafting on the sea offshore, mainly spring/early summer.</small></span></li>
+        <ul class="medialist">
+          <li><img src="img/birds/chough.jpg" alt="Chough"><span><b>Chough</b><small>Cornwall's emblem — glossy black with a red curved bill & legs. Recovering along Roseland cliffs. Listen for the "chee-ow" call.</small></span></li>
+          <li><img src="img/birds/fulmar.jpg" alt="Fulmar"><span><b>Fulmar</b><small>Stiff-winged "tube-nose" gliding along the cliff faces spring–summer. Nests on ledges.</small></span></li>
+          <li><img src="img/birds/gannet.jpg" alt="Gannet"><span><b>Gannet</b><small>Huge white seabird with black wingtips, diving offshore like an arrow — best on breezy summer days.</small></span></li>
+          <li><img src="img/birds/peregrine.jpg" alt="Peregrine falcon"><span><b>Peregrine & kestrel</b><small>Peregrine (fastest bird alive) hunts the headlands; kestrels hover over the cliff-top grass.</small></span></li>
+          <li><img src="img/birds/stonechat.jpg" alt="Stonechat"><span><b>Stonechat</b><small>Little robin-shaped bird on gorse tops — call sounds like two pebbles knocking together.</small></span></li>
+          <li><img src="img/birds/shag.jpg" alt="Shag"><span><b>Shag & cormorant</b><small>Black diving birds on the rocks, wings spread out to dry.</small></span></li>
+          <li><img src="img/birds/oystercatcher.jpg" alt="Oystercatcher"><span><b>Oystercatcher</b><small>Black-and-white wader, long orange bill, loud "peep-peep" along the shore.</small></span></li>
+          <li><img src="img/birds/guillemot.jpg" alt="Guillemots and razorbills"><span><b>Guillemots & razorbills</b><small>Auks rafting on the sea offshore, mainly spring/early summer.</small></span></li>
         </ul>
+        <details class="credits">
+          <summary>Bird photo credits</summary>
+          <ul id="bird-credits"><li>Loading…</li></ul>
+        </details>
       </div>
 
       <div class="card">
@@ -521,6 +536,25 @@ renderFish();
   document.getElementById('bird-note').textContent = note;
 })();
 
+/* ---------- Bird photo credits (Wikimedia Commons) ---------- */
+(function(){
+  const C=[
+    ['Chough','Hobbyfotowiki','CC0','http://creativecommons.org/publicdomain/zero/1.0/','https://commons.wikimedia.org/wiki/File:Red-billed_chough_(Pyrrhocorax_pyrrhocorax).jpg'],
+    ['Fulmar','Hobbyfotowiki','CC0','http://creativecommons.org/publicdomain/zero/1.0/','https://commons.wikimedia.org/wiki/File:Northern_fulmar_(Fulmarus_glacialis)_in_flight.jpg'],
+    ['Gannet','Andreas Trepte','CC BY-SA 2.5','https://creativecommons.org/licenses/by-sa/2.5','https://commons.wikimedia.org/wiki/File:Morus_bassanus_adu.jpg'],
+    ['Peregrine','Kytabu','CC BY-SA 4.0','https://creativecommons.org/licenses/by-sa/4.0','https://commons.wikimedia.org/wiki/File:Peregrine_falcon_(Falco_peregrinus)_in_flight,_Cape_Baily,_Kamay_Botany_Bay_NSW_Jun_2022.jpg'],
+    ['Stonechat','Charles J. Sharp','CC BY-SA 4.0','https://creativecommons.org/licenses/by-sa/4.0','https://commons.wikimedia.org/wiki/File:Stonechat_(Saxicola_rubicola)_male,_Beaulieu,_Hampshire.jpg'],
+    ['Shag','Julius Rückert','CC BY-SA 3.0','https://creativecommons.org/licenses/by-sa/3.0','https://commons.wikimedia.org/wiki/File:Phalacrocorax_aristotelis_desmarestii.jpg'],
+    ['Oystercatcher','Richard Bartz','CC BY-SA 3.0','https://creativecommons.org/licenses/by-sa/3.0','https://commons.wikimedia.org/wiki/File:Austernfischer_Haematopus_ostralegus_Iceland_RB.jpg'],
+    ['Razorbill','Charles J. Sharp','CC BY-SA 4.0','https://creativecommons.org/licenses/by-sa/4.0','https://commons.wikimedia.org/wiki/File:Razorbill_(Alca_torda)_pair.jpg']
+  ];
+  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('bird-credits').innerHTML = C.map(([bird,who,lic,licurl,page])=>
+    `<li><a href="${esc(page)}" target="_blank" rel="noopener">${bird}</a> — ${esc(who)}, `+
+    `<a href="${esc(licurl)}" target="_blank" rel="noopener">${lic}</a></li>`).join('')
+    + `<li style="margin-top:6px">Photos via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>. Thank you to the photographers.</li>`;
+})();
+
 /* ---------- Live weather (Open-Meteo, no key) ---------- */
 const LAT=50.1873, LON=-4.9985;
 function wcode(c){
@@ -618,9 +652,11 @@ loadWeather(); loadMarine();
   function close(){ lb.classList.remove('open'); img.src=''; }
   document.addEventListener('click',e=>{
     const t=e.target;
-    if(t.tagName==='IMG' && (t.closest('.gallery')||t.closest('.tile')||t.classList.contains('card-photo')||t.classList.contains('fish-ph')||t.closest('figure.ph'))){
-      const fc=t.closest('figure')?.querySelector('figcaption')?.textContent
-        || t.closest('.tile')?.querySelector('b')?.textContent || t.alt || '';
+    if(t.tagName==='IMG' && (t.closest('.gallery')||t.closest('.tile')||t.classList.contains('card-photo')||t.classList.contains('fish-ph')||t.closest('.medialist')||t.closest('figure.ph'))){
+      const fc=(t.closest('figure')?.querySelector('figcaption')?.textContent)
+        || (t.closest('.tile')?.querySelector('b')?.textContent)
+        || (t.closest('.medialist') ? t.closest('li')?.querySelector('b')?.textContent : '')
+        || t.alt || '';
       open(t.currentSrc||t.src, fc);
     }
   });

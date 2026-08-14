@@ -1,0 +1,66 @@
+{
+ "chough": {
+  "title": "Red-billed chough (Pyrrhocorax pyrrhocorax).jpg",
+  "artist": "Hobbyfotowiki",
+  "license": "CC0",
+  "licenseurl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "page": "https://commons.wikimedia.org/wiki/File%3ARed-billed_chough_%28Pyrrhocorax_pyrrhocorax%29.jpg",
+  "kb": 109
+ },
+ "fulmar": {
+  "title": "Northern fulmar (Fulmarus glacialis) in flight.jpg",
+  "artist": "Hobbyfotowiki",
+  "license": "CC0",
+  "licenseurl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "page": "https://commons.wikimedia.org/wiki/File%3ANorthern_fulmar_%28Fulmarus_glacialis%29_in_flight.jpg",
+  "kb": 57
+ },
+ "gannet": {
+  "title": "Morus bassanus adu.jpg",
+  "artist": "Andreas Trepte",
+  "license": "CC BY-SA 2.5",
+  "licenseurl": "https://creativecommons.org/licenses/by-sa/2.5",
+  "page": "https://commons.wikimedia.org/wiki/File%3AMorus_bassanus_adu.jpg",
+  "kb": 54
+ },
+ "peregrine": {
+  "title": "Peregrine falcon (Falco peregrinus) in flight, Cape Baily, Kamay Botany Bay NSW Jun 2022.jpg",
+  "artist": "Kytabu",
+  "license": "CC BY-SA 4.0",
+  "licenseurl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3APeregrine_falcon_%28Falco_peregrinus%29_in_flight%2C_Cape_Baily%2C_Kamay_Botany_Bay_NSW_Jun_2022.jpg",
+  "kb": 78
+ },
+ "stonechat": {
+  "title": "Stonechat (Saxicola rubicola) male, Beaulieu, Hampshire.jpg",
+  "artist": "Charles J. Sharp",
+  "license": "CC BY-SA 4.0",
+  "licenseurl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3AStonechat_%28Saxicola_rubicola%29_male%2C_Beaulieu%2C_Hampshire.jpg",
+  "kb": 114
+ },
+ "shag": {
+  "title": "Phalacrocorax aristotelis desmarestii.jpg",
+  "artist": "Julius R\u00fcckert.",
+  "license": "CC BY-SA 3.0",
+  "licenseurl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "page": "https://commons.wikimedia.org/wiki/File%3APhalacrocorax_aristotelis_desmarestii.jpg",
+  "kb": 100
+ },
+ "oystercatcher": {
+  "title": "Austernfischer Haematopus ostralegus Iceland RB.jpg",
+  "artist": "Richard Bartz",
+  "license": "CC BY-SA 3.0",
+  "licenseurl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3AAusternfischer_Haematopus_ostralegus_Iceland_RB.jpg",
+  "kb": 100
+ },
+ "guillemot": {
+  "title": "Razorbill (Alca torda) pair.jpg",
+  "artist": "Charles J. Sharp",
+  "license": "CC BY-SA 4.0",
+  "licenseurl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ARazorbill_%28Alca_torda%29_pair.jpg",
+  "kb": 68
+ }
+}

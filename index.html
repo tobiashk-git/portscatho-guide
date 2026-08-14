@@ -131,6 +131,10 @@
   .wind-sub{font-size:.83rem; color:var(--ink2); margin-top:2px}
   .wx-day .w{font-size:.72rem; color:var(--ink2); margin-top:2px}
   .warr{display:inline-block; font-weight:700; color:var(--sea2); font-size:1.05rem; vertical-align:baseline; margin-left:2px}
+  .stat.tap{cursor:pointer; position:relative; transition:transform .1s ease, box-shadow .1s ease}
+  .stat.tap:active{transform:scale(.98)}
+  .stat.tap::after{content:"›"; position:absolute; top:9px; right:11px; color:var(--ink2); opacity:.5; font-size:1rem}
+  .wx-day .wa{display:inline-block; font-size:1.4rem; color:var(--sea2); font-weight:700; line-height:1; margin:3px 0}
 
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -265,22 +269,22 @@
       </div>
 
       <div class="grid" style="margin-bottom:13px">
-        <div class="stat">
+        <div class="stat tap" data-goto="#card-forecast" role="button" tabindex="0">
           <div class="lab">Weather now</div>
           <div class="val" id="home-temp">—°</div>
           <div class="sub" id="home-wx">Loading…</div>
         </div>
-        <div class="stat">
+        <div class="stat tap" data-goto="#card-wind" role="button" tabindex="0">
           <div class="lab">Wind 💨</div>
           <div class="val" id="home-wind">—</div>
           <div class="sub" id="home-wind-sub">Loading…</div>
         </div>
-        <div class="stat">
+        <div class="stat tap" data-goto="#card-sea" role="button" tabindex="0">
           <div class="lab">Sea / waves</div>
           <div class="val" id="home-wave">—</div>
           <div class="sub" id="home-wave-sub">Loading…</div>
         </div>
-        <div class="stat">
+        <div class="stat tap" data-goto="#card-tide" role="button" tabindex="0">
           <div class="lab">Next tide 🌊</div>
           <div class="val" id="home-tide">—</div>
           <div class="sub" id="home-tide-sub">Loading…</div>
@@ -457,7 +461,7 @@
     <section class="view" id="view-tides">
       <h2 style="margin:2px 2px 12px">Weather & tides</h2>
 
-      <div class="card">
+      <div class="card" id="card-forecast">
         <h2>🌤️ Forecast <button class="refresh" id="wx-refresh">refresh</button></h2>
         <div id="wx-now" class="loading">Loading live weather…</div>
         <div id="wx-forecast"></div>
@@ -465,12 +469,13 @@
         <p class="small muted" style="margin:8px 0 0">Live data from Open-Meteo for Portscatho (50.19°N, 5.00°W). Times shown in UK time.</p>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-wind">
         <h2>💨 Wind</h2>
         <div id="wind" class="loading">Loading wind…</div>
+        <div id="wind-forecast"></div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-sea">
         <h2>🌊 Sea state</h2>
         <div id="marine" class="loading">Loading sea conditions…</div>
       </div>
@@ -490,7 +495,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-tide">
         <h2>🕐 Tide times</h2>
         <div id="tide-next" class="loading">Loading tide times…</div>
         <div id="tide-today"></div>
@@ -567,6 +572,16 @@ function go(name){
 }
 document.querySelectorAll('[data-go]').forEach(el=>{
   el.addEventListener('click', e=>{ e.preventDefault(); go(el.dataset.go); });
+});
+function goDetail(sel){
+  go('tides');
+  const el=document.querySelector(sel);
+  if(el){ setTimeout(()=>{ const y=el.getBoundingClientRect().top+window.scrollY-72; window.scrollTo({top:Math.max(0,y), behavior:'smooth'}); }, 50); }
+}
+document.querySelectorAll('[data-goto]').forEach(el=>{
+  const act=()=>goDetail(el.dataset.goto);
+  el.addEventListener('click', act);
+  el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
 });
 
 /* ---------- Season logic ---------- */
@@ -734,6 +749,17 @@ async function loadWeather(){
       `<div class="wind-desc">Force ${b.f} · ${b.name}</div><div class="wind-sub">${b.sea}</div>`;
     document.getElementById('home-wind').innerHTML=`${spd} <span class="warr" style="transform:rotate(${(c.wind_direction_10m+180)%360}deg)">↑</span>`;
     document.getElementById('home-wind-sub').textContent=`mph from ${dirTxt} · F${b.f}`;
+    // Daily wind strip (matches the weather forecast)
+    let wf='<div class="tide-day-h" style="margin-top:13px">Next days · max wind &amp; gusts</div><div class="wx-days">';
+    for(let i=0;i<d.daily.time.length;i++){
+      const ws=Math.round(d.daily.wind_speed_10m_max[i]);
+      const wg=Math.round(d.daily.wind_gusts_10m_max[i]);
+      const wd=d.daily.wind_direction_10m_dominant[i], wt=windDir(wd);
+      const dn=i===0?'Today':new Date(d.daily.time[i]).toLocaleDateString('en-GB',{weekday:'short'});
+      wf+=`<div class="wx-day"><div class="d">${dn}</div><div class="wa" style="transform:rotate(${(wd+180)%360}deg)">↑</div>`+
+        `<div class="t">${ws}<small> mph</small></div><div class="small muted">${wt} · G${wg}</div></div>`;
+    }
+    document.getElementById('wind-forecast').innerHTML=wf+'</div>';
 
     // Barometer (pressure + 3-hour trend)
     const baroEl=document.getElementById('wx-pressure');

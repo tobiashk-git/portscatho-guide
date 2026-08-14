@@ -130,6 +130,7 @@
   .wind-desc{font-size:.95rem; color:var(--ink); font-weight:700; margin-top:2px}
   .wind-sub{font-size:.83rem; color:var(--ink2); margin-top:2px}
   .wx-day .w{font-size:.72rem; color:var(--ink2); margin-top:2px}
+  .warr{display:inline-block; font-weight:700; color:var(--sea2); font-size:1.05rem; vertical-align:baseline; margin-left:2px}
 
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -731,7 +732,7 @@ async function loadWeather(){
       `<div class="wind-spd">${spd} <span style="font-size:1rem;font-weight:600">mph</span></div>`+
       `<div class="wind-sub">from the <b>${dirTxt}</b>${gust>spd+2?` · gusting ${gust} mph`:''}</div></div></div>`+
       `<div class="wind-desc">Force ${b.f} · ${b.name}</div><div class="wind-sub">${b.sea}</div>`;
-    document.getElementById('home-wind').textContent=spd;
+    document.getElementById('home-wind').innerHTML=`${spd} <span class="warr" style="transform:rotate(${(c.wind_direction_10m+180)%360}deg)">↑</span>`;
     document.getElementById('home-wind-sub').textContent=`mph from ${dirTxt} · F${b.f}`;
 
     // Barometer (pressure + 3-hour trend)

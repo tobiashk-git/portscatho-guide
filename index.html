@@ -57,16 +57,49 @@
 
   .hero{
     border-radius:16px; overflow:hidden; margin-bottom:13px; box-shadow:var(--shadow);
-    background:
-      radial-gradient(120% 80% at 20% 0%, rgba(255,255,255,.25), transparent 60%),
-      linear-gradient(180deg,#7fc4d8 0%, #3f9bbb 45%, #1f7d9c 100%);
-    color:#fff; position:relative; min-height:150px;
+    color:#fff; position:relative; min-height:232px; background:#1f7d9c;
   }
-  .hero .band{position:absolute; left:0; right:0; bottom:0; height:46px;
-    background:linear-gradient(180deg, transparent, rgba(11,79,108,.55))}
-  .hero .wave{position:absolute; left:0; right:0; bottom:-2px; display:block}
-  .hero .txt{position:relative; padding:16px 16px 20px}
-  .hero .txt b{font-size:1.15rem}
+  .hero-imgs{position:absolute; inset:0}
+  .hero-imgs img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1.3s ease}
+  .hero-imgs img.on{opacity:1}
+  .hero .scrim{position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(11,45,60,.28) 0%, rgba(11,45,60,.05) 38%, rgba(9,40,54,.82) 100%)}
+  .hero .txt{position:absolute; left:0; right:0; bottom:0; padding:16px 16px 18px; z-index:2}
+  .hero .txt b{font-size:1.15rem; text-shadow:0 1px 8px rgba(0,0,0,.4)}
+  .hero .txt .small{text-shadow:0 1px 6px rgba(0,0,0,.45)}
+  .hero .dots{position:absolute; top:12px; right:12px; z-index:2; display:flex; gap:5px}
+  .hero .dots i{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.55)}
+  .hero .dots i.on{background:#fff}
+
+  /* Photo on top of a card */
+  .card-photo{width:100%; height:172px; object-fit:cover; border-radius:12px; margin:-3px 0 13px; display:block; cursor:zoom-in; background:#dfeef2}
+  .card-photo.tall{height:200px}
+  figure.ph{margin:0 0 13px}
+  figure.ph img{width:100%; height:172px; object-fit:cover; border-radius:12px; display:block; cursor:zoom-in; background:#dfeef2}
+  figure.ph figcaption{font-size:.75rem; color:var(--ink2); margin-top:5px; text-align:center}
+
+  /* Location photo tiles */
+  .tiles{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-top:4px}
+  .tile{border-radius:12px; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow)}
+  .tile img{width:100%; height:100px; object-fit:cover; display:block; cursor:zoom-in; background:#dfeef2}
+  .tile .t{padding:8px 10px 9px}
+  .tile .t b{display:block; font-size:.9rem; line-height:1.2}
+  .tile .t small{color:var(--ink2); font-size:.75rem; display:block; margin-top:2px}
+
+  /* Home gallery strip */
+  .gallery{display:flex; gap:9px; overflow-x:auto; padding:2px 0 6px; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory}
+  .gallery figure{flex:none; margin:0; width:154px; scroll-snap-align:start}
+  .gallery img{width:154px; height:112px; object-fit:cover; border-radius:12px; display:block; box-shadow:var(--shadow); cursor:zoom-in; background:#dfeef2}
+  .gallery figcaption{font-size:.7rem; color:var(--ink2); margin-top:4px; text-align:center}
+
+  /* Lightbox */
+  .lightbox{position:fixed; inset:0; z-index:100; background:rgba(6,22,30,.94); display:none;
+    align-items:center; justify-content:center; padding:20px; padding-top:calc(20px + var(--safe-top))}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:100%; max-height:82vh; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.6)}
+  .lightbox .cap{position:absolute; bottom:calc(24px + var(--safe-bot)); left:0; right:0; text-align:center; color:#fff; font-size:.85rem; padding:0 20px}
+  .lightbox .x{position:absolute; top:calc(14px + var(--safe-top)); right:16px; width:40px; height:40px; border-radius:50%;
+    background:rgba(255,255,255,.16); color:#fff; border:0; font-size:1.4rem; cursor:pointer; line-height:1}
 
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:11px}
   .stat{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px; box-shadow:var(--shadow)}
@@ -149,13 +182,21 @@
   <main>
     <!-- ================= HOME ================= -->
     <section class="view active" id="view-home">
-      <div class="hero">
-        <div class="txt">
-          <div style="font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.9">Welcome to</div>
-          <b>A little fishing village on Gerrans Bay</b>
-          <div class="small" style="opacity:.95;margin-top:5px">Whitewashed cottages, a working harbour, and the South West Coast Path on your doorstep. Everything you need for a Roseland holiday is in here.</div>
+      <div class="hero" id="hero">
+        <div class="hero-imgs">
+          <img class="on" src="img/hero-boats.jpg" alt="Boats on the foreshore at Portscatho" />
+          <img src="img/hero-flowers.jpg" alt="Wildflowers above Gerrans Bay" />
+          <img src="img/porthcurnick.jpg" alt="Porthcurnick Beach" />
+          <img src="img/regatta.jpg" alt="Portscatho regatta day" />
+          <img src="img/harbour-boat.jpg" alt="Portscatho harbour slipway" />
         </div>
-        <div class="band"></div>
+        <div class="scrim"></div>
+        <div class="dots" id="hero-dots"></div>
+        <div class="txt">
+          <div style="font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.95">Welcome to</div>
+          <b>A little fishing village on Gerrans Bay</b>
+          <div class="small" style="opacity:.97;margin-top:5px">Whitewashed cottages, a working harbour, and the South West Coast Path on your doorstep — everything for a Roseland holiday is in here.</div>
+        </div>
       </div>
 
       <div class="grid" style="margin-bottom:13px">
@@ -177,7 +218,19 @@
         <div class="sub" id="home-season-sub"></div>
       </div>
 
-      <h2 style="margin:6px 2px 10px">Jump in</h2>
+      <h2 style="margin:6px 2px 8px">A taste of Portscatho</h2>
+      <div class="gallery" id="gallery">
+        <figure><img src="img/harbour.jpg" alt=""><figcaption>The harbour</figcaption></figure>
+        <figure><img src="img/regatta.jpg" alt=""><figcaption>Regatta day</figcaption></figure>
+        <figure><img src="img/porthcurnick.jpg" alt=""><figcaption>Porthcurnick Beach</figcaption></figure>
+        <figure><img src="img/alfie.jpg" alt=""><figcaption>Alfie on the rocks</figcaption></figure>
+        <figure><img src="img/village.jpg" alt=""><figcaption>The village</figcaption></figure>
+        <figure><img src="img/percuil-dog.jpg" alt=""><figcaption>Percuil River</figcaption></figure>
+        <figure><img src="img/pasty-tree.jpg" alt=""><figcaption>Cliff-top tree</figcaption></figure>
+        <figure><img src="img/st-anthony.jpg" alt=""><figcaption>St Anthony Head</figcaption></figure>
+      </div>
+
+      <h2 style="margin:14px 2px 10px">Jump in</h2>
       <a class="btn" href="#" data-go="explore"><span class="em">🗺️</span><span><b>Explore & map</b><small>Beaches, the Hidden Hut, St Mawes & more</small></span><span class="arr">›</span></a>
       <a class="btn" href="#" data-go="walks"><span class="em">🥾</span><span><b>Coastal walks</b><small>Cliff-path routes from the village</small></span><span class="arr">›</span></a>
       <a class="btn" href="#" data-go="nature"><span class="em">🐦</span><span><b>Nature & wildlife</b><small>Birds, seals, and what's in the sea</small></span><span class="arr">›</span></a>
@@ -205,16 +258,17 @@
 
       <div class="card">
         <h2>🏖️ Beaches & swimming</h2>
-        <ul class="list">
-          <li><span class="em">🌅</span><span><b>Porthcurnick Beach</b><small>Sheltered sandy cove a 10-min walk north. Home of <b>The Hidden Hut</b>. Great at low tide.</small></span></li>
-          <li><span class="em">⛵</span><span><b>Tatams / the harbour beach</b><small>Right in the village — sand at low tide, slipway, rock pools for the kids.</small></span></li>
-          <li><span class="em">🏄</span><span><b>Towan Beach</b><small>Wide sandy beach near Porth Farm, ~1.5 mi south. National Trust car park.</small></span></li>
-          <li><span class="em">🐚</span><span><b>Pendower & Carne</b><small>Long golden sweep across the bay — join up at low tide for a mile of sand.</small></span></li>
-        </ul>
+        <div class="tiles">
+          <div class="tile"><img src="img/porthcurnick.jpg" alt="Porthcurnick Beach"><div class="t"><b>Porthcurnick</b><small>Sandy cove 10-min north. Home of the Hidden Hut. Lovely at low tide.</small></div></div>
+          <div class="tile"><img src="img/harbour.jpg" alt="Portscatho harbour beach"><div class="t"><b>Harbour beach (Tatams)</b><small>In the village — sand at low tide, slipway & rock pools.</small></div></div>
+          <div class="tile"><img src="img/towan.jpg" alt="Towan Beach"><div class="t"><b>Towan Beach</b><small>Wide sands near Porth Farm, ~1.5 mi south. NT car park.</small></div></div>
+          <div class="tile"><img src="img/beach-lowtide.jpg" alt="Pendower and Carne beach"><div class="t"><b>Pendower & Carne</b><small>A mile of golden sand across the bay at low tide.</small></div></div>
+        </div>
       </div>
 
       <div class="card">
         <h2>🍴 Eat & drink</h2>
+        <figure class="ph"><img src="img/plume.jpg" alt="The Plume of Feathers pub"><figcaption>The Plume of Feathers — the village local</figcaption></figure>
         <ul class="list">
           <li><span class="em">🔥</span><span><b>The Hidden Hut</b><small>Legendary beach café at Porthcurnick. Day menu of pasties, wraps & cake; famous <b>Feast Nights</b> book out fast online.</small></span></li>
           <li><span class="em">🍺</span><span><b>The Plume of Feathers</b><small>Village pub in Portscatho — pints, pub food and a proper local welcome.</small></span></li>
@@ -225,12 +279,13 @@
 
       <div class="card">
         <h2>🚗 Days out nearby</h2>
-        <ul class="list">
-          <li><span class="em">⛵</span><span><b>St Mawes</b><small>Pretty harbour town with castle & ferry. ~15 min drive or a coast-path expedition.</small></span></li>
-          <li><span class="em">🌿</span><span><b>St Just in Roseland</b><small>One of the most beautiful churchyards in England, tumbling to a tidal creek.</small></span></li>
-          <li><span class="em">⛴️</span><span><b>King Harry Ferry → Trelissick</b><small>Chain ferry across the Fal to NT gardens and the road to Truro/Falmouth.</small></span></li>
-          <li><span class="em">🏰</span><span><b>Falmouth</b><small>Maritime museum, beaches and shops — around 45 min via the ferry.</small></span></li>
-        </ul>
+        <div class="tiles">
+          <div class="tile"><img src="img/st-mawes.jpg" alt="St Mawes"><div class="t"><b>St Mawes</b><small>Pretty harbour town with castle & ferry. ~15 min drive.</small></div></div>
+          <div class="tile"><img src="img/st-just.jpg" alt="St Just in Roseland church"><div class="t"><b>St Just in Roseland</b><small>A famously beautiful churchyard tumbling to a tidal creek.</small></div></div>
+          <div class="tile"><img src="img/king-harry.jpg" alt="King Harry Ferry"><div class="t"><b>King Harry Ferry</b><small>Chain ferry across the Fal to Trelissick gardens.</small></div></div>
+          <div class="tile"><img src="img/percuil.jpg" alt="Percuil River"><div class="t"><b>Percuil River</b><small>Wooded tidal creek — walks, kayaking & the St Mawes ferry path.</small></div></div>
+        </div>
+        <p class="small muted" style="margin:11px 0 0">Also within reach: <b>Falmouth</b> (maritime museum, beaches & shops, ~45 min via the ferry) and the wild headland at <b>Nare Head</b>.</p>
       </div>
     </section>
 
@@ -240,6 +295,7 @@
       <p class="small muted" style="margin:0 2px 12px">The South West Coast Path runs right through the village. Cliffs, wildflowers and sea views in both directions. Wear grippy shoes — paths can be muddy and near cliff edges.</p>
 
       <div class="card">
+        <img class="card-photo" src="img/coastpath.jpg" alt="The South West Coast Path near Portscatho" />
         <div class="walk">
           <h3>Portscatho → Porthcurnick → Towan Beach</h3>
           <div class="meta"><span>📏 ~2.5 mi return</span><span>⏱️ 1–1.5 hrs</span><span>🥾 Easy</span></div>
@@ -249,6 +305,7 @@
           <h3>Portscatho → Gerrans → St Anthony Head</h3>
           <div class="meta"><span>📏 ~7 mi</span><span>⏱️ 3–4 hrs</span><span>🥾 Moderate</span></div>
           <p class="small">A proper day's walk south to the tip of the peninsula. Lighthouse, WWII gun batteries, and views to St Mawes and Falmouth. Loop back inland through fields and lanes.</p>
+          <figure class="ph"><img src="img/st-anthony.jpg" alt="St Anthony Head lighthouse"><figcaption>St Anthony Head lighthouse, at the tip of the Roseland</figcaption></figure>
         </div>
         <div class="walk">
           <h3>Gerrans Bay circular via Rosevine</h3>
@@ -349,6 +406,7 @@
         <div class="fact"><div class="n">4</div><div><b>On screen.</b> The Roseland's timeless lanes and coves have featured in TV and film — its unspoilt look is the whole appeal.</div></div>
         <div class="fact"><div class="n">5</div><div><b>Bronze Age giants.</b> Carne Beacon above the bay is one of the largest Bronze Age barrows in Britain — legend says a king was buried there in a golden boat.</div></div>
         <div class="fact"><div class="n">6</div><div><b>Gig racing country.</b> Cornish pilot gigs (six-oared rowing boats) are a proud local tradition — you may spot crews training in the bay.</div></div>
+        <figure class="ph" style="margin-top:13px"><img src="img/regatta.jpg" alt="Portscatho regatta day"><figcaption>Regatta day in the harbour — a highlight of the summer</figcaption></figure>
       </div>
 
       <div class="card">
@@ -381,6 +439,12 @@
     <button data-go="tides"><span class="ic">🌊</span>Tides</button>
     <button data-go="facts"><span class="ic">💡</span>Facts</button>
   </nav>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="x" id="lb-close" aria-label="Close">✕</button>
+  <img id="lb-img" src="" alt="" />
+  <div class="cap" id="lb-cap"></div>
 </div>
 
 <script>
@@ -525,6 +589,37 @@ async function loadMarine(){
 }
 document.getElementById('wx-refresh').addEventListener('click',()=>{loadWeather();loadMarine();});
 loadWeather(); loadMarine();
+
+/* ---------- Hero photo rotator ---------- */
+(function(){
+  const imgs=[...document.querySelectorAll('#hero .hero-imgs img')];
+  const dotsBox=document.getElementById('hero-dots');
+  imgs.forEach(()=>{const d=document.createElement('i'); dotsBox.appendChild(d);});
+  const dots=[...dotsBox.children]; dots[0].classList.add('on');
+  let i=0;
+  setInterval(()=>{
+    imgs[i].classList.remove('on'); dots[i].classList.remove('on');
+    i=(i+1)%imgs.length;
+    imgs[i].classList.add('on'); dots[i].classList.add('on');
+  },4600);
+})();
+
+/* ---------- Lightbox (tap any photo to zoom) ---------- */
+(function(){
+  const lb=document.getElementById('lightbox'), img=document.getElementById('lb-img'), cap=document.getElementById('lb-cap');
+  function open(src,caption){ img.src=src; cap.textContent=caption||''; lb.classList.add('open'); }
+  function close(){ lb.classList.remove('open'); img.src=''; }
+  document.addEventListener('click',e=>{
+    const t=e.target;
+    if(t.tagName==='IMG' && (t.closest('.gallery')||t.closest('.tile')||t.classList.contains('card-photo')||t.closest('figure.ph'))){
+      const fc=t.closest('figure')?.querySelector('figcaption')?.textContent
+        || t.closest('.tile')?.querySelector('b')?.textContent || t.alt || '';
+      open(t.currentSrc||t.src, fc);
+    }
+  });
+  document.getElementById('lb-close').addEventListener('click',close);
+  lb.addEventListener('click',e=>{ if(e.target===lb) close(); });
+})();
 
 /* ---------- Service worker (offline) ---------- */
 if('serviceWorker' in navigator){

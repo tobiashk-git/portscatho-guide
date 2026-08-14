@@ -1,4 +1,4 @@
-const CACHE = 'portscatho-v1';
+const CACHE = 'portscatho-v2';
 const ASSETS = ['index.html', 'manifest.webmanifest', 'icons/icon.svg'];
 
 self.addEventListener('install', e => {
@@ -23,5 +23,14 @@ self.addEventListener('fetch', e => {
     e.respondWith(fetch(e.request).catch(() => caches.match('index.html')));
     return;
   }
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+  // Same-origin assets (incl. photos): serve from cache, and cache on first fetch.
+  e.respondWith(
+    caches.match(e.request).then(cached => cached || fetch(e.request).then(resp => {
+      if (resp.ok && url.origin === self.location.origin) {
+        const copy = resp.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+      }
+      return resp;
+    }))
+  );
 });

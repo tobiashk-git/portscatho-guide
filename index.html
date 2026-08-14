@@ -92,6 +92,16 @@
   details.credits ul{margin:8px 0 0; padding-left:16px}
   details.credits li{font-size:.76rem; color:var(--ink2); margin-bottom:4px}
 
+  /* Storm / "not always sunny" card */
+  .card.storm{border:1px solid #eec59f; background:linear-gradient(180deg,#fff6ec,#fdeeda)}
+  .card.storm h2{color:#b3541e}
+  .warn{display:inline-flex; align-items:center; gap:7px; background:#fbe3c8; color:#8f4413;
+    border:1px solid #e2b98a; border-radius:999px; padding:3px 11px 3px 9px; font-size:.72rem; font-weight:800;
+    text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px}
+  .storm-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:11px}
+  .storm-grid img{width:100%; height:118px; object-fit:cover; border-radius:10px; display:block; cursor:zoom-in; background:#c7d3d7}
+  .storm-grid img.wide{grid-column:1 / -1; height:178px}
+
   /* Fish-in-season photo */
   .fish-ph{width:100%; height:158px; object-fit:cover; border-radius:10px; margin:2px 0 9px; display:block; cursor:zoom-in; background:#dfeef2}
 
@@ -411,6 +421,17 @@
         <div id="marine" class="loading">Loading sea conditions…</div>
       </div>
 
+      <div class="card storm">
+        <span class="warn">⚠️ Reality check</span>
+        <h2>…but it's not always sunny!</h2>
+        <p class="small">Portscatho faces the open Atlantic, and when a winter storm rolls in it really means it — waves crash clean over the harbour wall and the whole bay turns to spray. Magnificent to watch, but stay well back from the edge and the sea front when it's rough.</p>
+        <div class="storm-grid">
+          <img class="wide" src="img/storm/storm1.jpg" alt="Storm waves crashing over Portscatho harbour wall" />
+          <img src="img/storm/storm2.jpg" alt="Waves breaking over the pier and navigation marker" />
+          <img src="img/storm/waves.jpg" alt="Stormy seas churning across Gerrans Bay" />
+        </div>
+      </div>
+
       <div class="card">
         <h2>🕐 Tide times</h2>
         <p class="small">Portscatho tides follow <b>Falmouth</b> closely (only a few minutes' difference). For accurate daily high/low water and heights, open a live table:</p>
@@ -678,7 +699,7 @@ loadWeather(); loadMarine();
   function close(){ lb.classList.remove('open'); img.src=''; }
   document.addEventListener('click',e=>{
     const t=e.target;
-    if(t.tagName==='IMG' && (t.closest('.gallery')||t.closest('.tile')||t.classList.contains('card-photo')||t.classList.contains('fish-ph')||t.closest('.medialist')||t.closest('figure.ph'))){
+    if(t.tagName==='IMG' && (t.closest('.gallery')||t.closest('.tile')||t.classList.contains('card-photo')||t.classList.contains('fish-ph')||t.closest('.medialist')||t.closest('.storm-grid')||t.closest('figure.ph'))){
       const fc=(t.closest('figure')?.querySelector('figcaption')?.textContent)
         || (t.closest('.tile')?.querySelector('b')?.textContent)
         || (t.closest('.medialist') ? t.closest('li')?.querySelector('b')?.textContent : '')

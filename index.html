@@ -104,6 +104,22 @@
   .storm-vid{width:100%; aspect-ratio:4/3; border-radius:10px; display:block; margin-top:11px; background:#0d2733}
   .storm-vid-cap{font-size:.75rem; color:var(--ink2); margin-top:5px; text-align:center}
 
+  /* Live tide display */
+  .tide-next{display:flex; align-items:center; gap:13px; background:linear-gradient(180deg,#eaf6fb,#d8ecf4);
+    border:1px solid #bfe0ec; border-radius:14px; padding:13px 15px; margin-bottom:12px}
+  .tide-next .ar{font-size:2.1rem; line-height:1}
+  .tide-next .big{font-size:1.12rem; font-weight:800; color:var(--sea); line-height:1.2}
+  .tide-next .sub{font-size:.83rem; color:var(--ink2); margin-top:2px}
+  .tide-row{display:flex; align-items:center; gap:11px; padding:9px 8px; border-bottom:1px dashed var(--line)}
+  .tide-row:last-child{border-bottom:0}
+  .tide-row .ic{font-size:1.15rem; width:22px; text-align:center}
+  .tide-row .st{font-weight:700; width:42px}
+  .tide-row .tm{font-weight:700; width:62px; font-variant-numeric:tabular-nums}
+  .tide-row .hh{color:var(--ink2); font-size:.85rem; margin-left:auto}
+  .tide-row.past{opacity:.42}
+  .tide-row.nextrow{background:#e8f6fc; border:1px solid #c3e4f0; border-radius:9px}
+  .tide-day-h{font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink2); font-weight:700; margin:6px 2px 2px}
+
   /* Fish-in-season photo */
   .fish-ph{width:100%; height:158px; object-fit:cover; border-radius:10px; margin:2px 0 9px; display:block; cursor:zoom-in; background:#dfeef2}
 
@@ -440,11 +456,13 @@
 
       <div class="card">
         <h2>🕐 Tide times</h2>
-        <p class="small">Portscatho tides follow <b>Falmouth</b> closely (only a few minutes' difference). For accurate daily high/low water and heights, open a live table:</p>
-        <a class="btn" target="_blank" rel="noopener" href="https://www.tidetimes.org.uk/falmouth-tide-times">
-          <span class="em">📈</span><span><b>Falmouth tide times</b><small>Today's high & low water (tidetimes.org.uk)</small></span><span class="arr">›</span></a>
-        <a class="btn" target="_blank" rel="noopener" href="https://easytide.admiralty.co.uk/?PortID=0033">
-          <span class="em">⚓</span><span><b>Admiralty EasyTide — Falmouth</b><small>Official UKHO 7-day predictions</small></span><span class="arr">›</span></a>
+        <div id="tide-next" class="loading">Loading tide times…</div>
+        <div id="tide-today"></div>
+        <details id="tide-tomorrow-wrap" style="display:none"><summary style="cursor:pointer;font-size:.85rem;color:var(--sea2);font-weight:600;margin-top:8px">Tomorrow's tides</summary><div id="tide-tomorrow"></div></details>
+        <div id="tide-tip" class="callout" style="margin-top:11px;display:none"></div>
+        <p class="small muted" id="tide-note" style="margin:10px 0 0"></p>
+        <a class="btn" style="margin-top:9px" target="_blank" rel="noopener" href="https://easytide.admiralty.co.uk/?PortID=0033">
+          <span class="em">⚓</span><span><b>Official Admiralty EasyTide</b><small>UKHO predictions — the authority, and for dates beyond the table</small></span><span class="arr">›</span></a>
         <div class="callout"><b>Rule of twelfths:</b> the tide moves slowest around high & low water and fastest in the middle two hours — handy for timing a beach walk or a swim.</div>
       </div>
     </section>
@@ -683,6 +701,59 @@ async function loadMarine(){
 }
 document.getElementById('wx-refresh').addEventListener('click',()=>{loadWeather();loadMarine();});
 loadWeather(); loadMarine();
+
+/* ---------- Live tide times (offline dataset: Falmouth) ---------- */
+(function(){
+  const nextEl=document.getElementById('tide-next');
+  const todayEl=document.getElementById('tide-today');
+  const tomoWrap=document.getElementById('tide-tomorrow-wrap');
+  const tomoEl=document.getElementById('tide-tomorrow');
+  const tipEl=document.getElementById('tide-tip');
+  const noteEl=document.getElementById('tide-note');
+  const STATE={L:{name:'Low', ic:'🐚', ar:'▼'}, H:{name:'High', ic:'🌊', ar:'▲'}};
+  const p2=n=>String(n).padStart(2,'0');
+  const keyOf=d=>`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+  const evDate=(k,hm)=>{const[Y,M,D]=k.split('-').map(Number);const[h,m]=hm.split(':').map(Number);return new Date(Y,M-1,D,h,m);};
+  const fmtGap=ms=>{const t=Math.round(ms/60000),h=Math.floor(t/60),m=t%60;return h>0?`${h}h ${m}m`:`${m} min`;};
+  const row=(ev,k,now,isNext)=>{const s=STATE[ev[0]];const past=evDate(k,ev[1])<now;
+    return `<div class="tide-row ${isNext?'nextrow':(past?'past':'')}"><span class="ic">${s.ic}</span><span class="st">${s.name}</span><span class="tm">${ev[1]}</span><span class="hh">${ev[2].toFixed(1)} m</span></div>`;};
+
+  fetch('tides.json').then(r=>r.json()).then(data=>{
+    const days=data.days;
+    function render(){
+      const now=new Date(), tKey=keyOf(now), tmKey=keyOf(new Date(now.getTime()+864e5));
+      const todays=days[tKey];
+      if(!todays){
+        nextEl.className='';
+        nextEl.innerHTML=`<div class="tide-next"><span class="ar">🌊</span><div><div class="big">Tide table covers Aug–Oct 2026</div><div class="sub">Today is outside the loaded table — tap Admiralty EasyTide below for live times.</div></div></div>`;
+        todayEl.innerHTML=''; noteEl.textContent='Falmouth predictions (Portscatho’s reference port). Data via tidetime.org.';
+        return;
+      }
+      let next=null,nKey=null;
+      for(const ev of todays){ if(evDate(tKey,ev[1])>now){ next=ev; nKey=tKey; break; } }
+      if(!next && days[tmKey]){ next=days[tmKey][0]; nKey=tmKey; }
+      if(next){
+        const s=STATE[next[0]], when=nKey===tKey?'':' tomorrow';
+        nextEl.className='';
+        nextEl.innerHTML=`<div class="tide-next"><span class="ar">${s.ar}</span><div>`+
+          `<div class="big">${s.name} tide in ${fmtGap(evDate(nKey,next[1])-now)}</div>`+
+          `<div class="sub">at ${next[1]}${when} · ${next[2].toFixed(1)} m · tide ${next[0]==='H'?'rising':'falling'} now</div></div></div>`;
+      }
+      todayEl.innerHTML=`<div class="tide-day-h">Today · ${now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}</div>`+
+        todays.map(ev=>row(ev,tKey,now, next&&nKey===tKey&&ev===next)).join('');
+      if(days[tmKey]){
+        tomoWrap.style.display='';
+        tomoEl.innerHTML=days[tmKey].map(ev=>row(ev,tmKey,now,false).replace(' past','')).join('');
+      }
+      const lows=todays.filter(e=>e[0]==='L').map(e=>e[1]).join(' & ');
+      const highs=todays.filter(e=>e[0]==='H').map(e=>e[1]).join(' & ');
+      tipEl.style.display='';
+      tipEl.innerHTML=`🦐 <b>Low water</b> (${lows}) — best for rockpooling, prawning &amp; beach walks. 🚤 <b>High water</b> (${highs}) — best for boating, launching &amp; deep-water swims.`;
+      noteEl.innerHTML='Falmouth predictions (Portscatho is within ~5 min). UK local time. Table covers Aug–Oct 2026; data via <a href="https://www.tidetime.org/europe/united-kingdom/falmouth.htm" target="_blank" rel="noopener">tidetime.org</a>. For boating, always confirm with the official Admiralty table.';
+    }
+    render(); setInterval(render, 60000);
+  }).catch(()=>{ nextEl.className='err'; nextEl.textContent='Tide data unavailable — use Admiralty EasyTide below.'; });
+})();
 
 /* ---------- Hero photo rotator ---------- */
 (function(){

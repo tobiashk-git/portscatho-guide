@@ -353,21 +353,22 @@
           <div class="tile"><img src="img/porthcurnick.jpg" alt="Porthcurnick Beach"><div class="t"><b>Porthcurnick</b><small>Sandy cove 10-min north. Home of the Hidden Hut. Lovely at low tide.</small></div></div>
           <div class="tile"><img src="img/harbour.jpg" alt="Portscatho harbour beach"><div class="t"><b>Harbour beach (Tatams)</b><small>In the village — sand at low tide, slipway & rock pools.</small></div></div>
           <div class="tile"><img src="img/towan.jpg" alt="Towan Beach"><div class="t"><b>Towan Beach</b><small>Wide sands near Porth Farm, ~1.5 mi south. NT car park.</small></div></div>
-          <div class="tile"><img src="img/beach-lowtide.jpg" alt="Pendower and Carne beach"><div class="t"><b>Pendower & Carne</b><small>A mile of golden sand across the bay at low tide.</small></div></div>
+          <div class="tile"><img src="img/explore/pendower.jpg" alt="Pendower Beach"><div class="t"><b>Pendower & Carne</b><small>A mile of golden sand across the bay at low tide.</small></div></div>
         </div>
       </div>
 
       <div class="card">
         <h2>🍴 Eat & drink</h2>
-        <figure class="ph"><img src="img/plume.jpg" alt="The Plume of Feathers pub"><figcaption>The Plume of Feathers — the village local</figcaption></figure>
-        <ul class="list">
-          <li><span class="em">🔥</span><span><b>The Hidden Hut</b><small>Legendary beach café at Porthcurnick. Day menu of pasties, wraps & cake; famous <b>Feast Nights</b> book out fast online.</small></span></li>
-          <li><span class="em">🍺</span><span><b>The Plume of Feathers</b><small>Village pub in Portscatho — pints, pub food and a proper local welcome.</small></span></li>
-          <li><span class="em">🍟</span><span><b>The Boathouse</b><small>Proper fish & chips (plus a selection of curries) to take away. Pre-order on <a href="tel:01872580326">01872 580326</a> or at the takeaway window.</small></span></li>
-          <li><span class="em">🏪</span><span><b>Village stores</b><small>General shop on the harbour for supplies, papers and ice cream.</small></span></li>
-          <li><span class="em">🦞</span><span><b>Fresh seafood</b><small>Crab and lobster still landed locally — ask on the harbour or at the shop.</small></span></li>
-        </ul>
-        <figure class="ph"><img src="img/boathouse.jpg" alt="The Boathouse fish and chips sign" style="height:260px;object-position:center top"><figcaption>The Boathouse — fish &amp; chips by the harbour</figcaption></figure>
+        <div class="tiles">
+          <div class="tile"><img src="img/explore/porthcurnick-cove.jpg" alt="Porthcurnick, home of the Hidden Hut"><div class="t"><b>The Hidden Hut</b><small>Beach café above Porthcurnick — pasties, cake & famous Feast Nights (book online).</small></div></div>
+          <div class="tile"><img src="img/plume.jpg" alt="The Plume of Feathers pub"><div class="t"><b>The Plume of Feathers</b><small>The village pub — pints, food & a proper local welcome.</small></div></div>
+          <div class="tile"><img src="img/explore/boathouse.jpg" alt="The Boathouse café"><div class="t"><b>The Boathouse</b><small>Fresh crab & fish & chips to take away. Pre-order <a href="tel:01872580326">01872 580326</a>.</small></div></div>
+          <div class="tile"><img src="img/explore/ralphs.jpg" alt="Ralph's store, Portscatho"><div class="t"><b>Ralph's</b><small>The village store on the harbour — foodstore, bakery, deli & ice cream.</small></div></div>
+        </div>
+        <details class="credits">
+          <summary>Explore photo credits</summary>
+          <ul id="explore-credits"><li>Loading…</li></ul>
+        </details>
       </div>
 
       <div class="card">
@@ -687,6 +688,22 @@ renderFish();
     `<li><a href="${esc(page)}" target="_blank" rel="noopener">${esc(name)}</a> — ${esc(who)}, `+
     (licurl?`<a href="${esc(licurl)}" target="_blank" rel="noopener">${lic}</a>`:lic)+`</li>`).join('')
     + `<li style="margin-top:6px">Jellyfish photo: ours. Others via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>.</li>`;
+})();
+
+/* ---------- Explore photo credits (Wikimedia / Geograph) ---------- */
+(function(){
+  const el=document.getElementById('explore-credits'); if(!el) return;
+  const C=[
+    ['Pendower Beach','Philip Halling','https://commons.wikimedia.org/wiki/File:Pendower_Beach_-_geograph.org.uk_-_2098046.jpg'],
+    ["Ralph's store",'Rowland Turner','https://commons.wikimedia.org/wiki/File:%27Ralph%27s,_Portscatho_-_geograph.org.uk_-_2312206.jpg'],
+    ['The Boathouse café','Neil Theasby','https://commons.wikimedia.org/wiki/File:The_Boathouse_Cafe_in_the_centre_of_Porscatho_-_geograph.org.uk_-_1968001.jpg'],
+    ['Porthcurnick (Hidden Hut)','Row17','https://commons.wikimedia.org/wiki/File:Access_to_Porthcurnick_Beach_-_geograph.org.uk_-_2123693.jpg']
+  ];
+  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  el.innerHTML = C.map(([name,who,page])=>
+    `<li><a href="${esc(page)}" target="_blank" rel="noopener">${esc(name)}</a> — ${esc(who)}, `+
+    `<a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a></li>`).join('')
+    + `<li style="margin-top:6px">Beach, days-out & Plume photos are ours. Others via <a href="https://www.geograph.org.uk" target="_blank" rel="noopener">Geograph</a> / Wikimedia Commons.</li>`;
 })();
 
 /* ---------- Live weather (Open-Meteo, no key) ---------- */

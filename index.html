@@ -332,6 +332,7 @@
           <h3>Nare Head & Carne Beacon</h3>
           <div class="meta"><span>📏 ~4–5 mi</span><span>⏱️ 2–2.5 hrs</span><span>🥾 Moderate</span></div>
           <p class="small">A short drive to the dramatic headland at Nare, then a wildflower cliff walk. Carne Beacon is one of the largest Bronze Age burial mounds in Britain.</p>
+          <figure class="ph"><img src="img/nare-head.jpg" alt="Nare Head from the water"><figcaption>The dramatic cliffs of Nare Head, from the bay</figcaption></figure>
         </div>
         <a class="btn" target="_blank" rel="noopener" href="https://www.southwestcoastpath.org.uk/walksfinder/">
           <span class="em">🧭</span><span><b>South West Coast Path — walk finder</b><small>Official routes, distances & difficulty</small></span><span class="arr">›</span></a>
@@ -370,13 +371,17 @@
 
       <div class="card">
         <h2>🦭 Seals, dolphins & more</h2>
-        <ul class="list">
-          <li><span class="em">🦭</span><span><b>Grey seals</b><small>Year-round in Gerrans Bay — often a curious head bobbing near the harbour or off the rocks.</small></span></li>
-          <li><span class="em">🐬</span><span><b>Dolphins & porpoise</b><small>Common & bottlenose dolphins pass offshore; harbour porpoise year-round. Scan the horizon on calm days.</small></span></li>
-          <li><span class="em">🦈</span><span><b>Basking shark</b><small>The world's 2nd-largest fish — occasionally seen feeding at the surface May–July in warm calm spells.</small></span></li>
-          <li><span class="em">🪼</span><span><b>Jellyfish</b><small>Compass, moon & barrel jellyfish drift in during summer. Harmless to admire; don't touch.</small></span></li>
-          <li><span class="em">🦀</span><span><b>Rock pools</b><small>Low tide reveals shore crabs, blennies, anemones, prawns & starfish at Tatams and Porthcurnick.</small></span></li>
+        <ul class="medialist">
+          <li><img src="img/sea/seal.jpg" alt="Grey seal"><span><b>Grey seals</b><small>Year-round in Gerrans Bay — often a curious head bobbing near the harbour or off the rocks.</small></span></li>
+          <li><img src="img/sea/dolphin.jpg" alt="Common dolphin"><span><b>Dolphins & porpoise</b><small>Common & bottlenose dolphins pass offshore; harbour porpoise year-round. Scan the horizon on calm days.</small></span></li>
+          <li><img src="img/sea/basking.jpg" alt="Basking shark"><span><b>Basking shark</b><small>The world's 2nd-largest fish — occasionally seen feeding at the surface May–July in warm calm spells.</small></span></li>
+          <li><img src="img/jellyfish.jpg" alt="Barrel jellyfish" style="object-position:center 35%"><span><b>Jellyfish</b><small>Compass, moon & barrel jellyfish drift in during summer (this barrel jelly was spotted from the boat). Harmless to admire; don't touch.</small></span></li>
+          <li><img src="img/sea/rockpool.jpg" alt="Rock pool anemone"><span><b>Rock pools</b><small>Low tide reveals shore crabs, blennies, anemones, prawns & starfish at Tatams and Porthcurnick.</small></span></li>
         </ul>
+        <details class="credits">
+          <summary>Sea life photo credits</summary>
+          <ul id="sea-credits"><li>Loading…</li></ul>
+        </details>
       </div>
 
       <div class="card">
@@ -491,7 +496,7 @@ const FISH = [
   {name:'Pollack', emoji:'🐟', img:'pollack.jpg', months:[3,4,5,6,7,8,9,10], note:'Reliable around reefs and wrecks much of the year.'},
   {name:'Brown crab', emoji:'🦀', img:'brown-crab.jpg', months:[3,4,5,6,7,8,9,10], note:'Best and sweetest through the warmer months — landed in local pots.'},
   {name:'Spider crab', emoji:'🦀', img:'spider-crab.jpg', months:[3,4,5,6,7,8,9], note:'Spiky spring–summer visitor — sweet, delicate meat. Often caught in the bay.'},
-  {name:'Lobster', emoji:'🦞', img:'lobster.jpg', months:[3,4,5,6,7,8,9,10], note:'Summer is prime; a real Roseland treat straight off the boats.'},
+  {name:'Lobster', emoji:'🦞', img:'lobster.jpg', pos:'center 73%', months:[3,4,5,6,7,8,9,10], note:'Summer is prime; a real Roseland treat straight off the boats.'},
   {name:'Cornish sardine (pilchard)', emoji:'🐠', months:[7,8,9,10,11], note:'Landed late summer into autumn — the modern name for the historic pilchard.'},
   {name:'Sand eels & sprats', emoji:'🐠', months:[3,4,5,6,7,8], note:'Baitfish that draw in the bigger fish, birds and dolphins.'},
   {name:'Herring', emoji:'🐟', months:[9,10,11,0,1], note:'A cold-season fish, traditionally netted in winter.'},
@@ -506,7 +511,7 @@ function renderFish(){
   const outS = FISH.filter(f=>!inSeason(f));
   let html = '';
   inS.forEach(f=>{
-    const photo = f.img ? `<img class="fish-ph" src="img/${f.img}" alt="${f.name}">` : '';
+    const photo = f.img ? `<img class="fish-ph" src="img/${f.img}" alt="${f.name}"${f.pos?` style="object-position:${f.pos}"`:''}>` : '';
     html += `<div class="season in">${photo}<div class="st">In season · ${MONTH_NAME}</div>
       <div style="font-weight:700;margin-top:2px">${f.emoji} ${f.name}</div>
       <div class="small muted">${f.note}</div></div>`;
@@ -553,6 +558,21 @@ renderFish();
     `<li><a href="${esc(page)}" target="_blank" rel="noopener">${bird}</a> — ${esc(who)}, `+
     `<a href="${esc(licurl)}" target="_blank" rel="noopener">${lic}</a></li>`).join('')
     + `<li style="margin-top:6px">Photos via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>. Thank you to the photographers.</li>`;
+})();
+
+/* ---------- Sea-life photo credits (Wikimedia Commons) ---------- */
+(function(){
+  const C=[
+    ['Grey seal','Diego Delso','CC BY-SA 4.0','https://creativecommons.org/licenses/by-sa/4.0','https://commons.wikimedia.org/wiki/File:Focas_grises_(Halichoerus_grypus),_playa_de_Horsey,_Norfolk,_Inglaterra,_2022-11-20,_DD_11.jpg'],
+    ['Dolphin','incidencematrix','CC BY 2.0','https://creativecommons.org/licenses/by/2.0','https://commons.wikimedia.org/wiki/File:Leap_For_It_(27359678360).jpg'],
+    ['Basking shark','Greg Skomal / NOAA','Public domain','','https://commons.wikimedia.org/wiki/File:Cetorhinus_maximus_by_greg_skomal.JPG'],
+    ['Rock pool anemone','Diego Delso','CC BY-SA 4.0','https://creativecommons.org/licenses/by-sa/4.0','https://commons.wikimedia.org/wiki/File:Anémona_de_mar_común_(Anemonia_viridis),_Parque_natural_de_la_Arrábida,_Portugal,_2020-07-21,_DD_07.jpg']
+  ];
+  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('sea-credits').innerHTML = C.map(([name,who,lic,licurl,page])=>
+    `<li><a href="${esc(page)}" target="_blank" rel="noopener">${esc(name)}</a> — ${esc(who)}, `+
+    (licurl?`<a href="${esc(licurl)}" target="_blank" rel="noopener">${lic}</a>`:lic)+`</li>`).join('')
+    + `<li style="margin-top:6px">Jellyfish photo: ours. Others via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>.</li>`;
 })();
 
 /* ---------- Live weather (Open-Meteo, no key) ---------- */

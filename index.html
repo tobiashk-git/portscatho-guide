@@ -84,6 +84,9 @@
   .medialist li:last-child{border-bottom:0}
   .medialist img{width:84px; height:84px; object-fit:cover; border-radius:11px; flex:none; cursor:zoom-in; background:#dfeef2}
   .medialist b{display:block}
+  .more{display:inline-block; margin-top:5px; font-size:.76rem; font-weight:700; color:var(--sea2); text-decoration:none}
+  .more:after{content:" ›"}
+  a.tag{text-decoration:none}
   details.credits{margin-top:2px}
   details.credits summary{cursor:pointer; font-size:.82rem; color:var(--sea2); font-weight:600}
   details.credits ul{margin:8px 0 0; padding-left:16px}
@@ -354,14 +357,14 @@
         <h2>🐦 Birds on the cliff walks</h2>
         <div id="bird-note" class="small muted" style="margin-bottom:8px"></div>
         <ul class="medialist">
-          <li><img src="img/birds/chough.jpg" alt="Chough"><span><b>Chough</b><small>Cornwall's emblem — glossy black with a red curved bill & legs. Recovering along Roseland cliffs. Listen for the "chee-ow" call.</small></span></li>
-          <li><img src="img/birds/fulmar.jpg" alt="Fulmar"><span><b>Fulmar</b><small>Stiff-winged "tube-nose" gliding along the cliff faces spring–summer. Nests on ledges.</small></span></li>
-          <li><img src="img/birds/gannet.jpg" alt="Gannet"><span><b>Gannet</b><small>Huge white seabird with black wingtips, diving offshore like an arrow — best on breezy summer days.</small></span></li>
-          <li><img src="img/birds/peregrine.jpg" alt="Peregrine falcon"><span><b>Peregrine & kestrel</b><small>Peregrine (fastest bird alive) hunts the headlands; kestrels hover over the cliff-top grass.</small></span></li>
-          <li><img src="img/birds/stonechat.jpg" alt="Stonechat"><span><b>Stonechat</b><small>Little robin-shaped bird on gorse tops — call sounds like two pebbles knocking together.</small></span></li>
-          <li><img src="img/birds/shag.jpg" alt="Shag"><span><b>Shag & cormorant</b><small>Black diving birds on the rocks, wings spread out to dry.</small></span></li>
-          <li><img src="img/birds/oystercatcher.jpg" alt="Oystercatcher"><span><b>Oystercatcher</b><small>Black-and-white wader, long orange bill, loud "peep-peep" along the shore.</small></span></li>
-          <li><img src="img/birds/guillemot.jpg" alt="Guillemots and razorbills"><span><b>Guillemots & razorbills</b><small>Auks rafting on the sea offshore, mainly spring/early summer.</small></span></li>
+          <li><img src="img/birds/chough.jpg" alt="Chough"><span><b>Chough</b><small>Cornwall's emblem — glossy black with a red curved bill & legs. Recovering along Roseland cliffs. Listen for the "chee-ow" call.</small><a class="more" href="https://en.wikipedia.org/wiki/Red-billed_chough" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/birds/fulmar.jpg" alt="Fulmar"><span><b>Fulmar</b><small>Stiff-winged "tube-nose" gliding along the cliff faces spring–summer. Nests on ledges.</small><a class="more" href="https://en.wikipedia.org/wiki/Northern_fulmar" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/birds/gannet.jpg" alt="Gannet"><span><b>Gannet</b><small>Huge white seabird with black wingtips, diving offshore like an arrow — best on breezy summer days.</small><a class="more" href="https://en.wikipedia.org/wiki/Northern_gannet" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/birds/peregrine.jpg" alt="Peregrine falcon"><span><b>Peregrine & kestrel</b><small>Peregrine (fastest bird alive) hunts the headlands; kestrels hover over the cliff-top grass.</small><a class="more" href="https://en.wikipedia.org/wiki/Peregrine_falcon" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/birds/stonechat.jpg" alt="Stonechat"><span><b>Stonechat</b><small>Little robin-shaped bird on gorse tops — call sounds like two pebbles knocking together.</small><a class="more" href="https://en.wikipedia.org/wiki/European_stonechat" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/birds/shag.jpg" alt="Shag"><span><b>Shag & cormorant</b><small>Black diving birds on the rocks, wings spread out to dry.</small><a class="more" href="https://en.wikipedia.org/wiki/European_shag" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/birds/oystercatcher.jpg" alt="Oystercatcher"><span><b>Oystercatcher</b><small>Black-and-white wader, long orange bill, loud "peep-peep" along the shore.</small><a class="more" href="https://en.wikipedia.org/wiki/Eurasian_oystercatcher" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/birds/guillemot.jpg" alt="Guillemots and razorbills"><span><b>Guillemots & razorbills</b><small>Auks rafting on the sea offshore, mainly spring/early summer.</small><a class="more" href="https://en.wikipedia.org/wiki/Razorbill" target="_blank" rel="noopener">Learn more</a></span></li>
         </ul>
         <details class="credits">
           <summary>Bird photo credits</summary>
@@ -372,11 +375,11 @@
       <div class="card">
         <h2>🦭 Seals, dolphins & more</h2>
         <ul class="medialist">
-          <li><img src="img/sea/seal.jpg" alt="Grey seal"><span><b>Grey seals</b><small>Year-round in Gerrans Bay — often a curious head bobbing near the harbour or off the rocks.</small></span></li>
-          <li><img src="img/sea/dolphin.jpg" alt="Common dolphin"><span><b>Dolphins & porpoise</b><small>Common & bottlenose dolphins pass offshore; harbour porpoise year-round. Scan the horizon on calm days.</small></span></li>
-          <li><img src="img/sea/basking.jpg" alt="Basking shark"><span><b>Basking shark</b><small>The world's 2nd-largest fish — occasionally seen feeding at the surface May–July in warm calm spells.</small></span></li>
-          <li><img src="img/jellyfish.jpg" alt="Barrel jellyfish" style="object-position:center 35%"><span><b>Jellyfish</b><small>Compass, moon & barrel jellyfish drift in during summer (this barrel jelly was spotted from the boat). Harmless to admire; don't touch.</small></span></li>
-          <li><img src="img/sea/rockpool.jpg" alt="Rock pool anemone"><span><b>Rock pools</b><small>Low tide reveals shore crabs, blennies, anemones, prawns & starfish at Tatams and Porthcurnick.</small></span></li>
+          <li><img src="img/sea/seal.jpg" alt="Grey seal"><span><b>Grey seals</b><small>Year-round in Gerrans Bay — often a curious head bobbing near the harbour or off the rocks.</small><a class="more" href="https://en.wikipedia.org/wiki/Grey_seal" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/sea/dolphin.jpg" alt="Common dolphin"><span><b>Dolphins & porpoise</b><small>Common & bottlenose dolphins pass offshore; harbour porpoise year-round. Scan the horizon on calm days.</small><a class="more" href="https://en.wikipedia.org/wiki/Common_dolphin" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/sea/basking.jpg" alt="Basking shark"><span><b>Basking shark</b><small>The world's 2nd-largest fish — occasionally seen feeding at the surface May–July in warm calm spells.</small><a class="more" href="https://en.wikipedia.org/wiki/Basking_shark" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/jellyfish.jpg" alt="Barrel jellyfish" style="object-position:center 35%"><span><b>Jellyfish</b><small>Compass, moon & barrel jellyfish drift in during summer (this barrel jelly was spotted from the boat). Harmless to admire; don't touch.</small><a class="more" href="https://en.wikipedia.org/wiki/Barrel_jellyfish" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/sea/rockpool.jpg" alt="Rock pool anemone"><span><b>Rock pools</b><small>Low tide reveals shore crabs, blennies, anemones, prawns & starfish at Tatams and Porthcurnick.</small><a class="more" href="https://en.wikipedia.org/wiki/Tide_pool" target="_blank" rel="noopener">Learn more</a></span></li>
         </ul>
         <details class="credits">
           <summary>Sea life photo credits</summary>
@@ -491,16 +494,16 @@ const MONTH_NAME = new Date().toLocaleString('en-GB',{month:'long'});
 
 // Cornish seafood / fish seasons (months are 0-indexed, inclusive ranges may wrap)
 const FISH = [
-  {name:'Mackerel', emoji:'🐟', img:'mackerel.jpg', months:[4,5,6,7,8,9], note:'Peak summer — shoals right off the rocks. Classic feathers-from-the-harbour catch.'},
-  {name:'Sea bass', emoji:'🎣', img:'sea-bass.jpg', months:[5,6,7,8,9,10], note:'Prized sport fish around estuary mouths & rocky ground (catch limits apply).'},
-  {name:'Pollack', emoji:'🐟', img:'pollack.jpg', months:[3,4,5,6,7,8,9,10], note:'Reliable around reefs and wrecks much of the year.'},
-  {name:'Brown crab', emoji:'🦀', img:'brown-crab.jpg', months:[3,4,5,6,7,8,9,10], note:'Best and sweetest through the warmer months — landed in local pots.'},
-  {name:'Spider crab', emoji:'🦀', img:'spider-crab.jpg', months:[3,4,5,6,7,8,9], note:'Spiky spring–summer visitor — sweet, delicate meat. Often caught in the bay.'},
-  {name:'Lobster', emoji:'🦞', img:'lobster.jpg', pos:'center 73%', months:[3,4,5,6,7,8,9,10], note:'Summer is prime; a real Roseland treat straight off the boats.'},
-  {name:'Cornish sardine (pilchard)', emoji:'🐠', months:[7,8,9,10,11], note:'Landed late summer into autumn — the modern name for the historic pilchard.'},
-  {name:'Sand eels & sprats', emoji:'🐠', months:[3,4,5,6,7,8], note:'Baitfish that draw in the bigger fish, birds and dolphins.'},
-  {name:'Herring', emoji:'🐟', months:[9,10,11,0,1], note:'A cold-season fish, traditionally netted in winter.'},
-  {name:'Scallops', emoji:'🐚', months:[9,10,11,0,1,2], note:'At their best in the cooler months (roughly Sep–Mar).'}
+  {name:'Mackerel', emoji:'🐟', img:'mackerel.jpg', wiki:'Atlantic_mackerel', months:[4,5,6,7,8,9], note:'Peak summer — shoals right off the rocks. Classic feathers-from-the-harbour catch.'},
+  {name:'Sea bass', emoji:'🎣', img:'sea-bass.jpg', wiki:'European_bass', months:[5,6,7,8,9,10], note:'Prized sport fish around estuary mouths & rocky ground (catch limits apply).'},
+  {name:'Pollack', emoji:'🐟', img:'pollack.jpg', wiki:'Pollachius_pollachius', months:[3,4,5,6,7,8,9,10], note:'Reliable around reefs and wrecks much of the year.'},
+  {name:'Brown crab', emoji:'🦀', img:'brown-crab.jpg', wiki:'Cancer_pagurus', months:[3,4,5,6,7,8,9,10], note:'Best and sweetest through the warmer months — landed in local pots.'},
+  {name:'Spider crab', emoji:'🦀', img:'spider-crab.jpg', wiki:'Maja_squinado', months:[3,4,5,6,7,8,9], note:'Spiky spring–summer visitor — sweet, delicate meat. Often caught in the bay.'},
+  {name:'Lobster', emoji:'🦞', img:'lobster.jpg', pos:'center 73%', wiki:'European_lobster', months:[3,4,5,6,7,8,9,10], note:'Summer is prime; a real Roseland treat straight off the boats.'},
+  {name:'Cornish sardine (pilchard)', emoji:'🐠', wiki:'European_pilchard', months:[7,8,9,10,11], note:'Landed late summer into autumn — the modern name for the historic pilchard.'},
+  {name:'Sand eels & sprats', emoji:'🐠', wiki:'Sand_eel', months:[3,4,5,6,7,8], note:'Baitfish that draw in the bigger fish, birds and dolphins.'},
+  {name:'Herring', emoji:'🐟', wiki:'Atlantic_herring', months:[9,10,11,0,1], note:'A cold-season fish, traditionally netted in winter.'},
+  {name:'Scallops', emoji:'🐚', wiki:'Scallop', months:[9,10,11,0,1,2], note:'At their best in the cooler months (roughly Sep–Mar).'}
 ];
 
 function inSeason(f){ return f.months.includes(MONTH); }
@@ -512,13 +515,16 @@ function renderFish(){
   let html = '';
   inS.forEach(f=>{
     const photo = f.img ? `<img class="fish-ph" src="img/${f.img}" alt="${f.name}"${f.pos?` style="object-position:${f.pos}"`:''}>` : '';
+    const more = f.wiki ? `<a class="more" href="https://en.wikipedia.org/wiki/${f.wiki}" target="_blank" rel="noopener">Learn more</a>` : '';
     html += `<div class="season in">${photo}<div class="st">In season · ${MONTH_NAME}</div>
       <div style="font-weight:700;margin-top:2px">${f.emoji} ${f.name}</div>
-      <div class="small muted">${f.note}</div></div>`;
+      <div class="small muted">${f.note}</div>${more}</div>`;
   });
   if(outS.length){
     html += `<h3>Out of season now</h3><div class="pill-row">`;
-    outS.forEach(f=> html += `<span class="tag">${f.emoji} ${f.name}</span>`);
+    outS.forEach(f=> html += f.wiki
+      ? `<a class="tag" href="https://en.wikipedia.org/wiki/${f.wiki}" target="_blank" rel="noopener">${f.emoji} ${f.name}</a>`
+      : `<span class="tag">${f.emoji} ${f.name}</span>`);
     html += `</div>`;
   }
   box.innerHTML = html;

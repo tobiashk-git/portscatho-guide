@@ -794,10 +794,9 @@ async function loadWeather(){
     baroEl.style.display='';
     baroEl.innerHTML=`<div><div class="lab">Barometer</div><div><span class="bv">${pr}</span> mb · <span style="color:${levelCol};font-weight:800">${level}</span></div><div class="small muted">${levelNote}</div></div>`+
       `<div class="bt" style="color:${col}">${arrow} ${word}<small>${note}</small></div>`;
-    document.getElementById('home-wx').textContent=`${ct} · ${level} pressure`;
     // Home card
     document.getElementById('home-temp').textContent=Math.round(c.temperature_2m)+'°';
-    document.getElementById('home-wx').textContent=ct;
+    document.getElementById('home-wx').textContent=ct+' · '+level+' pressure';
   }catch(e){
     nowEl.className='err'; nowEl.textContent='Could not load weather (offline?). Pull to refresh when back online.';
     const w=document.getElementById('wind'); w.className='err'; w.textContent='Wind data unavailable offline.';

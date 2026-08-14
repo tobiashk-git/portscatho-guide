@@ -577,7 +577,7 @@ document.querySelectorAll('[data-go]').forEach(el=>{
 function goDetail(sel){
   go('tides');
   const el=document.querySelector(sel);
-  if(el){ requestAnimationFrame(()=>requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth', block:'start'}))); }
+  if(el){ requestAnimationFrame(()=>requestAnimationFrame(()=>el.scrollIntoView({block:'start'}))); }
 }
 document.querySelectorAll('[data-goto]').forEach(el=>{
   const act=()=>goDetail(el.dataset.goto);

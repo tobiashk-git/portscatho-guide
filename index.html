@@ -131,6 +131,14 @@
   .wind-sub{font-size:.83rem; color:var(--ink2); margin-top:2px}
   .wx-day .w{font-size:.72rem; color:var(--ink2); margin-top:2px}
 
+  /* Barometer */
+  .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
+    margin-top:11px; padding:10px 13px; background:var(--gull); border:1px solid var(--line); border-radius:12px}
+  .wx-baro .lab{font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink2); font-weight:700}
+  .wx-baro .bv{font-size:1.25rem; font-weight:800; color:var(--sea)}
+  .wx-baro .bt{text-align:right; font-weight:700; font-size:.9rem}
+  .wx-baro .bt small{display:block; font-weight:500; color:var(--ink2); font-size:.76rem; margin-top:1px}
+
   /* Fish-in-season photo */
   .fish-ph{width:100%; height:158px; object-fit:cover; border-radius:10px; margin:2px 0 9px; display:block; cursor:zoom-in; background:#dfeef2}
 
@@ -452,6 +460,7 @@
         <h2>🌤️ Forecast <button class="refresh" id="wx-refresh">refresh</button></h2>
         <div id="wx-now" class="loading">Loading live weather…</div>
         <div id="wx-forecast"></div>
+        <div id="wx-pressure" class="wx-baro" style="display:none"></div>
         <p class="small muted" style="margin:8px 0 0">Live data from Open-Meteo for Portscatho (50.19°N, 5.00°W). Times shown in UK time.</p>
       </div>
 
@@ -686,7 +695,8 @@ async function loadWeather(){
   nowEl.className='loading'; nowEl.textContent='Loading live weather…';
   try{
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`+
-      `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,relative_humidity_2m`+
+      `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl,relative_humidity_2m`+
+      `&hourly=pressure_msl`+
       `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset`+
       `&timezone=Europe%2FLondon&wind_speed_unit=mph`;
     const r=await fetch(url); const d=await r.json();
@@ -723,6 +733,25 @@ async function loadWeather(){
       `<div class="wind-desc">Force ${b.f} · ${b.name}</div><div class="wind-sub">${b.sea}</div>`;
     document.getElementById('home-wind').textContent=spd;
     document.getElementById('home-wind-sub').textContent=`mph from ${dirTxt} · F${b.f}`;
+
+    // Barometer (pressure + 3-hour trend)
+    const baroEl=document.getElementById('wx-pressure');
+    const pr=Math.round(c.pressure_msl);
+    let diff=null;
+    if(d.hourly&&d.hourly.pressure_msl){
+      const hrKey=(c.time||'').slice(0,13);
+      const idx=d.hourly.time.findIndex(t=>t.slice(0,13)===hrKey);
+      if(idx>=3 && d.hourly.pressure_msl[idx-3]!=null) diff=c.pressure_msl-d.hourly.pressure_msl[idx-3];
+    }
+    let word='Steady', arrow='▬', note='little change expected', col='var(--ink2)';
+    if(diff!=null){
+      if(diff<=-1.5){ word='Falling'; arrow='▼'; note='often means wind or rain on the way'; col='#b3541e'; }
+      else if(diff>=1.5){ word='Rising'; arrow='▲'; note='usually settling / fairer weather'; col='#2f7d3f'; }
+    }
+    const lvl = pr>=1023?' · high' : pr<=1000?' · low' : '';
+    baroEl.style.display='';
+    baroEl.innerHTML=`<div><div class="lab">Barometer${lvl}</div><div><span class="bv">${pr}</span> mb</div></div>`+
+      `<div class="bt" style="color:${col}">${arrow} ${word}<small>${note}</small></div>`;
     // Home card
     document.getElementById('home-temp').textContent=Math.round(c.temperature_2m)+'°';
     document.getElementById('home-wx').textContent=ct+' · feels '+Math.round(c.apparent_temperature)+'°';

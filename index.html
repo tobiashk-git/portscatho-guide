@@ -142,6 +142,11 @@
     background:linear-gradient(90deg, rgba(251,247,239,.93) 0%, rgba(251,247,239,.80) 45%, rgba(251,247,239,.5) 100%), url(img/collage-nature.jpg) center/cover no-repeat;}
   .btn.bg-nature > *{position:relative; z-index:1}
   .btn.bg-nature small{color:#4a5a3f}
+  .btn.bg-weather{position:relative; overflow:hidden; border-color:#bcd3de}
+  .btn.bg-weather::before{content:""; position:absolute; inset:0; z-index:0;
+    background:linear-gradient(90deg, rgba(251,247,239,.93) 0%, rgba(251,247,239,.80) 45%, rgba(251,247,239,.5) 100%), url(img/collage-weather.jpg) center/cover no-repeat;}
+  .btn.bg-weather > *{position:relative; z-index:1}
+  .btn.bg-weather small{color:#33505c}
 
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -320,7 +325,7 @@
       <a class="btn" href="#" data-go="explore"><span class="em">🗺️</span><span><b>Explore & map</b><small>Beaches, the Hidden Hut, St Mawes & more</small></span><span class="arr">›</span></a>
       <a class="btn" href="#" data-go="walks"><span class="em">🥾</span><span><b>Coastal walks</b><small>Cliff-path routes from the village</small></span><span class="arr">›</span></a>
       <a class="btn bg-nature" href="#" data-go="nature"><span class="em">🐦</span><span><b>Nature & wildlife</b><small>Birds, seals, and what's in the sea</small></span><span class="arr">›</span></a>
-      <a class="btn" href="#" data-go="tides"><span class="em">🌊</span><span><b>Weather & tides</b><small>Forecast, sea state & tide tables</small></span><span class="arr">›</span></a>
+      <a class="btn bg-weather" href="#" data-go="tides"><span class="em">🌊</span><span><b>Weather & tides</b><small>Forecast, sea state & tide tables</small></span><span class="arr">›</span></a>
       <a class="btn" href="#" data-go="facts"><span class="em">💡</span><span><b>Fun facts & tips</b><small>Local lore and practical know-how</small></span><span class="arr">›</span></a>
     </section>
 

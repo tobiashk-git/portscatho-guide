@@ -186,6 +186,8 @@
   .rp-celebrate:active{transform:scale(.99)}
   .rp-reset{background:#fff; border:1.5px solid var(--teal); color:var(--teal); font-weight:800; font-size:.85rem; padding:6px 15px; border-radius:999px; cursor:pointer; box-shadow:var(--shadow)}
   .rp-reset:active{transform:scale(.96)}
+  .rp-tide{border-radius:12px; padding:9px 13px; font-size:.86rem; font-weight:600; margin:0 2px 10px; border:1px solid #c3e4f0; background:#eaf6fb; color:var(--sea)}
+  .rp-tide.now{background:#e7f5ea; border-color:#bfe3c9; color:var(--good)}
 
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -607,6 +609,7 @@
     <section class="view" id="view-rockpool">
       <button class="rp-back" data-go="nature">‹ Back to Nature</button>
       <h2 style="margin:2px 2px 6px">🪸 Rock Pool Explorer</h2>
+      <div class="rp-tide" id="rp-tide">Checking the tide…</div>
       <p class="small muted" style="margin:0 2px 10px">Tap the creatures you can see, and lift the <b>seaweed</b> &amp; <b>rocks</b> to uncover the ones hiding. Find all 9 — and watch out for a surprise in the shells!</p>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px">
         <div class="rp-progress" id="rp-progress" style="margin:0">🔍 0 of 9 discovered</div>
@@ -661,7 +664,7 @@
             <use class="rp-tick" href="#rp-tick-def" x="14" y="-12"/>
           </g>
 
-          <g class="rp-hot" data-id="snail" transform="translate(210,140)">
+          <g class="rp-hot" data-id="snail" transform="translate(180,74)">
             <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
             <path d="M10 6 Q17 -2 8 -11 Q-9 -18 -14 -1 Q-15 11 1 11 Q9 11 10 6 Z" fill="#caa878" stroke="#9c7d52" stroke-width="1.3"/>
             <path d="M5 4 Q11 -1 4 -8 Q-6 -12 -9 -1 Q-9 6 1 6" fill="none" stroke="#9c7d52" stroke-width="1" opacity=".8"/>
@@ -1175,13 +1178,39 @@ loadWeather(); loadMarine();
     panelsEl.innerHTML=RP.map(locked).join('');
     updateProgress();
   }
+  // Rock-pool tide timing: best within 2.5h of low water
+  const tideEl=document.getElementById('rp-tide');
+  function tideMsg(){
+    fetch('tides.json').then(r=>r.json()).then(data=>{
+      const days=data.days, now=new Date();
+      const p2=n=>String(n).padStart(2,'0'), keyOf=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+      const evDate=(k,hm)=>{const[Y,M,D]=k.split('-').map(Number),[h,m]=hm.split(':').map(Number);return new Date(Y,M-1,D,h,m);};
+      const keys=[keyOf(new Date(+now-864e5)), keyOf(now), keyOf(new Date(+now+864e5))];
+      let lows=[]; keys.forEach(k=>(days[k]||[]).forEach(ev=>{ if(ev[0]==='L') lows.push(evDate(k,ev[1])); }));
+      const fmt=d=>d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      if(!lows.length){ tideEl.className='rp-tide'; tideEl.innerHTML='🌊 Tide table runs Aug–Oct 2026 — see the Tides tab for low water.'; return; }
+      const W=2.5*3600e3, inWin=lows.find(l=>Math.abs(l-now)<=W);
+      if(inWin){
+        tideEl.className='rp-tide now';
+        tideEl.innerHTML='🦐 <b>It\'s rock pool time!</b> Low water ~'+fmt(inWin)+' — the pools are exposed now (tide '+(now<inWin?'still going out':'on its way back in')+').';
+      } else {
+        const nextLow=lows.filter(l=>l>now).sort((a,b)=>a-b)[0];
+        tideEl.className='rp-tide';
+        if(nextLow){ const mins=Math.round((nextLow-now)/60000), h=Math.floor(mins/60), m=mins%60;
+          tideEl.innerHTML='🌊 Not rock-pool time just yet — next low water ~'+fmt(nextLow)+' (in '+(h>0?h+'h ':'')+m+'m). Best within 2½ hrs of low tide.';
+        } else { tideEl.innerHTML='🌊 See the Tides tab for the next low water.'; }
+      }
+    }).catch(()=>{ tideEl.className='rp-tide'; tideEl.innerHTML='🌊 Tide info unavailable — check the Tides tab.'; });
+  }
+  tideMsg();
+
   scene.addEventListener('click', e=>{ const hot=e.target.closest('.rp-hot'); if(hot) discover(hot.dataset.id); });
   document.getElementById('rp-reset').addEventListener('click', reset);
   celebrateEl.addEventListener('click', reset);
   celebrateEl.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reset(); } });
   updateProgress();
   // launch + credits
-  document.querySelectorAll('[data-rp="open"]').forEach(el=>el.addEventListener('click', e=>{ e.preventDefault(); go('rockpool'); }));
+  document.querySelectorAll('[data-rp="open"]').forEach(el=>el.addEventListener('click', e=>{ e.preventDefault(); go('rockpool'); tideMsg(); }));
   const CR=[
     ['Limpet','Diego Delso','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Lapa_com%C3%BAn_(Patella_vulgata),_Set%C3%BAbal,_Portugal,_2020-08-01,_DD_02.jpg'],
     ['Barnacle','Ryan Hodnett','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Northern_Acorn_Barnacle_(Fj%C3%A6rerur)_(Semibalanus_balanoides)_-_And%C3%B8y,_Norway_2023-07-12.jpg'],

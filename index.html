@@ -188,6 +188,10 @@
   .rp-reset:active{transform:scale(.96)}
   .rp-tide{border-radius:12px; padding:9px 13px; font-size:.86rem; font-weight:600; margin:0 2px 10px; border:1px solid #c3e4f0; background:#eaf6fb; color:var(--sea)}
   .rp-tide.now{background:#e7f5ea; border-color:#bfe3c9; color:var(--good)}
+  .wmeta{font-size:.8rem; color:var(--ink2); margin-bottom:2px}
+  .wmeta span{margin-right:12px}
+  .walk-map{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; text-align:center; min-height:150px; border:2px dashed var(--line); border-radius:14px; background:#f4f7f2; color:var(--ink2); padding:18px}
+  .walk-map .ic{font-size:2rem}
 
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -432,32 +436,46 @@
       <p class="small muted" style="margin:0 2px 12px">The South West Coast Path runs right through the village. Cliffs, wildflowers and sea views in both directions. Wear grippy shoes — paths can be muddy and near cliff edges.</p>
 
       <div class="card">
+        <h2>🗺️ Walking routes map</h2>
+        <div class="walk-map" id="walk-map">
+          <div class="ic">🗺️</div>
+          <div><b>Routes map coming soon</b></div>
+          <div class="small muted">A Google My Map of these walks will be embedded here.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="card-photo" src="img/towan.jpg" alt="Towan Beach" />
+        <h3 style="margin:0 0 3px">Portscatho → Porthcurnick → Towan Beach</h3>
+        <div class="wmeta"><span>📏 ~2.5 mi return</span><span>⏱️ 1–1.5 hrs</span><span>🥾 Easy</span></div>
+        <p class="small" style="margin:0">Head north on the coast path past Porthcurnick Beach (pause at the Hidden Hut) and on to the sands at Towan. Big open sea views across Gerrans Bay. Return the same way or loop inland via Rosevine.</p>
+      </div>
+
+      <div class="card">
+        <img class="card-photo" src="img/st-anthony.jpg" alt="St Anthony Head lighthouse" style="height:210px;object-position:center 6%" />
+        <h3 style="margin:0 0 3px">Portscatho → Gerrans → St Anthony Head</h3>
+        <div class="wmeta"><span>📏 ~7 mi</span><span>⏱️ 3–4 hrs</span><span>🥾 Moderate</span></div>
+        <p class="small" style="margin:0">A proper day's walk south to the tip of the peninsula. Lighthouse, WWII gun batteries, and views to St Mawes and Falmouth. Loop back inland through fields and lanes.</p>
+      </div>
+
+      <div class="card">
         <img class="card-photo" src="img/coastpath.jpg" alt="The South West Coast Path near Portscatho" />
-        <div class="walk">
-          <h3>Portscatho → Porthcurnick → Towan Beach</h3>
-          <div class="meta"><span>📏 ~2.5 mi return</span><span>⏱️ 1–1.5 hrs</span><span>🥾 Easy</span></div>
-          <p class="small">Head north on the coast path past Porthcurnick Beach (pause at the Hidden Hut) and on to the sands at Towan. Big open sea views across Gerrans Bay. Return the same way or loop inland via Rosevine.</p>
-        </div>
-        <div class="walk">
-          <h3>Portscatho → Gerrans → St Anthony Head</h3>
-          <div class="meta"><span>📏 ~7 mi</span><span>⏱️ 3–4 hrs</span><span>🥾 Moderate</span></div>
-          <p class="small">A proper day's walk south to the tip of the peninsula. Lighthouse, WWII gun batteries, and views to St Mawes and Falmouth. Loop back inland through fields and lanes.</p>
-          <figure class="ph"><img src="img/st-anthony.jpg" alt="St Anthony Head lighthouse" style="height:230px;object-position:center 8%"><figcaption>St Anthony Head lighthouse, at the tip of the Roseland</figcaption></figure>
-        </div>
-        <div class="walk">
-          <h3>Gerrans Bay circular via Rosevine</h3>
-          <div class="meta"><span>📏 ~4 mi</span><span>⏱️ 2 hrs</span><span>🥾 Easy–Moderate</span></div>
-          <p class="small">Coast path one way, quiet country lanes and footpaths back. Good for a shorter afternoon leg-stretch with a café stop.</p>
-        </div>
-        <div class="walk">
-          <h3>Nare Head & Carne Beacon</h3>
-          <div class="meta"><span>📏 ~4–5 mi</span><span>⏱️ 2–2.5 hrs</span><span>🥾 Moderate</span></div>
-          <p class="small">A short drive to the dramatic headland at Nare, then a wildflower cliff walk. Carne Beacon is one of the largest Bronze Age burial mounds in Britain.</p>
-          <figure class="ph"><img src="img/nare-head.jpg" alt="Nare Head from the water"><figcaption>The dramatic cliffs of Nare Head, from the bay</figcaption></figure>
-        </div>
-        <a class="btn" target="_blank" rel="noopener" href="https://www.southwestcoastpath.org.uk/walksfinder/">
+        <h3 style="margin:0 0 3px">Gerrans Bay circular via Rosevine</h3>
+        <div class="wmeta"><span>📏 ~4 mi</span><span>⏱️ 2 hrs</span><span>🥾 Easy–Moderate</span></div>
+        <p class="small" style="margin:0">Coast path one way, quiet country lanes and footpaths back. Good for a shorter afternoon leg-stretch with a café stop.</p>
+      </div>
+
+      <div class="card">
+        <img class="card-photo" src="img/nare-head.jpg" alt="Nare Head from the water" />
+        <h3 style="margin:0 0 3px">Nare Head & Carne Beacon</h3>
+        <div class="wmeta"><span>📏 ~4–5 mi</span><span>⏱️ 2–2.5 hrs</span><span>🥾 Moderate</span></div>
+        <p class="small" style="margin:0">A short drive to the dramatic headland at Nare, then a wildflower cliff walk. Carne Beacon is one of the largest Bronze Age burial mounds in Britain.</p>
+      </div>
+
+      <div class="card">
+        <a class="btn" style="margin:0" target="_blank" rel="noopener" href="https://www.southwestcoastpath.org.uk/walksfinder/">
           <span class="em">🧭</span><span><b>South West Coast Path — walk finder</b><small>Official routes, distances & difficulty</small></span><span class="arr">›</span></a>
-        <div class="callout"><b>Tide tip:</b> Some beach-to-beach links (Pendower ⇄ Carne, and rock-hopping stretches) only open up at low tide. Check the Tides tab before setting off.</div>
+        <div class="callout" style="margin-top:11px"><b>Tide tip:</b> Some beach-to-beach links (Pendower ⇄ Carne, and rock-hopping stretches) only open up at low tide. Check the Tides tab before setting off.</div>
       </div>
     </section>
 

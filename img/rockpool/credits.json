@@ -1,0 +1,44 @@
+{
+ "limpet": {
+  "title": "Lapa común (Patella vulgata), Setúbal, Portugal, 2020-08-01, DD 02.jpg",
+  "artist": "Diego Delso",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ALapa_com%C3%BAn_%28Patella_vulgata%29%2C_Set%C3%BAbal%2C_Portugal%2C_2020-08-01%2C_DD_02.jpg"
+ },
+ "barnacle": {
+  "title": "Northern Acorn Barnacle (Fjærerur) (Semibalanus balanoides) - Andøy, Norway 2023-07-12.jpg",
+  "artist": "Ryan Hodnett",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ANorthern_Acorn_Barnacle_%28Fj%C3%A6rerur%29_%28Semibalanus_balanoides%29_-_And%C3%B8y%2C_Norway_2023-07-12.jpg"
+ },
+ "anemone": {
+  "title": "Actinia equina (Boulogne-sur-Mer).jpg",
+  "artist": "Hans Hillewaert",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3AActinia_equina_%28Boulogne-sur-Mer%29.jpg"
+ },
+ "prawn": {
+  "title": "Sägegarnele Palaemon serratus 1.jpg",
+  "artist": "Holger Krisp",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3AS%C3%A4gegarnele_Palaemon_serratus_1.jpg"
+ },
+ "shore-crab": {
+  "title": "Carcinus maenas.jpg",
+  "artist": "Hans Hillewaert",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ACarcinus_maenas.jpg"
+ },
+ "blenny": {
+  "title": "Lipophrys pholis 1.jpg",
+  "artist": "Gilles San Martin",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ALipophrys_pholis_1.jpg"
+ },
+ "starfish": {
+  "title": "Common starfish - torbay.jpg",
+  "artist": "Herbythyme",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ACommon_starfish_-_torbay.jpg"
+ }
+}

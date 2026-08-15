@@ -158,6 +158,32 @@
   .btn.bg-facts > *{position:relative; z-index:1}
   .btn.bg-facts small{color:#6a5230}
 
+  /* ---- Rock Pool Explorer ---- */
+  .rp-row{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:7px; flex-wrap:wrap}
+  .rp-btn{display:inline-flex; align-items:center; gap:5px; background:var(--teal); color:#fff; font-weight:800; font-size:.76rem; padding:6px 12px; border-radius:999px; text-decoration:none; box-shadow:var(--shadow); white-space:nowrap}
+  .rp-btn:active{transform:scale(.97)}
+  .rp-back{background:none; border:0; color:var(--sea2); font-weight:700; font-size:.9rem; padding:2px 0 6px; cursor:pointer}
+  .rp-progress{display:inline-block; background:#e8f6fc; border:1px solid #c3e4f0; color:var(--sea); font-weight:800; font-size:.85rem; padding:5px 13px; border-radius:999px; margin:2px 0 12px}
+  .rp-progress.done{background:#e7f5ea; border-color:#bfe3c9; color:var(--good)}
+  .rp-scene{width:100%; border-radius:16px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); background:#0e6f8c; display:block; margin-bottom:14px}
+  .rp-scene svg{width:100%; height:auto; display:block; touch-action:manipulation; -webkit-tap-highlight-color:transparent}
+  .rp-hot{cursor:pointer}
+  .rp-hot.found{cursor:default}
+  .rp-animal{opacity:0; transition:opacity .55s ease .12s}
+  .rp-hot.found .rp-animal{opacity:1}
+  .rp-cover{transition:opacity .45s ease, transform .55s cubic-bezier(.3,1.3,.5,1)}
+  .rp-hot.found .rp-cover{opacity:0; transform:translateY(-8px) scale(.5); pointer-events:none}
+  .rp-tick{opacity:0; transition:opacity .3s ease .28s}
+  .rp-hot.found .rp-tick{opacity:1}
+  .rp-hint{animation:rp-pulse 1.9s ease-in-out infinite}
+  .rp-hot.found .rp-hint{display:none}
+  @keyframes rp-pulse{0%,100%{opacity:.18}50%{opacity:.7}}
+  .medialist .rp-q{width:84px; height:84px; border-radius:11px; flex:none; background:#e3edf0; color:#a6c1cc; font-size:1.9rem; font-weight:800; display:flex; align-items:center; justify-content:center}
+  .rp-panel.locked b, .rp-panel.locked small{color:var(--ink2)}
+  .rp-panel.reveal{animation:rp-in .5s ease}
+  @keyframes rp-in{from{opacity:.15; transform:translateY(7px)}to{opacity:1; transform:none}}
+  .rp-celebrate{background:linear-gradient(180deg,#e7f5ea,#d7efdd); border:1px solid #bfe3c9; border-radius:14px; padding:13px 15px; font-weight:800; color:var(--good); text-align:center; margin:2px 0 12px; display:none}
+
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
     margin-top:11px; padding:10px 13px; background:var(--gull); border:1px solid var(--line); border-radius:12px}
@@ -466,7 +492,7 @@
           <li><img src="img/sea/dolphin.jpg" alt="Common dolphin"><span><b>Dolphins & porpoise</b><small>Common & bottlenose dolphins pass offshore; harbour porpoise year-round. Scan the horizon on calm days.</small><a class="more" href="https://www.wildlifetrusts.org/wildlife-explorer/marine/marine-mammals-and-sea-turtles/common-dolphin" target="_blank" rel="noopener">Learn more</a></span></li>
           <li><img src="img/sea/basking.jpg" alt="Basking shark"><span><b>Basking shark</b><small>The world's 2nd-largest fish — occasionally seen feeding at the surface May–July in warm calm spells.</small><a class="more" href="https://www.wildlifetrusts.org/wildlife-explorer/marine/fish-including-sharks-skates-and-rays/basking-shark" target="_blank" rel="noopener">Learn more</a></span></li>
           <li><img src="img/jellyfish.jpg" alt="Barrel jellyfish" style="object-position:center 35%"><span><b>Jellyfish</b><small>Compass, moon & barrel jellyfish drift in during summer (this barrel jelly was spotted from the boat). Harmless to admire; don't touch.</small><a class="more" href="https://www.wildlifetrusts.org/wildlife-explorer/marine/jellyfish/barrel-jellyfish" target="_blank" rel="noopener">Learn more</a></span></li>
-          <li><img src="img/sea/rockpool.jpg" alt="Rock pool anemone"><span><b>Rock pools</b><small>Low tide reveals shore crabs, blennies, anemones, prawns & starfish at Tatams and Porthcurnick.</small><a class="more" href="https://www.wildlifetrusts.org/wildlife-explorer/marine/anemones-and-corals/snakelocks-anemone" target="_blank" rel="noopener">Learn more</a></span></li>
+          <li><img src="img/sea/rockpool.jpg" alt="Rock pool anemone"><span style="display:flex;flex-direction:column"><b>Rock pools</b><small>Low tide reveals shore crabs, blennies, anemones, prawns & starfish at Tatams and Porthcurnick.</small><span class="rp-row"><a class="more" href="https://www.wildlifetrusts.org/wildlife-explorer/marine/anemones-and-corals/snakelocks-anemone" target="_blank" rel="noopener">Learn more</a><a class="rp-btn" href="#" data-rp="open">🔍 Rock Pool Explorer</a></span></span></li>
         </ul>
         <details class="credits">
           <summary>Sea life photo credits</summary>
@@ -573,6 +599,116 @@
           <div class="tile"><img src="img/pasty-emergency.jpg" alt="A Cornish pasty" style="object-position:center 80%"><div class="t"><b>🥟 Pasty emergency</b><small>In the event of pasty deficiency, head straight to <b>Ralph's</b>.</small></div></div>
         </div>
       </div>
+    </section>
+    <!-- ============ ROCK POOL EXPLORER (hidden) ============ -->
+    <section class="view" id="view-rockpool">
+      <button class="rp-back" data-go="nature">‹ Back to Nature</button>
+      <h2 style="margin:2px 2px 6px">🪸 Rock Pool Explorer</h2>
+      <p class="small muted" style="margin:0 2px 10px">Tap the creatures you can see, and lift the <b>seaweed</b> &amp; <b>rocks</b> to uncover the ones hiding. Find all 7!</p>
+      <div class="rp-progress" id="rp-progress">🔍 <span id="rp-count">0</span> of 7 discovered</div>
+      <div class="rp-scene" id="rp-scene">
+        <svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interactive rock pool">
+          <defs>
+            <linearGradient id="rp-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fb0cd"/><stop offset="1" stop-color="#0c6a86"/></linearGradient>
+            <g id="rp-tick-def"><circle r="7.5" fill="#2f9e5f"/><path d="M-3.2 0 L-1 2.6 L3.6 -3.2" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+          </defs>
+          <rect width="360" height="230" fill="url(#rp-water)"/>
+          <g stroke="#ffffff" stroke-opacity=".16" fill="none" stroke-width="2"><path d="M18 34 Q45 28 72 34"/><path d="M244 26 Q270 20 296 26"/><path d="M146 52 Q172 46 198 52"/></g>
+          <path d="M0 165 Q90 155 180 163 T360 160 V230 H0 Z" fill="#cdbf9b"/>
+          <g fill="#7f857e" stroke="#6a6f69" stroke-width="1">
+            <ellipse cx="55" cy="150" rx="48" ry="27"/><ellipse cx="304" cy="104" rx="50" ry="30"/><ellipse cx="182" cy="162" rx="46" ry="20"/>
+          </g>
+
+          <g class="rp-hot" data-id="limpet" transform="translate(55,135)">
+            <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <ellipse cx="0" cy="7" rx="15" ry="4.5" fill="#6f665b"/>
+            <path d="M-14 6 Q0 -13 14 6 Z" fill="#aca291" stroke="#6f665b" stroke-width="1.2"/>
+            <path d="M0 -11 V6 M-7 -3 L-10 6 M7 -3 L10 6 M-4 -8 L-5 6 M4 -8 L5 6" stroke="#7c7264" stroke-width="1" fill="none" opacity=".7"/>
+            <use class="rp-tick" href="#rp-tick-def" x="15" y="-11"/>
+          </g>
+
+          <g class="rp-hot" data-id="barnacle" transform="translate(302,88)">
+            <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <g stroke="#b3a98f" stroke-width="1.1">
+              <g fill="#ece7db"><path d="M-14 6 Q-13 -5 -8 -6 Q-3 -5 -3 6 Z"/><ellipse cx="-8.5" cy="-4" rx="2.2" ry="1.3" fill="#8a8272"/></g>
+              <g fill="#f2ede2"><path d="M-4 8 Q-3 -6 5 -7 Q13 -6 12 8 Z"/><ellipse cx="4.5" cy="-5" rx="3" ry="1.7" fill="#8a8272"/></g>
+              <g fill="#e6e0d2"><path d="M9 6 Q10 -3 15 -4 Q20 -3 18 6 Z"/><ellipse cx="14" cy="-2.5" rx="2.1" ry="1.2" fill="#8a8272"/></g>
+            </g>
+            <use class="rp-tick" href="#rp-tick-def" x="18" y="-9"/>
+          </g>
+
+          <g class="rp-hot" data-id="anemone" transform="translate(182,150)">
+            <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <g stroke="#e0654e" stroke-width="2.2" stroke-linecap="round">
+              <path d="M0 -5 V-17"/><path d="M-5 -5 L-9 -15"/><path d="M5 -5 L9 -15"/><path d="M-9 -3 L-15 -10"/><path d="M9 -3 L15 -10"/><path d="M-2.5 -6 L-4 -17"/><path d="M2.5 -6 L4 -17"/>
+            </g>
+            <path d="M-13 6 Q-14 -6 0 -6 Q14 -6 13 6 Z" fill="#c0392b" stroke="#93281d" stroke-width="1"/>
+            <ellipse cx="0" cy="-4" rx="8" ry="3" fill="#7e241b"/>
+            <use class="rp-tick" href="#rp-tick-def" x="14" y="-12"/>
+          </g>
+
+          <g class="rp-hot" data-id="prawn" data-hidden="1" transform="translate(132,100)">
+            <circle class="rp-hint" r="22" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <g class="rp-animal">
+              <path d="M-15 3 Q-4 -10 8 -6 Q17 -3 15 6 Q10 3 5 4" fill="#f4dccd" fill-opacity=".9" stroke="#d59f8a" stroke-width="1.3"/>
+              <path d="M9 -6 Q15 -11 21 -15 M9 -5 Q17 -8 24 -8" stroke="#cf9a84" stroke-width="1" fill="none"/>
+              <path d="M-9 4 L-11 10 M-4 4 L-5 11 M1 4 L1 11 M6 3 L7 10" stroke="#cf9a84" stroke-width="1" fill="none"/>
+              <path d="M-15 3 Q-19 6 -15 9" stroke="#cf9a84" stroke-width="1.3" fill="none"/>
+              <circle cx="9" cy="-4" r="1.6" fill="#33241d"/>
+            </g>
+            <g class="rp-cover" fill="#2f7d4f" stroke="#236240" stroke-width="1">
+              <path d="M-13 22 Q-21 2 -11 -20 Q-6 -3 -9 22 Z"/><path d="M-1 24 Q-7 0 2 -25 Q8 -2 4 24 Z"/><path d="M12 22 Q19 4 10 -18 Q5 -2 7 22 Z"/>
+            </g>
+            <use class="rp-tick" href="#rp-tick-def" x="16" y="-13"/>
+          </g>
+
+          <g class="rp-hot" data-id="shore-crab" data-hidden="1" transform="translate(240,185)">
+            <circle class="rp-hint" r="24" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <g class="rp-animal">
+              <ellipse cx="0" cy="0" rx="14" ry="10" fill="#5f8a4b" stroke="#3f5f32" stroke-width="1.3"/>
+              <path d="M-13 -3 Q-22 -7 -20 -14 Q-15 -12 -12 -6 Z" fill="#5f8a4b" stroke="#3f5f32" stroke-width="1.1"/>
+              <path d="M13 -3 Q22 -7 20 -14 Q15 -12 12 -6 Z" fill="#5f8a4b" stroke="#3f5f32" stroke-width="1.1"/>
+              <g stroke="#3f5f32" stroke-width="1.5" stroke-linecap="round"><path d="M-12 3 L-21 6 M-11 6 L-18 12 M12 3 L21 6 M11 6 L18 12 M-6 9 L-8 15 M6 9 L8 15"/></g>
+              <circle cx="-4.5" cy="-4" r="1.7" fill="#20301a"/><circle cx="4.5" cy="-4" r="1.7" fill="#20301a"/>
+            </g>
+            <g class="rp-cover">
+              <path d="M-24 12 Q-28 -12 0 -16 Q28 -13 24 11 Q11 20 -24 12 Z" fill="#969c93" stroke="#6f746d" stroke-width="1.2"/>
+              <ellipse cx="-8" cy="-4" rx="4" ry="2.5" fill="#868c83" opacity=".6"/><ellipse cx="9" cy="2" rx="5" ry="3" fill="#868c83" opacity=".5"/>
+            </g>
+            <use class="rp-tick" href="#rp-tick-def" x="16" y="-14"/>
+          </g>
+
+          <g class="rp-hot" data-id="blenny" data-hidden="1" transform="translate(300,175)">
+            <circle class="rp-hint" r="22" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <g class="rp-animal">
+              <path d="M-17 0 Q-4 -9 11 -4 Q18 -2 16 1 Q18 4 11 5 Q-4 9 -17 0 Z" fill="#7c6a45" stroke="#57492f" stroke-width="1.2"/>
+              <path d="M-16 0 Q-24 -6 -23 0 Q-24 6 -16 0 Z" fill="#6b5a3a" stroke="#57492f" stroke-width="1"/>
+              <circle cx="9" cy="-2" r="2.3" fill="#2a2418"/><circle cx="9.7" cy="-2.7" r="0.8" fill="#fff"/>
+              <g fill="#5a4d33"><circle cx="0" cy="-1" r="1"/><circle cx="-6" cy="1" r="1"/><circle cx="4" cy="2" r="1"/><circle cx="-3" cy="-3" r="0.9"/></g>
+            </g>
+            <g class="rp-cover" fill="#2f7d4f" stroke="#236240" stroke-width="1">
+              <path d="M-13 22 Q-21 2 -11 -20 Q-6 -3 -9 22 Z"/><path d="M-1 24 Q-7 0 2 -25 Q8 -2 4 24 Z"/><path d="M12 22 Q19 4 10 -18 Q5 -2 7 22 Z"/>
+            </g>
+            <use class="rp-tick" href="#rp-tick-def" x="16" y="-12"/>
+          </g>
+
+          <g class="rp-hot" data-id="starfish" data-hidden="1" transform="translate(58,196)">
+            <circle class="rp-hint" r="24" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <g class="rp-animal">
+              <path d="M0 -17 L4.1 -5.7 L16.2 -5.3 L6.7 2.2 L10 13.8 L0 7 L-10 13.8 L-6.7 2.2 L-16.2 -5.3 L-4.1 -5.7 Z" fill="#e8905a" stroke="#c96f3c" stroke-width="1.2"/>
+              <g fill="#cf7b48"><circle cx="0" cy="-9" r="1"/><circle cx="0" cy="-3" r="1"/><circle cx="8" cy="0" r="1"/><circle cx="-8" cy="0" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="-4" cy="6" r="1"/></g>
+            </g>
+            <g class="rp-cover">
+              <path d="M-24 12 Q-28 -12 0 -16 Q28 -13 24 11 Q11 20 -24 12 Z" fill="#8b9089" stroke="#6a6f69" stroke-width="1.2"/>
+              <ellipse cx="-9" cy="-3" rx="4" ry="2.5" fill="#7d827b" opacity=".6"/><ellipse cx="8" cy="3" rx="5" ry="3" fill="#7d827b" opacity=".5"/>
+            </g>
+            <use class="rp-tick" href="#rp-tick-def" x="17" y="-14"/>
+          </g>
+        </svg>
+      </div>
+      <div class="rp-celebrate" id="rp-celebrate">🎉 You found all 7 — Rock Pool Champion!</div>
+      <ul class="medialist" id="rp-panels"></ul>
+      <details class="credits" id="rp-credits-wrap" style="display:none"><summary>Creature photo credits</summary><ul id="rp-credits"></ul></details>
     </section>
   </main>
 
@@ -958,6 +1094,51 @@ loadWeather(); loadMarine();
   });
   document.getElementById('lb-close').addEventListener('click',close);
   lb.addEventListener('click',e=>{ if(e.target===lb) close(); });
+})();
+
+/* ---------- Rock Pool Explorer ---------- */
+(function(){
+  const scene=document.getElementById('rp-scene');
+  const panelsEl=document.getElementById('rp-panels');
+  if(!scene||!panelsEl) return;
+  const countEl=document.getElementById('rp-count'), progEl=document.getElementById('rp-progress'), celebrateEl=document.getElementById('rp-celebrate');
+  const RP=[
+    {id:'limpet', name:'Limpet', emoji:'🐚', desc:'A cone-shaped snail clamped tight to the rock. It grazes algae at high tide, then finds its way back to the very same spot — its "home scar".', wiki:'https://en.wikipedia.org/wiki/Common_limpet'},
+    {id:'barnacle', name:'Barnacle', emoji:'🌋', desc:'Tiny volcano-shaped shells cemented to the rock. Underwater they open a trapdoor and comb the water with feathery legs to feed.', wiki:'https://en.wikipedia.org/wiki/Semibalanus_balanoides'},
+    {id:'anemone', name:'Beadlet anemone', emoji:'🌺', desc:'A blob of red jelly out of water; submerged it opens a ring of stinging tentacles to catch tiny prey. Harmless to admire — don\'t touch.', wiki:'https://en.wikipedia.org/wiki/Actinia_equina'},
+    {id:'prawn', name:'Common prawn', emoji:'🦐', desc:'Almost see-through, it hovers and darts about the pool. Look for its flicking antennae and little black eyes.', wiki:'https://en.wikipedia.org/wiki/Palaemon_serratus'},
+    {id:'shore-crab', name:'Shore crab', emoji:'🦀', desc:'The classic rockpool crab. Lift a stone and it scuttles sideways for cover — mind those pincers!', wiki:'https://en.wikipedia.org/wiki/Carcinus_maenas'},
+    {id:'blenny', name:'Blenny (shanny)', emoji:'🐟', desc:'A cheeky little fish that can gulp air and wriggle between pools. It hides under weed and watches with bulging eyes.', wiki:'https://en.wikipedia.org/wiki/Lipophrys_pholis'},
+    {id:'starfish', name:'Common starfish', emoji:'⭐', desc:'Five arms lined with hundreds of tiny tube feet. It prises open shellfish and pushes its stomach out to eat them — really!', wiki:'https://en.wikipedia.org/wiki/Asterias_rubens'}
+  ];
+  const locked=rp=>`<li class="rp-panel locked" data-id="${rp.id}"><div class="rp-q">?</div><span><b>Undiscovered</b><small>Hiding somewhere in the pool…</small></span></li>`;
+  const unlocked=rp=>`<li class="rp-panel reveal" data-id="${rp.id}"><img class="rp-thumb" src="img/rockpool/${rp.id}.jpg" alt="${rp.name}"><span><b>${rp.emoji} ${rp.name}</b><small>${rp.desc}</small><a class="more" href="${rp.wiki}" target="_blank" rel="noopener">Learn more</a></span></li>`;
+  panelsEl.innerHTML=RP.map(locked).join('');
+  let found=0;
+  function discover(id){
+    const hot=scene.querySelector('.rp-hot[data-id="'+id+'"]');
+    if(!hot || hot.classList.contains('found')) return;
+    hot.classList.add('found');
+    const rp=RP.find(r=>r.id===id), li=panelsEl.querySelector('.rp-panel[data-id="'+id+'"]');
+    if(rp && li) li.outerHTML=unlocked(rp);
+    found++; countEl.textContent=found;
+    if(found===RP.length){ progEl.classList.add('done'); progEl.innerHTML='✅ All 7 discovered!'; celebrateEl.style.display='block'; }
+  }
+  scene.addEventListener('click', e=>{ const hot=e.target.closest('.rp-hot'); if(hot) discover(hot.dataset.id); });
+  // launch + credits
+  document.querySelectorAll('[data-rp="open"]').forEach(el=>el.addEventListener('click', e=>{ e.preventDefault(); go('rockpool'); }));
+  const CR=[
+    ['Limpet','Diego Delso','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Lapa_com%C3%BAn_(Patella_vulgata),_Set%C3%BAbal,_Portugal,_2020-08-01,_DD_02.jpg'],
+    ['Barnacle','Ryan Hodnett','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Northern_Acorn_Barnacle_(Fj%C3%A6rerur)_(Semibalanus_balanoides)_-_And%C3%B8y,_Norway_2023-07-12.jpg'],
+    ['Beadlet anemone','Hans Hillewaert','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Actinia_equina_(Boulogne-sur-Mer).jpg'],
+    ['Common prawn','Holger Krisp','CC BY 4.0','https://commons.wikimedia.org/wiki/File:S%C3%A4gegarnele_Palaemon_serratus_1.jpg'],
+    ['Shore crab','Hans Hillewaert','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Carcinus_maenas.jpg'],
+    ['Blenny','Gilles San Martin','CC BY-SA 3.0','https://commons.wikimedia.org/wiki/File:Lipophrys_pholis_1.jpg'],
+    ['Starfish','Herbythyme','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Common_starfish_-_torbay.jpg']
+  ];
+  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('rp-credits').innerHTML=CR.map(([n,who,lic,page])=>`<li><a href="${esc(page)}" target="_blank" rel="noopener">${esc(n)}</a> — ${esc(who)}, ${lic}</li>`).join('')+`<li style="margin-top:6px">Photos via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>.</li>`;
+  document.getElementById('rp-credits-wrap').style.display='';
 })();
 
 /* ---------- Service worker (offline) ---------- */

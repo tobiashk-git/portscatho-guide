@@ -40,5 +40,17 @@
   "artist": "Herbythyme",
   "license": "CC BY-SA 4.0",
   "page": "https://commons.wikimedia.org/wiki/File%3ACommon_starfish_-_torbay.jpg"
+ },
+ "snail": {
+  "title": "Littorina littorea 02.JPG",
+  "artist": "H. Zell",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3ALittorina_littorea_02.JPG"
+ },
+ "hermit-crab": {
+  "title": "Pagurus bernhardus.jpg",
+  "artist": "Hans Hillewaert",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File%3APagurus_bernhardus.jpg"
  }
 }

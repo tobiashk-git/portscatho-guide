@@ -182,7 +182,10 @@
   .rp-panel.locked b, .rp-panel.locked small{color:var(--ink2)}
   .rp-panel.reveal{animation:rp-in .5s ease}
   @keyframes rp-in{from{opacity:.15; transform:translateY(7px)}to{opacity:1; transform:none}}
-  .rp-celebrate{background:linear-gradient(180deg,#e7f5ea,#d7efdd); border:1px solid #bfe3c9; border-radius:14px; padding:13px 15px; font-weight:800; color:var(--good); text-align:center; margin:2px 0 12px; display:none}
+  .rp-celebrate{background:linear-gradient(180deg,#e7f5ea,#d7efdd); border:1px solid #bfe3c9; border-radius:14px; padding:13px 15px; font-weight:800; color:var(--good); text-align:center; margin:2px 0 12px; display:none; cursor:pointer; width:100%}
+  .rp-celebrate:active{transform:scale(.99)}
+  .rp-reset{background:#fff; border:1.5px solid var(--teal); color:var(--teal); font-weight:800; font-size:.85rem; padding:6px 15px; border-radius:999px; cursor:pointer; box-shadow:var(--shadow)}
+  .rp-reset:active{transform:scale(.96)}
 
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -604,22 +607,33 @@
     <section class="view" id="view-rockpool">
       <button class="rp-back" data-go="nature">‹ Back to Nature</button>
       <h2 style="margin:2px 2px 6px">🪸 Rock Pool Explorer</h2>
-      <p class="small muted" style="margin:0 2px 10px">Tap the creatures you can see, and lift the <b>seaweed</b> &amp; <b>rocks</b> to uncover the ones hiding. Find all 7!</p>
-      <div class="rp-progress" id="rp-progress">🔍 <span id="rp-count">0</span> of 7 discovered</div>
+      <p class="small muted" style="margin:0 2px 10px">Tap the creatures you can see, and lift the <b>seaweed</b> &amp; <b>rocks</b> to uncover the ones hiding. Find all 9 — and watch out for a surprise in the shells!</p>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px">
+        <div class="rp-progress" id="rp-progress" style="margin:0">🔍 0 of 9 discovered</div>
+        <button class="rp-reset" id="rp-reset" type="button">↻ Play again</button>
+      </div>
       <div class="rp-scene" id="rp-scene">
         <svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interactive rock pool">
           <defs>
             <linearGradient id="rp-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fb0cd"/><stop offset="1" stop-color="#0c6a86"/></linearGradient>
             <g id="rp-tick-def"><circle r="7.5" fill="#2f9e5f"/><path d="M-3.2 0 L-1 2.6 L3.6 -3.2" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
           </defs>
-          <rect width="360" height="230" fill="url(#rp-water)"/>
-          <g stroke="#ffffff" stroke-opacity=".16" fill="none" stroke-width="2"><path d="M18 34 Q45 28 72 34"/><path d="M244 26 Q270 20 296 26"/><path d="M146 52 Q172 46 198 52"/></g>
-          <path d="M0 165 Q90 155 180 163 T360 160 V230 H0 Z" fill="#cdbf9b"/>
-          <g fill="#7f857e" stroke="#6a6f69" stroke-width="1">
-            <ellipse cx="55" cy="150" rx="48" ry="27"/><ellipse cx="304" cy="104" rx="50" ry="30"/><ellipse cx="182" cy="162" rx="46" ry="20"/>
+          <rect width="360" height="230" fill="#868b83"/>
+          <g fill="#767b73" opacity=".5"><ellipse cx="26" cy="26" rx="48" ry="32"/><ellipse cx="334" cy="32" rx="54" ry="36"/><ellipse cx="14" cy="150" rx="44" ry="48"/><ellipse cx="348" cy="150" rx="44" ry="52"/></g>
+          <g fill="#989d94" opacity=".4"><ellipse cx="95" cy="15" rx="36" ry="13"/><ellipse cx="255" cy="13" rx="38" ry="12"/></g>
+          <path d="M60 92 Q54 54 130 50 Q200 44 272 55 Q314 62 306 108 Q312 150 248 162 Q175 172 108 161 Q54 150 60 92 Z" fill="url(#rp-water)"/>
+          <path d="M60 92 Q54 54 130 50 Q200 44 272 55 Q314 62 306 108 Q312 150 248 162 Q175 172 108 161 Q54 150 60 92 Z" fill="none" stroke="#0a566b" stroke-width="6" stroke-opacity=".28"/>
+          <g stroke="#ffffff" stroke-opacity=".18" fill="none" stroke-width="2"><path d="M92 82 Q116 76 140 82"/><path d="M198 72 Q224 66 250 72"/><path d="M150 116 Q176 110 202 116"/></g>
+          <ellipse cx="150" cy="128" rx="42" ry="16" fill="#6d736c" opacity=".8"/>
+          <g fill="#31824f" stroke="#25683f" stroke-width="1">
+            <g transform="translate(120,50)"><path d="M-10 -7 Q-16 14 -8 30 Q-5 12 -7 -7 Z"/><path d="M0 -9 Q-5 16 3 32 Q7 12 4 -9 Z"/><path d="M10 -7 Q16 14 8 28 Q5 12 7 -7 Z"/></g>
+            <g transform="translate(232,48)"><path d="M-9 -6 Q-15 12 -7 26 Q-4 10 -6 -6 Z"/><path d="M2 -8 Q-3 14 5 30 Q9 10 6 -8 Z"/></g>
+            <g transform="translate(63,102)"><path d="M-8 -6 Q-14 10 -6 22 Q-3 8 -5 -6 Z"/><path d="M2 -7 Q-3 12 5 24 Q8 8 5 -7 Z"/></g>
+            <g transform="translate(302,108)"><path d="M-7 -6 Q-13 10 -5 22 Q-2 8 -4 -6 Z"/><path d="M3 -7 Q-2 12 6 22 Q9 8 5 -7 Z"/></g>
           </g>
+          <path d="M0 188 Q90 179 180 186 T360 183 V230 H0 Z" fill="#d8c9a3"/>
 
-          <g class="rp-hot" data-id="limpet" transform="translate(55,135)">
+          <g class="rp-hot" data-id="limpet" transform="translate(48,40)">
             <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
             <ellipse cx="0" cy="7" rx="15" ry="4.5" fill="#6f665b"/>
             <path d="M-14 6 Q0 -13 14 6 Z" fill="#aca291" stroke="#6f665b" stroke-width="1.2"/>
@@ -627,7 +641,7 @@
             <use class="rp-tick" href="#rp-tick-def" x="15" y="-11"/>
           </g>
 
-          <g class="rp-hot" data-id="barnacle" transform="translate(302,88)">
+          <g class="rp-hot" data-id="barnacle" transform="translate(312,42)">
             <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
             <g stroke="#b3a98f" stroke-width="1.1">
               <g fill="#ece7db"><path d="M-14 6 Q-13 -5 -8 -6 Q-3 -5 -3 6 Z"/><ellipse cx="-8.5" cy="-4" rx="2.2" ry="1.3" fill="#8a8272"/></g>
@@ -637,7 +651,7 @@
             <use class="rp-tick" href="#rp-tick-def" x="18" y="-9"/>
           </g>
 
-          <g class="rp-hot" data-id="anemone" transform="translate(182,150)">
+          <g class="rp-hot" data-id="anemone" transform="translate(150,120)">
             <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
             <g stroke="#e0654e" stroke-width="2.2" stroke-linecap="round">
               <path d="M0 -5 V-17"/><path d="M-5 -5 L-9 -15"/><path d="M5 -5 L9 -15"/><path d="M-9 -3 L-15 -10"/><path d="M9 -3 L15 -10"/><path d="M-2.5 -6 L-4 -17"/><path d="M2.5 -6 L4 -17"/>
@@ -647,7 +661,33 @@
             <use class="rp-tick" href="#rp-tick-def" x="14" y="-12"/>
           </g>
 
-          <g class="rp-hot" data-id="prawn" data-hidden="1" transform="translate(132,100)">
+          <g class="rp-hot" data-id="snail" transform="translate(210,140)">
+            <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <path d="M10 6 Q17 -2 8 -11 Q-9 -18 -14 -1 Q-15 11 1 11 Q9 11 10 6 Z" fill="#caa878" stroke="#9c7d52" stroke-width="1.3"/>
+            <path d="M5 4 Q11 -1 4 -8 Q-6 -12 -9 -1 Q-9 6 1 6" fill="none" stroke="#9c7d52" stroke-width="1" opacity=".8"/>
+            <path d="M1 2 Q5 -1 0 -5 Q-4 -6 -5 0" fill="none" stroke="#9c7d52" stroke-width=".8" opacity=".7"/>
+            <g class="rp-animal">
+              <path d="M8 8 Q17 10 23 5 Q26 2 20 1 Q13 2 9 6 Z" fill="#c3ad8f" stroke="#8f7d64" stroke-width="1"/>
+              <path d="M21 3 L28 -3 M23 6 L30 3" stroke="#8f7d64" stroke-width="1.2" fill="none"/>
+              <circle cx="28" cy="-3" r="1.1" fill="#333"/><circle cx="30" cy="3" r="1.1" fill="#333"/>
+            </g>
+            <use class="rp-tick" href="#rp-tick-def" x="14" y="-13"/>
+          </g>
+
+          <g class="rp-hot" data-id="hermit-crab" transform="translate(266,150)">
+            <circle class="rp-hint" r="20" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
+            <path d="M10 6 Q17 -2 8 -11 Q-9 -18 -14 -1 Q-15 11 1 11 Q9 11 10 6 Z" fill="#caa878" stroke="#9c7d52" stroke-width="1.3"/>
+            <path d="M5 4 Q11 -1 4 -8 Q-6 -12 -9 -1 Q-9 6 1 6" fill="none" stroke="#9c7d52" stroke-width="1" opacity=".8"/>
+            <path d="M1 2 Q5 -1 0 -5 Q-4 -6 -5 0" fill="none" stroke="#9c7d52" stroke-width=".8" opacity=".7"/>
+            <g class="rp-animal">
+              <g stroke="#b06a3c" stroke-width="1.6" stroke-linecap="round"><path d="M8 8 L16 13 M9 10 L15 16 M10 11 L13 17"/></g>
+              <path d="M9 6 Q17 4 22 9 Q26 13 21 14 Q16 12 11 8 Z" fill="#d98a5a" stroke="#b06a3c" stroke-width="1"/>
+              <circle cx="12" cy="4" r="1" fill="#222"/>
+            </g>
+            <use class="rp-tick" href="#rp-tick-def" x="14" y="-13"/>
+          </g>
+
+          <g class="rp-hot" data-id="prawn" data-hidden="1" transform="translate(80,90)">
             <circle class="rp-hint" r="22" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
             <g class="rp-animal">
               <path d="M-15 3 Q-4 -10 8 -6 Q17 -3 15 6 Q10 3 5 4" fill="#f4dccd" fill-opacity=".9" stroke="#d59f8a" stroke-width="1.3"/>
@@ -657,12 +697,12 @@
               <circle cx="9" cy="-4" r="1.6" fill="#33241d"/>
             </g>
             <g class="rp-cover" fill="#2f7d4f" stroke="#236240" stroke-width="1">
-              <path d="M-13 22 Q-21 2 -11 -20 Q-6 -3 -9 22 Z"/><path d="M-1 24 Q-7 0 2 -25 Q8 -2 4 24 Z"/><path d="M12 22 Q19 4 10 -18 Q5 -2 7 22 Z"/>
+              <path d="M-12 -18 Q-19 2 -10 20 Q-6 2 -9 -18 Z"/><path d="M0 -20 Q-6 4 3 22 Q8 2 4 -20 Z"/><path d="M12 -18 Q18 2 9 18 Q5 2 7 -18 Z"/>
             </g>
             <use class="rp-tick" href="#rp-tick-def" x="16" y="-13"/>
           </g>
 
-          <g class="rp-hot" data-id="shore-crab" data-hidden="1" transform="translate(240,185)">
+          <g class="rp-hot" data-id="shore-crab" data-hidden="1" transform="translate(112,150)">
             <circle class="rp-hint" r="24" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
             <g class="rp-animal">
               <ellipse cx="0" cy="0" rx="14" ry="10" fill="#5f8a4b" stroke="#3f5f32" stroke-width="1.3"/>
@@ -678,7 +718,7 @@
             <use class="rp-tick" href="#rp-tick-def" x="16" y="-14"/>
           </g>
 
-          <g class="rp-hot" data-id="blenny" data-hidden="1" transform="translate(300,175)">
+          <g class="rp-hot" data-id="blenny" data-hidden="1" transform="translate(294,106)">
             <circle class="rp-hint" r="22" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
             <g class="rp-animal">
               <path d="M-17 0 Q-4 -9 11 -4 Q18 -2 16 1 Q18 4 11 5 Q-4 9 -17 0 Z" fill="#7c6a45" stroke="#57492f" stroke-width="1.2"/>
@@ -687,12 +727,12 @@
               <g fill="#5a4d33"><circle cx="0" cy="-1" r="1"/><circle cx="-6" cy="1" r="1"/><circle cx="4" cy="2" r="1"/><circle cx="-3" cy="-3" r="0.9"/></g>
             </g>
             <g class="rp-cover" fill="#2f7d4f" stroke="#236240" stroke-width="1">
-              <path d="M-13 22 Q-21 2 -11 -20 Q-6 -3 -9 22 Z"/><path d="M-1 24 Q-7 0 2 -25 Q8 -2 4 24 Z"/><path d="M12 22 Q19 4 10 -18 Q5 -2 7 22 Z"/>
+              <path d="M-12 -18 Q-19 2 -10 20 Q-6 2 -9 -18 Z"/><path d="M0 -20 Q-6 4 3 22 Q8 2 4 -20 Z"/><path d="M12 -18 Q18 2 9 18 Q5 2 7 -18 Z"/>
             </g>
             <use class="rp-tick" href="#rp-tick-def" x="16" y="-12"/>
           </g>
 
-          <g class="rp-hot" data-id="starfish" data-hidden="1" transform="translate(58,196)">
+          <g class="rp-hot" data-id="starfish" data-hidden="1" transform="translate(178,156)">
             <circle class="rp-hint" r="24" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 5"/>
             <g class="rp-animal">
               <path d="M0 -17 L4.1 -5.7 L16.2 -5.3 L6.7 2.2 L10 13.8 L0 7 L-10 13.8 L-6.7 2.2 L-16.2 -5.3 L-4.1 -5.7 Z" fill="#e8905a" stroke="#c96f3c" stroke-width="1.2"/>
@@ -706,7 +746,7 @@
           </g>
         </svg>
       </div>
-      <div class="rp-celebrate" id="rp-celebrate">🎉 You found all 7 — Rock Pool Champion!</div>
+      <div class="rp-celebrate" id="rp-celebrate" role="button" tabindex="0">🎉 You found all 9 — Rock Pool Champion! &nbsp;↻ Play again?</div>
       <ul class="medialist" id="rp-panels"></ul>
       <details class="credits" id="rp-credits-wrap" style="display:none"><summary>Creature photo credits</summary><ul id="rp-credits"></ul></details>
     </section>
@@ -1101,11 +1141,13 @@ loadWeather(); loadMarine();
   const scene=document.getElementById('rp-scene');
   const panelsEl=document.getElementById('rp-panels');
   if(!scene||!panelsEl) return;
-  const countEl=document.getElementById('rp-count'), progEl=document.getElementById('rp-progress'), celebrateEl=document.getElementById('rp-celebrate');
+  const progEl=document.getElementById('rp-progress'), celebrateEl=document.getElementById('rp-celebrate');
   const RP=[
     {id:'limpet', name:'Limpet', emoji:'🐚', desc:'A cone-shaped snail clamped tight to the rock. It grazes algae at high tide, then finds its way back to the very same spot — its "home scar".', wiki:'https://en.wikipedia.org/wiki/Common_limpet'},
     {id:'barnacle', name:'Barnacle', emoji:'🌋', desc:'Tiny volcano-shaped shells cemented to the rock. Underwater they open a trapdoor and comb the water with feathery legs to feed.', wiki:'https://en.wikipedia.org/wiki/Semibalanus_balanoides'},
     {id:'anemone', name:'Beadlet anemone', emoji:'🌺', desc:'A blob of red jelly out of water; submerged it opens a ring of stinging tentacles to catch tiny prey. Harmless to admire — don\'t touch.', wiki:'https://en.wikipedia.org/wiki/Actinia_equina'},
+    {id:'snail', name:'Periwinkle (winkle)', emoji:'🐌', desc:'A little sea snail that grazes algae. When the tide goes out it seals itself inside its shell with a tiny trapdoor.', wiki:'https://en.wikipedia.org/wiki/Common_periwinkle'},
+    {id:'hermit-crab', name:'Hermit crab', emoji:'🦀', desc:'Surprise! It has no shell of its own, so it borrows an empty snail shell and lugs it around — swapping to a bigger one as it grows.', wiki:'https://en.wikipedia.org/wiki/Pagurus_bernhardus'},
     {id:'prawn', name:'Common prawn', emoji:'🦐', desc:'Almost see-through, it hovers and darts about the pool. Look for its flicking antennae and little black eyes.', wiki:'https://en.wikipedia.org/wiki/Palaemon_serratus'},
     {id:'shore-crab', name:'Shore crab', emoji:'🦀', desc:'The classic rockpool crab. Lift a stone and it scuttles sideways for cover — mind those pincers!', wiki:'https://en.wikipedia.org/wiki/Carcinus_maenas'},
     {id:'blenny', name:'Blenny (shanny)', emoji:'🐟', desc:'A cheeky little fish that can gulp air and wriggle between pools. It hides under weed and watches with bulging eyes.', wiki:'https://en.wikipedia.org/wiki/Lipophrys_pholis'},
@@ -1115,16 +1157,29 @@ loadWeather(); loadMarine();
   const unlocked=rp=>`<li class="rp-panel reveal" data-id="${rp.id}"><img class="rp-thumb" src="img/rockpool/${rp.id}.jpg" alt="${rp.name}"><span><b>${rp.emoji} ${rp.name}</b><small>${rp.desc}</small><a class="more" href="${rp.wiki}" target="_blank" rel="noopener">Learn more</a></span></li>`;
   panelsEl.innerHTML=RP.map(locked).join('');
   let found=0;
+  function updateProgress(){
+    if(found>=RP.length){ progEl.classList.add('done'); progEl.textContent='✅ All '+RP.length+' discovered!'; celebrateEl.style.display='block'; }
+    else { progEl.classList.remove('done'); progEl.textContent='🔍 '+found+' of '+RP.length+' discovered'; celebrateEl.style.display='none'; }
+  }
   function discover(id){
     const hot=scene.querySelector('.rp-hot[data-id="'+id+'"]');
     if(!hot || hot.classList.contains('found')) return;
     hot.classList.add('found');
     const rp=RP.find(r=>r.id===id), li=panelsEl.querySelector('.rp-panel[data-id="'+id+'"]');
     if(rp && li) li.outerHTML=unlocked(rp);
-    found++; countEl.textContent=found;
-    if(found===RP.length){ progEl.classList.add('done'); progEl.innerHTML='✅ All 7 discovered!'; celebrateEl.style.display='block'; }
+    found++; updateProgress();
+  }
+  function reset(){
+    found=0;
+    scene.querySelectorAll('.rp-hot.found').forEach(h=>h.classList.remove('found'));
+    panelsEl.innerHTML=RP.map(locked).join('');
+    updateProgress();
   }
   scene.addEventListener('click', e=>{ const hot=e.target.closest('.rp-hot'); if(hot) discover(hot.dataset.id); });
+  document.getElementById('rp-reset').addEventListener('click', reset);
+  celebrateEl.addEventListener('click', reset);
+  celebrateEl.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); reset(); } });
+  updateProgress();
   // launch + credits
   document.querySelectorAll('[data-rp="open"]').forEach(el=>el.addEventListener('click', e=>{ e.preventDefault(); go('rockpool'); }));
   const CR=[
@@ -1134,7 +1189,9 @@ loadWeather(); loadMarine();
     ['Common prawn','Holger Krisp','CC BY 4.0','https://commons.wikimedia.org/wiki/File:S%C3%A4gegarnele_Palaemon_serratus_1.jpg'],
     ['Shore crab','Hans Hillewaert','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Carcinus_maenas.jpg'],
     ['Blenny','Gilles San Martin','CC BY-SA 3.0','https://commons.wikimedia.org/wiki/File:Lipophrys_pholis_1.jpg'],
-    ['Starfish','Herbythyme','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Common_starfish_-_torbay.jpg']
+    ['Starfish','Herbythyme','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Common_starfish_-_torbay.jpg'],
+    ['Periwinkle','H. Zell','CC BY-SA 3.0','https://commons.wikimedia.org/wiki/File:Littorina_littorea_02.JPG'],
+    ['Hermit crab','Hans Hillewaert','CC BY-SA 4.0','https://commons.wikimedia.org/wiki/File:Pagurus_bernhardus.jpg']
   ];
   const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   document.getElementById('rp-credits').innerHTML=CR.map(([n,who,lic,page])=>`<li><a href="${esc(page)}" target="_blank" rel="noopener">${esc(n)}</a> — ${esc(who)}, ${lic}</li>`).join('')+`<li style="margin-top:6px">Photos via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>.</li>`;

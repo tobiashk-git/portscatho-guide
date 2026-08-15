@@ -157,6 +157,11 @@
     background:linear-gradient(90deg, rgba(251,247,239,.93) 0%, rgba(251,247,239,.80) 45%, rgba(251,247,239,.5) 100%), url(img/collage-facts.jpg?v=1) center/cover no-repeat;}
   .btn.bg-facts > *{position:relative; z-index:1}
   .btn.bg-facts small{color:#6a5230}
+  .btn.bg-walks{position:relative; overflow:hidden; border-color:#c9d3c2}
+  .btn.bg-walks::before{content:""; position:absolute; inset:0; z-index:0;
+    background:linear-gradient(90deg, rgba(251,247,239,.93) 0%, rgba(251,247,239,.80) 45%, rgba(251,247,239,.5) 100%), url(img/collage-walks.jpg?v=1) center/cover no-repeat;}
+  .btn.bg-walks > *{position:relative; z-index:1}
+  .btn.bg-walks small{color:#42513a}
 
   /* ---- Rock Pool Explorer ---- */
   .rp-row{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:7px; flex-wrap:wrap}
@@ -368,7 +373,7 @@
 
       <h2 style="margin:14px 2px 10px">Jump in</h2>
       <a class="btn bg-explore" href="#" data-go="explore"><span class="em">🗺️</span><span><b>Explore & map</b><small>Beaches, the Hidden Hut, St Mawes & more</small></span><span class="arr">›</span></a>
-      <a class="btn" href="#" data-go="walks"><span class="em">🥾</span><span><b>Coastal walks</b><small>Cliff-path routes from the village</small></span><span class="arr">›</span></a>
+      <a class="btn bg-walks" href="#" data-go="walks"><span class="em">🥾</span><span><b>Coastal walks</b><small>Cliff-path routes from the village</small></span><span class="arr">›</span></a>
       <a class="btn bg-nature" href="#" data-go="nature"><span class="em">🐦</span><span><b>Nature & wildlife</b><small>Birds, seals, and what's in the sea</small></span><span class="arr">›</span></a>
       <a class="btn bg-weather" href="#" data-go="tides"><span class="em">🌊</span><span><b>Weather & tides</b><small>Forecast, sea state & tide tables</small></span><span class="arr">›</span></a>
       <a class="btn bg-facts" href="#" data-go="facts"><span class="em">💡</span><span><b>Fun facts & tips</b><small>Local lore and practical know-how</small></span><span class="arr">›</span></a>

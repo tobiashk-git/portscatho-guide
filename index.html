@@ -596,13 +596,8 @@
       <h2 style="margin:2px 2px 12px">Fun facts & tips</h2>
 
       <div class="card">
-        <h2>💡 Did you know?</h2>
-        <div class="fact"><div class="n">1</div><div><b>Two villages, one place.</b> Portscatho (the harbour) and Gerrans (up the hill, around the church) effectively merge into one community — the parish is "Gerrans".</div></div>
-        <div class="fact"><div class="n">2</div><div><b>A pilchard past.</b> Like much of Cornwall, Portscatho thrived on pilchard fishing. Old "fish cellars" once salted and pressed the catch for export.</div></div>
-        <div class="fact"><div class="n">3</div><div><b>Roseland ≠ roses.</b> The name likely comes from the Cornish <i>"rosinis"</i> — meaning "promontory / heath isle" — not the flower.</div></div>
-        <div class="fact"><div class="n">4</div><div><b>On screen.</b> The Roseland's timeless lanes and coves have featured in TV and film — its unspoilt look is the whole appeal.</div></div>
-        <div class="fact"><div class="n">5</div><div><b>Bronze Age giants.</b> Carne Beacon above the bay is one of the largest Bronze Age barrows in Britain — legend says a king was buried there in a golden boat.</div></div>
-        <div class="fact"><div class="n">6</div><div><b>Gig racing country.</b> Cornish pilot gigs (six-oared rowing boats) are a proud local tradition — you may spot crews training in the bay.</div></div>
+        <h2>💡 Did you know? <button class="refresh" id="facts-shuffle" style="font-size:.78rem">shuffle</button></h2>
+        <div id="facts-list"></div>
         <figure class="ph" style="margin-top:13px"><img src="img/regatta.jpg" alt="Portscatho regatta day"><figcaption>Regatta day in the harbour — a highlight of the summer</figcaption></figure>
       </div>
 
@@ -1280,6 +1275,40 @@ loadWeather(); loadMarine();
   const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   document.getElementById('rp-credits').innerHTML=CR.map(([n,who,lic,page])=>`<li><a href="${esc(page)}" target="_blank" rel="noopener">${esc(n)}</a> — ${esc(who)}, ${lic}</li>`).join('')+`<li style="margin-top:6px">Photos via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>.</li>`;
   document.getElementById('rp-credits-wrap').style.display='';
+})();
+
+/* ---------- Did you know? — 4 random facts, auto-cycling from a larger pool ---------- */
+(function(){
+  const box=document.getElementById('facts-list'); if(!box) return;
+  const FACTS=[
+    ['Two villages, one place.','Portscatho (the harbour) and Gerrans (up the hill, around the church) merge into one community — the parish is "Gerrans".'],
+    ['A pilchard past.','Portscatho once thrived on pilchard fishing. Old "fish cellars" salted and pressed the huge catches for export.'],
+    ['Roseland ≠ roses.','The name likely comes from the Cornish <i>"rosinis"</i> — "promontory / heath isle" — not the flower.'],
+    ['Bronze Age giants.','Carne Beacon above the bay is one of the largest Bronze Age barrows in Britain — legend says a king was buried there in a golden boat.'],
+    ['Gig racing country.','Cornish pilot gigs (six-oared rowing boats) are a proud local tradition — you may spot crews training in the bay.'],
+    ['Star of the small screen.','The lighthouse at St Anthony Head appeared as the lighthouse home in the 1980s TV series <i>Fraggle Rock</i>.'],
+    ['England\'s longest path.','The South West Coast Path — all 630 miles of it — runs right through the village.'],
+    ['Wartime guardian.','St Anthony Head kept a coastal gun battery watching the mouth of Falmouth harbour through both World Wars.'],
+    ['A drowned valley.','The Percuil River is a "ria" — a river valley flooded by the sea after the last Ice Age.'],
+    ['Crimped for miners.','A pasty\'s thick crimped edge was once the "handle" — tin miners held it with grubby hands and tossed the crust away.'],
+    ['Almost an island.','Cornwall is nearly surrounded by sea, joined to the rest of England only by the River Tamar.'],
+    ['Its own language.','Cornwall has its own Celtic language, Kernewek — spot it in names like Porth (cove), Nans (valley) and Tre (farmstead).'],
+    ['Subtropical churchyard.','The Roseland\'s mild climate lets palms and exotic plants thrive — famously at St Just in Roseland.'],
+    ['Seals in the bay.','Grey seals live in Gerrans Bay year-round, and dolphins pass offshore on calm days.'],
+    ['Still a working harbour.','Crab and lobster are still landed at Portscatho — ask on the harbour or at the village shop.']
+  ];
+  const shuffle=a=>{a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a;};
+  let deck=[];
+  function draw4(){ if(deck.length<4) deck=shuffle(FACTS); return deck.splice(0,4); }
+  function paint(){
+    box.innerHTML=draw4().map((f,i)=>`<div class="fact"><div class="n">${i+1}</div><div><b>${f[0]}</b> ${f[1]}</div></div>`).join('');
+  }
+  function render(){ box.style.opacity='0'; setTimeout(()=>{ paint(); box.style.opacity='1'; }, 180); }
+  box.style.transition='opacity .25s ease';
+  paint();
+  setInterval(()=>{ if(!document.hidden) render(); }, 20000);
+  document.getElementById('facts-shuffle').addEventListener('click', render);
+  document.querySelectorAll('[data-go="facts"]').forEach(b=>b.addEventListener('click', render));
 })();
 
 /* ---------- Header activity tip (tide/time/weather sensitive) ---------- */

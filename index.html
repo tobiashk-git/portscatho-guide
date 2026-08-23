@@ -204,6 +204,11 @@
   .wmeta span{margin-right:12px}
   .walk-map{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; text-align:center; min-height:150px; border:2px dashed var(--line); border-radius:14px; background:#f4f7f2; color:var(--ink2); padding:18px}
   .walk-map .ic{font-size:2rem}
+  /* Family gallery */
+  .gal-empty{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; text-align:center; min-height:110px; border:2px dashed var(--line); border-radius:12px; background:#f4f7f2; color:var(--ink2); padding:22px; font-weight:500; font-size:.9rem}
+  .gal-empty .ic{font-size:1.9rem}
+  .gal-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+  .gal-grid img{width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; display:block; cursor:zoom-in; background:#dfeef2}
 
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -378,6 +383,7 @@
       <a class="btn bg-nature" href="#" data-go="nature"><span class="em">🐦</span><span><b>Nature & wildlife</b><small>Birds, seals, and what's in the sea</small></span><span class="arr">›</span></a>
       <a class="btn bg-weather" href="#" data-go="tides"><span class="em">🌊</span><span><b>Weather & tides</b><small>Forecast, sea state & tide tables</small></span><span class="arr">›</span></a>
       <a class="btn bg-facts" href="#" data-go="facts"><span class="em">💡</span><span><b>Fun facts & tips</b><small>Local lore and practical know-how</small></span><span class="arr">›</span></a>
+      <a class="btn" href="#" data-go="gallery"><span class="em">📸</span><span><b>Family gallery</b><small>Holiday memories, year by year</small></span><span class="arr">›</span></a>
     </section>
 
     <!-- ================= EXPLORE ================= -->
@@ -627,6 +633,30 @@
         </div>
       </div>
     </section>
+
+    <!-- ================= GALLERY ================= -->
+    <section class="view" id="view-gallery">
+      <h2 style="margin:2px 2px 6px">📸 Family gallery</h2>
+      <p class="small muted" style="margin:0 2px 12px">An archive of Portscatho holiday memories, year by year.</p>
+
+      <div class="card">
+        <h2>2026</h2>
+        <div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>
+      </div>
+      <div class="card">
+        <h2>2025</h2>
+        <div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>
+      </div>
+      <div class="card">
+        <h2>2024</h2>
+        <div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>
+      </div>
+      <div class="card">
+        <h2>2023</h2>
+        <div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>
+      </div>
+    </section>
+
     <!-- ============ ROCK POOL EXPLORER (hidden) ============ -->
     <section class="view" id="view-rockpool">
       <button class="rp-back" data-go="nature">‹ Back to Nature</button>
@@ -785,6 +815,7 @@
   <button data-go="nature"><span class="ic">🐦</span>Nature</button>
   <button data-go="tides"><span class="ic">🌊</span>Forecast</button>
   <button data-go="facts"><span class="ic">💡</span>Facts</button>
+  <button data-go="gallery"><span class="ic">📸</span>Gallery</button>
 </nav>
 
 <div class="lightbox" id="lightbox">
@@ -1177,7 +1208,7 @@ loadWeather(); loadMarine();
   function close(){ lb.classList.remove('open'); img.src=''; }
   document.addEventListener('click',e=>{
     const t=e.target;
-    if(t.tagName==='IMG' && (t.closest('.gallery')||t.closest('.tile')||t.classList.contains('card-photo')||t.classList.contains('fish-ph')||t.closest('.medialist')||t.closest('.storm-grid')||t.closest('figure.ph'))){
+    if(t.tagName==='IMG' && (t.closest('.gallery')||t.closest('.gal-grid')||t.closest('.tile')||t.classList.contains('card-photo')||t.classList.contains('fish-ph')||t.closest('.medialist')||t.closest('.storm-grid')||t.closest('figure.ph'))){
       const fc=(t.closest('figure')?.querySelector('figcaption')?.textContent)
         || (t.closest('.tile')?.querySelector('b')?.textContent)
         || (t.closest('.medialist') ? t.closest('li')?.querySelector('b')?.textContent : '')

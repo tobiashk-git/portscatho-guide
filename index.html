@@ -541,6 +541,18 @@
         <p class="small muted" style="margin:8px 0 0">Live data from Open-Meteo for Portscatho (50.19°N, 5.00°W). Times shown in UK time.</p>
       </div>
 
+      <div class="card" id="card-tide">
+        <h2>🕐 Tide times</h2>
+        <div id="tide-next" class="loading">Loading tide times…</div>
+        <div id="tide-today"></div>
+        <details id="tide-tomorrow-wrap" style="display:none"><summary style="cursor:pointer;font-size:.85rem;color:var(--sea2);font-weight:600;margin-top:8px">Tomorrow's tides</summary><div id="tide-tomorrow"></div></details>
+        <div id="tide-tip" class="callout" style="margin-top:11px;display:none"></div>
+        <p class="small muted" id="tide-note" style="margin:10px 0 0"></p>
+        <a class="btn" style="margin-top:9px" target="_blank" rel="noopener" href="https://easytide.admiralty.co.uk/?PortID=0033">
+          <span class="em">⚓</span><span><b>Official Admiralty EasyTide</b><small>UKHO predictions — the authority, and for dates beyond the table</small></span><span class="arr">›</span></a>
+        <div class="callout"><b>Rule of twelfths:</b> the tide moves slowest around high & low water and fastest in the middle two hours — handy for timing a beach walk or a swim.</div>
+      </div>
+
       <div class="card" id="card-wind">
         <h2>💨 Wind</h2>
         <div id="wind" class="loading">Loading wind…</div>
@@ -565,18 +577,6 @@
           <img src="img/storm/storm2.jpg" alt="Waves breaking over the pier and navigation marker" />
           <img src="img/storm/waves.jpg" alt="Stormy seas churning across Gerrans Bay" />
         </div>
-      </div>
-
-      <div class="card" id="card-tide">
-        <h2>🕐 Tide times</h2>
-        <div id="tide-next" class="loading">Loading tide times…</div>
-        <div id="tide-today"></div>
-        <details id="tide-tomorrow-wrap" style="display:none"><summary style="cursor:pointer;font-size:.85rem;color:var(--sea2);font-weight:600;margin-top:8px">Tomorrow's tides</summary><div id="tide-tomorrow"></div></details>
-        <div id="tide-tip" class="callout" style="margin-top:11px;display:none"></div>
-        <p class="small muted" id="tide-note" style="margin:10px 0 0"></p>
-        <a class="btn" style="margin-top:9px" target="_blank" rel="noopener" href="https://easytide.admiralty.co.uk/?PortID=0033">
-          <span class="em">⚓</span><span><b>Official Admiralty EasyTide</b><small>UKHO predictions — the authority, and for dates beyond the table</small></span><span class="arr">›</span></a>
-        <div class="callout"><b>Rule of twelfths:</b> the tide moves slowest around high & low water and fastest in the middle two hours — handy for timing a beach walk or a swim.</div>
       </div>
     </section>
 

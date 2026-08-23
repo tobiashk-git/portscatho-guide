@@ -205,6 +205,12 @@
   .walk-map{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; text-align:center; min-height:150px; border:2px dashed var(--line); border-radius:14px; background:#f4f7f2; color:var(--ink2); padding:18px}
   .walk-map .ic{font-size:2rem}
   /* Family gallery */
+  .gal-year{background:var(--card); border:1px solid var(--line); border-radius:14px; margin-bottom:9px; box-shadow:var(--shadow); overflow:hidden}
+  .gal-year summary{cursor:pointer; padding:13px 16px; font-weight:800; font-size:1.05rem; color:var(--sea); list-style:none; display:flex; align-items:center; justify-content:space-between}
+  .gal-year summary::-webkit-details-marker{display:none}
+  .gal-year summary::after{content:"▸"; color:var(--ink2); font-size:1rem; transition:transform .2s}
+  .gal-year[open] summary::after{transform:rotate(90deg)}
+  .gal-body{padding:0 14px 14px}
   .gal-empty{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; text-align:center; min-height:110px; border:2px dashed var(--line); border-radius:12px; background:#f4f7f2; color:var(--ink2); padding:22px; font-weight:500; font-size:.9rem}
   .gal-empty .ic{font-size:1.9rem}
   .gal-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
@@ -639,22 +645,7 @@
       <h2 style="margin:2px 2px 6px">📸 Family gallery</h2>
       <p class="small muted" style="margin:0 2px 12px">An archive of Portscatho holiday memories, year by year.</p>
 
-      <div class="card">
-        <h2>2026</h2>
-        <div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>
-      </div>
-      <div class="card">
-        <h2>2025</h2>
-        <div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>
-      </div>
-      <div class="card">
-        <h2>2024</h2>
-        <div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>
-      </div>
-      <div class="card">
-        <h2>2023</h2>
-        <div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>
-      </div>
+      <div id="gallery-years"></div>
     </section>
 
     <!-- ============ ROCK POOL EXPLORER (hidden) ============ -->
@@ -1339,6 +1330,17 @@ loadWeather(); loadMarine();
   paint();
   window.__shuffleFacts=render;
   document.getElementById('facts-shuffle').addEventListener('click', render);
+})();
+
+/* ---------- Family gallery — collapsed year accordions (1970–present) ---------- */
+(function(){
+  const box=document.getElementById('gallery-years'); if(!box) return;
+  const now=new Date().getFullYear();
+  let html='';
+  for(let y=now; y>=1970; y--){
+    html+='<details class="gal-year"><summary>'+y+'</summary><div class="gal-body"><div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div></div></details>';
+  }
+  box.innerHTML=html;
 })();
 
 /* ---------- Header activity tip (tide/time/weather sensitive) ---------- */

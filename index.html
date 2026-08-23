@@ -779,16 +779,16 @@
       <details class="credits" id="rp-credits-wrap" style="display:none"><summary>Creature photo credits</summary><ul id="rp-credits"></ul></details>
     </section>
   </main>
-
-  <nav class="tabs">
-    <button data-go="home" class="active"><span class="ic">🏠</span>Home</button>
-    <button data-go="explore"><span class="ic">🗺️</span>Explore</button>
-    <button data-go="walks"><span class="ic">🥾</span>Walks</button>
-    <button data-go="nature"><span class="ic">🐦</span>Nature</button>
-    <button data-go="tides"><span class="ic">🌊</span>Tides</button>
-    <button data-go="facts"><span class="ic">💡</span>Facts</button>
-  </nav>
 </div>
+
+<nav class="tabs">
+  <button data-go="home" class="active"><span class="ic">🏠</span>Home</button>
+  <button data-go="explore"><span class="ic">🗺️</span>Explore</button>
+  <button data-go="walks"><span class="ic">🥾</span>Walks</button>
+  <button data-go="nature"><span class="ic">🐦</span>Nature</button>
+  <button data-go="tides"><span class="ic">🌊</span>Tides</button>
+  <button data-go="facts"><span class="ic">💡</span>Facts</button>
+</nav>
 
 <div class="lightbox" id="lightbox">
   <button class="x" id="lb-close" aria-label="Close">✕</button>
@@ -1278,42 +1278,43 @@ loadWeather(); loadMarine();
 
 /* ---------- Pull to refresh (Safari-style) ---------- */
 (function(){
-  const ptr=document.getElementById('ptr'), ring=ptr.querySelector('.ptr-ring');
+  const ptr=document.getElementById('ptr'), ring=ptr.querySelector('.ptr-ring'), app=document.querySelector('.app');
   let startY=0, pulling=false, dist=0, refreshing=false;
   const DAMP=0.5, TRIGGER=64;
-  const damp=d=>Math.min(d*DAMP, 110);
-  function setPull(p){ ptr.style.transform='translateY('+(p-56)+'px)'; ptr.style.opacity=Math.min(p/40,1).toFixed(2); ring.style.transform='rotate('+(p*3.5)+'deg)'; }
+  const damp=d=>Math.min(d*DAMP, 120);
+  function trans(on){ app.style.transition=on?'transform .3s ease':'none'; ptr.style.transition=on?'transform .28s ease, opacity .28s ease':'none'; }
+  function setPull(p){
+    app.style.transform='translateY('+p+'px)';
+    ptr.style.transform='translateY('+(p-52)+'px)'; ptr.style.opacity=Math.min(p/40,1).toFixed(2);
+    ring.style.transform='rotate('+(p*3.5)+'deg)';
+  }
+  function reset(){ app.style.transform=''; ptr.style.transform='translateY(-56px)'; ptr.style.opacity='0'; ring.style.transform=''; }
   document.addEventListener('touchstart', e=>{
     if(refreshing || e.touches.length!==1){ pulling=false; return; }
-    if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true; dist=0; ptr.classList.remove('anim'); }
+    if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true; dist=0; trans(false); }
     else pulling=false;
   }, {passive:true});
   document.addEventListener('touchmove', e=>{
     if(!pulling || refreshing) return;
     dist=e.touches[0].clientY - startY;
     if(dist>0 && window.scrollY<=0){ e.preventDefault(); setPull(damp(dist)); }
-    else if(dist<0){ pulling=false; }
+    else if(dist<0){ pulling=false; trans(true); reset(); }
   }, {passive:false});
   document.addEventListener('touchend', ()=>{
-    if(!pulling || refreshing) return; pulling=false;
-    ptr.classList.add('anim');
-    if(damp(dist)>=TRIGGER) startRefresh();
-    else { ptr.style.transform='translateY(-56px)'; ptr.style.opacity='0'; }
+    if(!pulling || refreshing) return; pulling=false; trans(true);
+    if(damp(dist)>=TRIGGER) startRefresh(); else reset();
   }, {passive:true});
   function startRefresh(){
     refreshing=true; ptr.classList.add('spin');
-    ptr.style.transform='translateY(8px)'; ptr.style.opacity='1'; ring.style.transform='';
+    app.style.transform='translateY(50px)'; ptr.style.transform='translateY(9px)'; ptr.style.opacity='1'; ring.style.transform='';
     if(navigator.vibrate) navigator.vibrate(15);
     const jobs=[];
     try{ if(typeof loadWeather==='function') jobs.push(loadWeather()); }catch(e){}
     try{ if(typeof loadMarine==='function') jobs.push(loadMarine()); }catch(e){}
     const done=Promise.all(jobs.map(p=>Promise.resolve(p).catch(()=>{})));
-    Promise.all([done, new Promise(r=>setTimeout(r,650))]).then(endRefresh);
+    Promise.all([done, new Promise(r=>setTimeout(r,700))]).then(endRefresh);
   }
-  function endRefresh(){
-    refreshing=false; ptr.classList.remove('spin');
-    ptr.style.transform='translateY(-56px)'; ptr.style.opacity='0'; ring.style.transform='';
-  }
+  function endRefresh(){ refreshing=false; ptr.classList.remove('spin'); trans(true); reset(); }
 })();
 
 /* ---------- Service worker (offline) ---------- */

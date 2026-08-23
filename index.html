@@ -45,7 +45,8 @@
     color:#fff; padding:calc(var(--safe-top) + 9px) 18px 9px;
     box-shadow:var(--shadow);
   }
-  header h1{font-size:1.2rem; margin:0; font-weight:800; letter-spacing:.3px}
+  header h1{font-size:1.15rem; margin:0; font-weight:800; letter-spacing:.3px}
+  header .hdr-tip{font-size:.76rem; opacity:.93; margin-top:1px; font-weight:500; line-height:1.25}
 
   main{padding:14px 14px 96px}
   .view{display:none; animation:fade .28s ease}
@@ -137,7 +138,7 @@
   .wind-sub{font-size:.83rem; color:var(--ink2); margin-top:2px}
   .wx-day .w{font-size:.72rem; color:var(--ink2); margin-top:2px}
   .warr{display:inline-block; font-weight:700; color:var(--sea2); font-size:1.05rem; vertical-align:baseline; margin-left:2px}
-  #card-forecast,#card-wind,#card-sea,#card-tide{scroll-margin-top:calc(var(--safe-top) + 56px)}
+  #card-forecast,#card-wind,#card-sea,#card-tide{scroll-margin-top:calc(var(--safe-top) + 64px)}
   .stat.tap{cursor:pointer; position:relative; transition:transform .1s ease, box-shadow .1s ease}
   .stat.tap:active{transform:scale(.98)}
   .stat.tap::after{content:"›"; position:absolute; top:9px; right:11px; color:var(--ink2); opacity:.5; font-size:1rem}
@@ -313,6 +314,7 @@
 <div class="app">
   <header>
     <h1>Welcome to Portscatho</h1>
+    <div class="hdr-tip" id="hdr-tip">Checking the day for you…</div>
   </header>
 
   <main>
@@ -1061,6 +1063,10 @@ async function loadWeather(){
     // Home card
     document.getElementById('home-temp').textContent=Math.round(c.temperature_2m)+'°';
     document.getElementById('home-wx').innerHTML=ct+'<br>'+level+' pressure';
+    // share current conditions for the header activity tip
+    window.__wx={code:c.weather_code, temp:c.temperature_2m, wind:c.wind_speed_10m, gust:c.wind_gusts_10m,
+      precipProb:d.daily.precipitation_probability_max[0], sunrise:d.daily.sunrise[0], sunset:d.daily.sunset[0]};
+    if(window.__updateTip) window.__updateTip();
   }catch(e){
     nowEl.className='err'; nowEl.textContent='Could not load weather (offline?). Pull to refresh when back online.';
     const w=document.getElementById('wind'); w.className='err'; w.textContent='Wind data unavailable offline.';
@@ -1274,6 +1280,55 @@ loadWeather(); loadMarine();
   const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   document.getElementById('rp-credits').innerHTML=CR.map(([n,who,lic,page])=>`<li><a href="${esc(page)}" target="_blank" rel="noopener">${esc(n)}</a> — ${esc(who)}, ${lic}</li>`).join('')+`<li style="margin-top:6px">Photos via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>.</li>`;
   document.getElementById('rp-credits-wrap').style.display='';
+})();
+
+/* ---------- Header activity tip (tide/time/weather sensitive) ---------- */
+(function(){
+  const el=document.getElementById('hdr-tip'); if(!el) return;
+  let TIDES=null;
+  const p2=n=>String(n).padStart(2,'0');
+  const keyOf=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+  const evDate=(k,hm)=>{const[Y,M,D]=k.split('-').map(Number),[h,m]=hm.split(':').map(Number);return new Date(Y,M-1,D,h,m);};
+  function tideProximity(now){
+    let nearLow=false, nearHigh=false;
+    if(TIDES){
+      [keyOf(new Date(+now-864e5)),keyOf(now),keyOf(new Date(+now+864e5))].forEach(k=>{
+        (TIDES[k]||[]).forEach(ev=>{ const diff=Math.abs(evDate(k,ev[1])-now)/60000;
+          if(ev[0]==='L' && diff<=95) nearLow=true;
+          if(ev[0]==='H' && diff<=75) nearHigh=true; });
+      });
+    }
+    return {nearLow, nearHigh};
+  }
+  function render(){
+    const now=new Date(), h=now.getHours(), wx=window.__wx||null;
+    const {nearLow, nearHigh}=tideProximity(now);
+    const code=wx?wx.code:null, temp=wx?wx.temp:null, wind=wx?wx.wind:null, gust=wx?wx.gust:null, pp=wx?wx.precipProb:null;
+    const sunset=wx&&wx.sunset?new Date(wx.sunset):null;
+    const rainy = code!=null && (code>=51 || (pp!=null && pp>=60));
+    const stormy = (gust!=null && gust>=40) || (wind!=null && wind>=33);
+    const sunny = code!=null && code<=2;
+    const warm = temp!=null && temp>=17;
+    const calm = wind==null || wind<15;
+    const nearSunset = sunset && sunset>now && (sunset-now)/60000<=45 && !rainy && !stormy;
+    let msg;
+    if(stormy) msg='🌬️ Wild out there — watch the waves crash over the harbour wall!';
+    else if(rainy) msg='🌧️ A wet one — pasty from Ralph’s or a coffee at Tatams?';
+    else if(nearSunset) msg='🌅 Sunset soon — the harbour’s the spot to watch it';
+    else if(nearLow) msg='🦐 Low tide — perfect for rockpooling & beach walks';
+    else if(sunny && warm && calm) msg='☀️ Beach weather — Porthcurnick or Towan?';
+    else if(nearHigh && warm) msg='🌊 High water — grand for a dip off the beach';
+    else if(wind!=null && wind>=20) msg='🌬️ Breezy today — a bracing cliff walk?';
+    else if(h<10) msg='☕ Morning! A coffee at Tatams to start the day';
+    else if(h>=19) msg='🌙 Evening — a stroll along the seafront?';
+    else if(sunny) msg='A grand day for a wander round the village';
+    else msg='Whatever the weather, the Roseland’s calling';
+    el.textContent=msg;
+  }
+  window.__updateTip=render;
+  fetch('tides.json').then(r=>r.json()).then(d=>{ TIDES=d.days; render(); }).catch(()=>{});
+  render();
+  setInterval(render, 300000);
 })();
 
 /* ---------- Pull to refresh (Safari-style) ---------- */

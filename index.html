@@ -67,10 +67,9 @@
     color:#fff; position:relative; min-height:232px; background:#1f7d9c;
     touch-action:pan-y; user-select:none; -webkit-user-select:none; cursor:grab;
   }
-  .hero-imgs{position:absolute; inset:0; will-change:transform}
+  .hero-imgs{position:absolute; inset:0; display:flex; will-change:transform}
   .hero .dots i{cursor:pointer}
-  .hero-imgs img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1.3s ease}
-  .hero-imgs img.on{opacity:1}
+  .hero-imgs img{flex:0 0 100%; width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; -webkit-user-drag:none}
   .hero .scrim{position:absolute; inset:0;
     background:linear-gradient(180deg, rgba(11,45,60,.28) 0%, rgba(11,45,60,.05) 38%, rgba(9,40,54,.82) 100%)}
   .hero .txt{position:absolute; left:0; right:0; bottom:0; padding:16px 16px 18px; z-index:2}
@@ -1188,30 +1187,53 @@ loadWeather(); loadMarine();
     document.getElementById('home-tide-sub').textContent='Unavailable'; });
 })();
 
-/* ---------- Hero photo rotator (auto + swipe) ---------- */
+/* ---------- Hero photo carousel (auto + swipe, whole strip slides) ---------- */
 (function(){
   const hero=document.getElementById('hero');
-  const wrap=hero.querySelector('.hero-imgs');
-  const imgs=[...wrap.querySelectorAll('img')];
+  const track=hero.querySelector('.hero-imgs');
+  const imgs=[...track.querySelectorAll('img')];
+  const N=imgs.length;
   const dotsBox=document.getElementById('hero-dots');
   imgs.forEach(()=>{const d=document.createElement('i'); dotsBox.appendChild(d);});
   const dots=[...dotsBox.children]; dots[0].classList.add('on');
-  let i=0, timer=null;
-  function show(n){
-    imgs[i].classList.remove('on'); dots[i].classList.remove('on');
-    i=(n%imgs.length+imgs.length)%imgs.length;
-    imgs[i].classList.add('on'); dots[i].classList.add('on');
-  }
-  function start(){ stop(); timer=setInterval(()=>show(i+1),4600); }
-  function stop(){ if(timer){clearInterval(timer); timer=null;} }
-  start();
-  dots.forEach((d,n)=>d.addEventListener('click',()=>{ show(n); start(); }));
 
-  // Manual swipe (pointer covers touch + mouse); drag follows the finger.
+  // Clone end frames so the loop is seamless in both directions.
+  track.appendChild(imgs[0].cloneNode(true));           // after last
+  track.insertBefore(imgs[N-1].cloneNode(true), imgs[0]); // before first
+
+  const DUR=520;
+  let p=1;                 // track position; real image 0 lives at position 1
+  let timer=null, animating=false;
+  const W=()=>hero.clientWidth;
+  function place(anim){
+    track.style.transition = anim ? ('transform '+DUR+'ms ease') : 'none';
+    track.style.transform  = 'translateX('+(-p*W())+'px)';
+  }
+  function realIndex(){ return (p-1+N)%N; }
+  function setDots(){ dots.forEach((d,k)=>d.classList.toggle('on', k===realIndex())); }
+  function go(dir){
+    if(animating) return;
+    animating=true;
+    p+=dir; place(true); setDots();
+    setTimeout(()=>{
+      if(p>N){ p=1; place(false); } else if(p<1){ p=N; place(false); }
+      animating=false;
+    }, DUR);
+    start();
+  }
+  function toReal(n){ if(animating) return; p=n+1; place(true); setDots(); start(); }
+  function start(){ stop(); timer=setInterval(()=>go(1),4600); }
+  function stop(){ if(timer){clearInterval(timer); timer=null;} }
+
+  place(false); setDots(); start();
+  window.addEventListener('resize', ()=>place(false));
+  dots.forEach((d,n)=>d.addEventListener('click',()=>toReal(n)));
+
+  // Drag: the whole strip follows the finger.
   let x0=null,y0=null,drag=false;
   hero.addEventListener('pointerdown',e=>{
+    if(animating || e.target.closest('.dots')) return;
     x0=e.clientX; y0=e.clientY; drag=false; stop();
-    wrap.style.transition='none';
     try{ hero.setPointerCapture(e.pointerId); }catch(_){}
   });
   hero.addEventListener('pointermove',e=>{
@@ -1219,18 +1241,19 @@ loadWeather(); loadMarine();
     const dx=e.clientX-x0, dy=e.clientY-y0;
     if(!drag){
       if(Math.abs(dx)<6) return;
-      if(Math.abs(dy)>Math.abs(dx)){ x0=null; wrap.style.transform=''; start(); return; } // vertical → let page scroll
+      if(Math.abs(dy)>Math.abs(dx)){ x0=null; start(); return; } // vertical → page scroll
       drag=true;
     }
     e.preventDefault();
-    wrap.style.transform='translateX('+(dx*0.55)+'px)';
+    track.style.transition='none';
+    track.style.transform='translateX('+(-p*W()+dx)+'px)';
   });
   function endDrag(e){
     if(x0===null) return;
-    const dx=(e.clientX==null?x0:e.clientX)-x0;
-    wrap.style.transition='transform .3s ease'; wrap.style.transform='';
-    if(drag && Math.abs(dx)>45) show(dx<0 ? i+1 : i-1);
-    x0=null; drag=false; start();
+    const dx=(e.clientX==null?0:e.clientX-x0);
+    x0=null;
+    if(drag && Math.abs(dx)>45){ drag=false; go(dx<0?1:-1); }
+    else { drag=false; place(true); start(); }
   }
   hero.addEventListener('pointerup',endDrag);
   hero.addEventListener('pointercancel',endDrag);

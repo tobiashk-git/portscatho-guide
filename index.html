@@ -183,6 +183,16 @@
   .tide-row.past{opacity:.42}
   .tide-row.nextrow{background:#e8f6fc; border:1px solid #c3e4f0; border-radius:9px}
   .tide-day-h{font-size:.72rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink2); font-weight:700; margin:6px 2px 2px}
+  /* Tide-of-day chart */
+  .tide-chart{margin:4px 0 12px; background:linear-gradient(180deg,#f3fafd,#e7f3f8); border:1px solid #d3e7f0; border-radius:12px; padding:6px 6px 2px}
+  .tide-chart-svg{width:100%; height:auto; display:block}
+  .tc-curve{fill:none; stroke:var(--sea); stroke-width:2.1; stroke-linejoin:round; stroke-linecap:round}
+  .tc-now{stroke:#e8622e; stroke-width:1.5; stroke-dasharray:3 3}
+  .tc-nowdot{fill:#e8622e; stroke:#fff; stroke-width:1.4}
+  .tc-ex{fill:var(--sea2)}
+  .tc-lab{fill:var(--ink2); font-size:8px; font-weight:700; font-family:inherit}
+  .tc-ax{fill:var(--ink2); font-size:7.5px; font-family:inherit; opacity:.75}
+  .tc-nowlab{fill:#e8622e; font-size:8.5px; font-weight:800; font-family:inherit}
 
   /* Wind compass */
   .wind-main{display:flex; align-items:center; gap:16px}
@@ -632,6 +642,7 @@
 
       <div class="card" id="card-tide">
         <h2>🕐 Tide times</h2>
+        <div class="tide-chart" id="tide-chart" style="display:none"></div>
         <div id="tide-next" class="loading">Loading tide times…</div>
         <div id="tide-today"></div>
         <details id="tide-tomorrow-wrap" style="display:none"><summary style="cursor:pointer;font-size:.85rem;color:var(--sea2);font-weight:600;margin-top:8px">Tomorrow's tides</summary><div id="tide-tomorrow"></div></details>
@@ -1187,6 +1198,7 @@ loadWeather(); loadMarine();
 /* ---------- Live tide times (offline dataset: Falmouth) ---------- */
 (function(){
   const nextEl=document.getElementById('tide-next');
+  const chartEl=document.getElementById('tide-chart');
   const todayEl=document.getElementById('tide-today');
   const tomoWrap=document.getElementById('tide-tomorrow-wrap');
   const tomoEl=document.getElementById('tide-tomorrow');
@@ -1202,9 +1214,55 @@ loadWeather(); loadMarine();
 
   fetch('tides.json').then(r=>r.json()).then(data=>{
     const days=data.days;
+    // Smooth tide-of-day chart with a live "now" marker.
+    function drawTideChart(now, tKey){
+      const midnight=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+      const prevKey=keyOf(new Date(+midnight-864e5)), nextKey=keyOf(new Date(+midnight+864e5));
+      const mins=hm=>{const[h,m]=hm.split(':').map(Number);return h*60+m;};
+      const pts=[];
+      if(days[prevKey]&&days[prevKey].length){ const e=days[prevKey][days[prevKey].length-1]; pts.push({m:mins(e[1])-1440,h:e[2]}); }
+      days[tKey].forEach(e=>pts.push({m:mins(e[1]),h:e[2],t:e[0],time:e[1],today:true}));
+      if(days[nextKey]) days[nextKey].slice(0,2).forEach(e=>pts.push({m:mins(e[1])+1440,h:e[2]}));
+      if(pts.length<2){ chartEl.style.display='none'; return; }
+      const W=340,H=104,PADX=9,yTop=20,yBot=80;
+      const hs=pts.map(p=>p.h), hmin=Math.min(...hs)-0.3, hmax=Math.max(...hs)+0.3;
+      const x=m=>PADX+(m/1440)*(W-2*PADX);
+      const y=h=>yTop+(hmax-h)/(hmax-hmin||1)*(yBot-yTop);
+      const hAt=m=>{ if(m<=pts[0].m) return pts[0].h;
+        for(let i=0;i<pts.length-1;i++){ if(m>=pts[i].m&&m<=pts[i+1].m){ const t=(m-pts[i].m)/(pts[i+1].m-pts[i].m);
+          return (pts[i].h+pts[i+1].h)/2 + (pts[i].h-pts[i+1].h)/2*Math.cos(Math.PI*t); } }
+        return pts[pts.length-1].h; };
+      let curve='M '+x(0).toFixed(1)+' '+y(hAt(0)).toFixed(1);
+      for(let m=8;m<=1440;m+=8) curve+=' L '+x(m).toFixed(1)+' '+y(hAt(m)).toFixed(1);
+      const area=curve+' L '+x(1440).toFixed(1)+' '+yBot+' L '+x(0).toFixed(1)+' '+yBot+' Z';
+      // night shading from sunrise/sunset (if weather loaded)
+      let night=''; const wx=window.__wx;
+      if(wx&&wx.sunrise&&wx.sunset){ const sr=new Date(wx.sunrise),ss=new Date(wx.sunset);
+        const srM=sr.getHours()*60+sr.getMinutes(), ssM=ss.getHours()*60+ss.getMinutes();
+        night='<rect x="0" y="0" width="'+x(srM).toFixed(1)+'" height="'+H+'" fill="rgba(24,44,74,.09)"/>'+
+              '<rect x="'+x(ssM).toFixed(1)+'" y="0" width="'+(W-x(ssM)).toFixed(1)+'" height="'+H+'" fill="rgba(24,44,74,.09)"/>'; }
+      let ticks=''; [0,6,12,18,24].forEach(hh=>{ const px=x(hh*60).toFixed(1);
+        ticks+='<line x1="'+px+'" y1="'+yBot+'" x2="'+px+'" y2="'+(yBot+3)+'" stroke="#b9d6e2" stroke-width="1"/>'+
+               '<text x="'+px+'" y="'+(H-4)+'" text-anchor="middle" class="tc-ax">'+hh+'</text>'; });
+      let marks=''; pts.filter(p=>p.today).forEach(p=>{ const px=x(p.m),py=y(p.h),isH=p.t==='H';
+        marks+='<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="2.3" class="tc-ex"/>'+
+               '<text x="'+Math.max(14,Math.min(W-14,px)).toFixed(1)+'" y="'+(isH?py-5:py+9).toFixed(1)+'" text-anchor="middle" class="tc-lab">'+p.time+'</text>'; });
+      const nowM=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+      const nx=x(nowM), ny=y(hAt(nowM)), lx=Math.max(15,Math.min(W-15,nx));
+      const nowG='<line x1="'+nx.toFixed(1)+'" y1="12" x2="'+nx.toFixed(1)+'" y2="'+yBot+'" class="tc-now"/>'+
+                 '<circle cx="'+nx.toFixed(1)+'" cy="'+ny.toFixed(1)+'" r="3.4" class="tc-nowdot"/>'+
+                 '<text x="'+lx.toFixed(1)+'" y="9" text-anchor="middle" class="tc-nowlab">'+hAt(nowM).toFixed(1)+'m now</text>';
+      chartEl.style.display='';
+      chartEl.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" class="tide-chart-svg">'+
+        '<defs><linearGradient id="tcfill" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="var(--sea)" stop-opacity=".32"/><stop offset="1" stop-color="var(--sea)" stop-opacity="0"/>'+
+        '</linearGradient></defs>'+night+
+        '<path d="'+area+'" fill="url(#tcfill)"/><path d="'+curve+'" class="tc-curve"/>'+ticks+marks+nowG+'</svg>';
+    }
     function render(){
       const now=new Date(), tKey=keyOf(now), tmKey=keyOf(new Date(now.getTime()+864e5));
       const todays=days[tKey];
+      if(todays) drawTideChart(now, tKey); else chartEl.style.display='none';
       if(!todays){
         nextEl.className='';
         nextEl.innerHTML=`<div class="tide-next"><span class="ar">🌊</span><div><div class="big">Tide table covers Aug–Oct 2026</div><div class="sub">Today is outside the loaded table — tap Admiralty EasyTide below for live times.</div></div></div>`;

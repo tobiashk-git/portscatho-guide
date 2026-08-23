@@ -1,4 +1,4 @@
-const CACHE = 'portscatho-v17';
+const CACHE = 'portscatho-v18';
 const ASSETS = ['index.html', 'manifest.webmanifest', 'icons/icon.svg', 'tides.json'];
 
 self.addEventListener('install', e => {

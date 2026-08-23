@@ -23,8 +23,16 @@
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     background:var(--paper); color:var(--ink); line-height:1.5;
-    -webkit-font-smoothing:antialiased;
+    -webkit-font-smoothing:antialiased; overscroll-behavior-y:contain;
   }
+  /* Pull-to-refresh spinner */
+  .ptr{position:fixed; top:0; left:50%; margin-left:-19px; width:38px; height:38px; border-radius:50%;
+    background:#fff; box-shadow:0 3px 12px rgba(11,79,108,.28); z-index:60; pointer-events:none;
+    display:flex; align-items:center; justify-content:center; transform:translateY(-56px); opacity:0}
+  .ptr.anim{transition:transform .28s ease, opacity .28s ease}
+  .ptr-ring{width:20px; height:20px; border-radius:50%; border:3px solid rgba(11,79,108,.2); border-top-color:var(--sea)}
+  .ptr.spin .ptr-ring{animation:ptr-rot .7s linear infinite}
+  @keyframes ptr-rot{to{transform:rotate(360deg)}}
   a{color:var(--sea2)}
   h1,h2,h3{line-height:1.2; margin:0 0 .3em}
   h2{font-size:1.35rem}
@@ -301,6 +309,7 @@
 </style>
 </head>
 <body>
+<div id="ptr" class="ptr"><div class="ptr-ring"></div></div>
 <div class="app">
   <header>
     <h1>Welcome to Portscatho</h1>
@@ -1265,6 +1274,46 @@ loadWeather(); loadMarine();
   const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   document.getElementById('rp-credits').innerHTML=CR.map(([n,who,lic,page])=>`<li><a href="${esc(page)}" target="_blank" rel="noopener">${esc(n)}</a> — ${esc(who)}, ${lic}</li>`).join('')+`<li style="margin-top:6px">Photos via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>.</li>`;
   document.getElementById('rp-credits-wrap').style.display='';
+})();
+
+/* ---------- Pull to refresh (Safari-style) ---------- */
+(function(){
+  const ptr=document.getElementById('ptr'), ring=ptr.querySelector('.ptr-ring');
+  let startY=0, pulling=false, dist=0, refreshing=false;
+  const DAMP=0.5, TRIGGER=64;
+  const damp=d=>Math.min(d*DAMP, 110);
+  function setPull(p){ ptr.style.transform='translateY('+(p-56)+'px)'; ptr.style.opacity=Math.min(p/40,1).toFixed(2); ring.style.transform='rotate('+(p*3.5)+'deg)'; }
+  document.addEventListener('touchstart', e=>{
+    if(refreshing || e.touches.length!==1){ pulling=false; return; }
+    if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true; dist=0; ptr.classList.remove('anim'); }
+    else pulling=false;
+  }, {passive:true});
+  document.addEventListener('touchmove', e=>{
+    if(!pulling || refreshing) return;
+    dist=e.touches[0].clientY - startY;
+    if(dist>0 && window.scrollY<=0){ e.preventDefault(); setPull(damp(dist)); }
+    else if(dist<0){ pulling=false; }
+  }, {passive:false});
+  document.addEventListener('touchend', ()=>{
+    if(!pulling || refreshing) return; pulling=false;
+    ptr.classList.add('anim');
+    if(damp(dist)>=TRIGGER) startRefresh();
+    else { ptr.style.transform='translateY(-56px)'; ptr.style.opacity='0'; }
+  }, {passive:true});
+  function startRefresh(){
+    refreshing=true; ptr.classList.add('spin');
+    ptr.style.transform='translateY(8px)'; ptr.style.opacity='1'; ring.style.transform='';
+    if(navigator.vibrate) navigator.vibrate(15);
+    const jobs=[];
+    try{ if(typeof loadWeather==='function') jobs.push(loadWeather()); }catch(e){}
+    try{ if(typeof loadMarine==='function') jobs.push(loadMarine()); }catch(e){}
+    const done=Promise.all(jobs.map(p=>Promise.resolve(p).catch(()=>{})));
+    Promise.all([done, new Promise(r=>setTimeout(r,650))]).then(endRefresh);
+  }
+  function endRefresh(){
+    refreshing=false; ptr.classList.remove('spin');
+    ptr.style.transform='translateY(-56px)'; ptr.style.opacity='0'; ring.style.transform='';
+  }
 })();
 
 /* ---------- Service worker (offline) ---------- */

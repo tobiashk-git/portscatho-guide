@@ -34,12 +34,10 @@
   header{
     position:sticky; top:0; z-index:40;
     background:linear-gradient(150deg,var(--sea) 0%, var(--sea2) 70%, var(--teal) 130%);
-    color:#fff; padding:calc(var(--safe-top) + 14px) 18px 14px;
+    color:#fff; padding:calc(var(--safe-top) + 9px) 18px 9px;
     box-shadow:var(--shadow);
   }
-  header .kw{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; opacity:.85}
-  header h1{font-size:1.5rem; margin:2px 0 0; font-weight:800; letter-spacing:.3px}
-  header .sub{font-size:.85rem; opacity:.9; margin-top:2px}
+  header h1{font-size:1.2rem; margin:0; font-weight:800; letter-spacing:.3px}
 
   main{padding:14px 14px 96px}
   .view{display:none; animation:fade .28s ease}
@@ -131,7 +129,7 @@
   .wind-sub{font-size:.83rem; color:var(--ink2); margin-top:2px}
   .wx-day .w{font-size:.72rem; color:var(--ink2); margin-top:2px}
   .warr{display:inline-block; font-weight:700; color:var(--sea2); font-size:1.05rem; vertical-align:baseline; margin-left:2px}
-  #card-forecast,#card-wind,#card-sea,#card-tide{scroll-margin-top:calc(var(--safe-top) + 108px)}
+  #card-forecast,#card-wind,#card-sea,#card-tide{scroll-margin-top:calc(var(--safe-top) + 56px)}
   .stat.tap{cursor:pointer; position:relative; transition:transform .1s ease, box-shadow .1s ease}
   .stat.tap:active{transform:scale(.98)}
   .stat.tap::after{content:"›"; position:absolute; top:9px; right:11px; color:var(--ink2); opacity:.5; font-size:1rem}
@@ -305,9 +303,7 @@
 <body>
 <div class="app">
   <header>
-    <div class="kw">Roseland Peninsula · Cornwall</div>
-    <h1>Portscatho</h1>
-    <div class="sub" id="hdr-sub">Your holiday companion by the sea</div>
+    <h1>Welcome to Portscatho</h1>
   </header>
 
   <main>

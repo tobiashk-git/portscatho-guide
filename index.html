@@ -344,9 +344,9 @@
       </div>
 
       <div class="stat" style="margin-bottom:13px">
-        <div class="lab">In season right now</div>
-        <div class="val" id="home-season" style="font-size:1.15rem">—</div>
-        <div class="sub" id="home-season-sub"></div>
+        <div class="lab">🚌 Bus from Truro · Route 50</div>
+        <div class="val" id="bus-next" style="font-size:1.15rem">—</div>
+        <div class="sub" id="bus-today"></div>
       </div>
 
       <h2 style="margin:6px 2px 8px">A taste of Portscatho</h2>
@@ -850,14 +850,38 @@ function renderFish(){
     html += `</div>`;
   }
   box.innerHTML = html;
-
-  // Home summary
-  const names = inS.slice(0,3).map(f=>f.name).join(', ');
-  document.getElementById('home-season').textContent = names || '—';
-  document.getElementById('home-season-sub').textContent =
-    (MONTH>=4 && MONTH<=8) ? "It's mackerel season — grab some feathers!" : "Seafood & wildlife highlights for "+MONTH_NAME;
 }
 renderFish();
+
+/* ---------- Bus from Truro (Route 50) — timetable ---------- */
+(function(){
+  const nextEl=document.getElementById('bus-next'), todayEl=document.getElementById('bus-today');
+  if(!nextEl) return;
+  // Route 50 Go Cornwall Bus — Truro → Portscatho (arrival at Portscatho). Same every day. Valid Aug–Oct 2026.
+  const ARR=['09:23','11:23','13:23','15:23','17:23']; // Portscatho arrival times (dep Truro 08:35/10:35/12:35/14:35/16:35)
+  const DEP=['08:35','10:35','12:35','14:35','16:35'];
+  const LIVE='https://bustimes.org/services/50-truro-probus-tregony-portscatho-st-mawes-4';
+  const mins=t=>{const[h,m]=t.split(':').map(Number);return h*60+m;};
+  function render(){
+    const now=new Date(), nowMin=now.getHours()*60+now.getMinutes();
+    const idx=ARR.findIndex(t=>mins(t)>nowMin);
+    const list=ARR.map((t,i)=>{
+      if(idx>=0 && i===idx) return '<b>'+t+'</b>';
+      if(idx>=0 && i<idx) return '<span style="opacity:.4">'+t+'</span>';
+      return t;
+    }).join(' · ');
+    const live=' &nbsp;<a class="refresh" href="'+LIVE+'" target="_blank" rel="noopener">live ›</a>';
+    if(idx>=0){
+      const gap=mins(ARR[idx])-nowMin, h=Math.floor(gap/60), m=gap%60;
+      nextEl.textContent='Next arrives '+ARR[idx];
+      todayEl.innerHTML='dep Truro '+DEP[idx]+' · in '+(h>0?h+'h ':'')+m+'m<br>'+list+live;
+    } else {
+      nextEl.textContent='No more today · first '+ARR[0]+' tomorrow';
+      todayEl.innerHTML='Daily arrivals into Portscatho: '+list+live;
+    }
+  }
+  render(); setInterval(render, 60000);
+})();
 
 // Bird seasonal note
 (function(){

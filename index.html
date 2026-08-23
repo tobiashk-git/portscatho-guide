@@ -1280,8 +1280,8 @@ loadWeather(); loadMarine();
 (function(){
   const ptr=document.getElementById('ptr'), ring=ptr.querySelector('.ptr-ring'), app=document.querySelector('.app');
   let startY=0, pulling=false, dist=0, refreshing=false;
-  const DAMP=0.5, TRIGGER=64;
-  const damp=d=>Math.min(d*DAMP, 120);
+  const DAMP=0.58, TRIGGER=64;
+  const damp=d=>Math.min(d*DAMP, 160);
   function trans(on){ app.style.transition=on?'transform .3s ease':'none'; ptr.style.transition=on?'transform .28s ease, opacity .28s ease':'none'; }
   function setPull(p){
     app.style.transform='translateY('+p+'px)';
@@ -1306,13 +1306,13 @@ loadWeather(); loadMarine();
   }, {passive:true});
   function startRefresh(){
     refreshing=true; ptr.classList.add('spin');
-    app.style.transform='translateY(50px)'; ptr.style.transform='translateY(9px)'; ptr.style.opacity='1'; ring.style.transform='';
+    app.style.transform='translateY(74px)'; ptr.style.transform='translateY(20px)'; ptr.style.opacity='1'; ring.style.transform='';
     if(navigator.vibrate) navigator.vibrate(15);
     const jobs=[];
     try{ if(typeof loadWeather==='function') jobs.push(loadWeather()); }catch(e){}
     try{ if(typeof loadMarine==='function') jobs.push(loadMarine()); }catch(e){}
     const done=Promise.all(jobs.map(p=>Promise.resolve(p).catch(()=>{})));
-    Promise.all([done, new Promise(r=>setTimeout(r,700))]).then(endRefresh);
+    Promise.all([done, new Promise(r=>setTimeout(r,1500))]).then(endRefresh);
   }
   function endRefresh(){ refreshing=false; ptr.classList.remove('spin'); trans(true); reset(); }
 })();

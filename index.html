@@ -236,6 +236,11 @@
     background:linear-gradient(90deg, rgba(251,247,239,.93) 0%, rgba(251,247,239,.80) 45%, rgba(251,247,239,.5) 100%), url(img/collage-walks.jpg?v=1) center/cover no-repeat;}
   .btn.bg-walks > *{position:relative; z-index:1}
   .btn.bg-walks small{color:#42513a}
+  .btn.bg-gallery{position:relative; overflow:hidden; border-color:#c3d3d9}
+  .btn.bg-gallery::before{content:""; position:absolute; inset:0; z-index:0;
+    background:linear-gradient(90deg, rgba(251,247,239,.93) 0%, rgba(251,247,239,.80) 45%, rgba(251,247,239,.5) 100%), url(img/collage-gallery.jpg?v=1) center/cover no-repeat;}
+  .btn.bg-gallery > *{position:relative; z-index:1}
+  .btn.bg-gallery small{color:#33505c}
 
   /* ---- Rock Pool Explorer ---- */
   .rp-row{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:7px; flex-wrap:wrap}
@@ -467,7 +472,7 @@
       <a class="btn bg-nature" href="#" data-go="nature"><span class="em">🐦</span><span><b>Nature & wildlife</b><small>Birds, seals, and what's in the sea</small></span><span class="arr">›</span></a>
       <a class="btn bg-weather" href="#" data-go="tides"><span class="em">🌊</span><span><b>Weather & tides</b><small>Forecast, sea state & tide tables</small></span><span class="arr">›</span></a>
       <a class="btn bg-facts" href="#" data-go="facts"><span class="em">💡</span><span><b>Fun facts & tips</b><small>Local lore and practical know-how</small></span><span class="arr">›</span></a>
-      <a class="btn" href="#" data-go="gallery"><span class="em">📸</span><span><b>Family gallery</b><small>Holiday memories, year by year</small></span><span class="arr">›</span></a>
+      <a class="btn bg-gallery" href="#" data-go="gallery"><span class="em">📸</span><span><b>Family gallery</b><small>Holiday memories, year by year</small></span><span class="arr">›</span></a>
     </section>
 
     <!-- ================= EXPLORE ================= -->

@@ -290,6 +290,8 @@
   .gal-empty .ic{font-size:1.9rem}
   .gal-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
   .gal-grid img{width:100%; aspect-ratio:1; object-fit:cover; border-radius:10px; display:block; cursor:zoom-in; background:#dfeef2}
+  .gal-count{display:inline-block; min-width:16px; text-align:center; font-size:.68rem; font-weight:800; color:#fff; background:var(--sea); border-radius:10px; padding:1px 6px; margin-left:7px; vertical-align:middle}
+  .gal-decade>summary .gal-count{background:rgba(255,255,255,.3)}
 
   /* Barometer */
   .wx-baro{display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -1527,16 +1529,27 @@ loadWeather(); loadMarine();
   document.getElementById('facts-shuffle').addEventListener('click', render);
 })();
 
-/* ---------- Family gallery — collapsed year accordions (1970–present) ---------- */
+/* ---------- Family gallery — decade/year accordions with photos ---------- */
 (function(){
   const box=document.getElementById('gallery-years'); if(!box) return;
+  const GALLERY={"2007":[{"src":"img/gallery/2007/p01.jpg","alt":"Holiday memory"},{"src":"img/gallery/2007/p02.jpg","alt":"Holiday memory"},{"src":"img/gallery/2007/p03.jpg","alt":"Porthcurnick beach"},{"src":"img/gallery/2007/p04.jpg","alt":"Harbour"},{"src":"img/gallery/2007/p05.jpg","alt":"Mackerel"},{"src":"img/gallery/2007/p06.jpg","alt":"Nare Head"},{"src":"img/gallery/2007/p07.jpg","alt":"St Anthony's lighthouse"},{"src":"img/gallery/2007/p08.jpg","alt":"Percuil River"},{"src":"img/gallery/2007/p09.jpg","alt":"Harbour 3"},{"src":"img/gallery/2007/p10.jpg","alt":"St Mawes"},{"src":"img/gallery/2007/p11.jpg","alt":"St Just in Roseland"},{"src":"img/gallery/2007/p12.jpg","alt":"Alfie Rock"},{"src":"img/gallery/2007/p13.jpg","alt":"Pasty tree"},{"src":"img/gallery/2007/p14.jpg","alt":"King Harry Ferry"},{"src":"img/gallery/2007/p15.jpg","alt":"Pollack"},{"src":"img/gallery/2007/p16.jpg","alt":"Sea bass"},{"src":"img/gallery/2007/p17.jpg","alt":"Plume of feathers"},{"src":"img/gallery/2007/p18.jpg","alt":"Regatta day"}],"2008":[{"src":"img/gallery/2008/p01.jpg","alt":"Storm1"},{"src":"img/gallery/2008/p02.jpg","alt":"Storm2"},{"src":"img/gallery/2008/p03.jpg","alt":"Waves"}],"2010":[{"src":"img/gallery/2010/p01.jpg","alt":"Spider crab"}],"2016":[{"src":"img/gallery/2016/p01.jpg","alt":"Holiday memory"},{"src":"img/gallery/2016/p02.jpg","alt":"Holiday memory"},{"src":"img/gallery/2016/p03.jpg","alt":"Holiday memory"},{"src":"img/gallery/2016/p04.jpg","alt":"Holiday memory"},{"src":"img/gallery/2016/p05.jpg","alt":"Holiday memory"}],"2017":[{"src":"img/gallery/2017/p01.jpg","alt":"Holiday memory"},{"src":"img/gallery/2017/p02.jpg","alt":"Holiday memory"},{"src":"img/gallery/2017/p03.jpg","alt":"Holiday memory"},{"src":"img/gallery/2017/p04.jpg","alt":"Holiday memory"}],"2018":[{"src":"img/gallery/2018/p01.jpg","alt":"Holiday memory"},{"src":"img/gallery/2018/p02.jpg","alt":"Brown crab"},{"src":"img/gallery/2018/p03.jpg","alt":"Holiday memory"}],"2019":[{"src":"img/gallery/2019/p01.jpg","alt":"Holiday memory"},{"src":"img/gallery/2019/p02.jpg","alt":"Tatums Coffee"}],"2021":[{"src":"img/gallery/2021/p01.jpg","alt":"Tatums coffee 2"},{"src":"img/gallery/2021/p02.jpg","alt":"The Boathouse"}],"2024":[{"src":"img/gallery/2024/p01.jpg","alt":"Towan Beach"}],"2025":[{"src":"img/gallery/2025/p01.jpg","alt":"Holiday memory"},{"src":"img/gallery/2025/p02.jpg","alt":"Harbour"},{"src":"img/gallery/2025/p03.jpg","alt":"Portscatho"},{"src":"img/gallery/2025/p04.jpg","alt":"Holiday memory"}],"2026":[{"src":"img/gallery/2026/p01.jpg","alt":"Portscatho"},{"src":"img/gallery/2026/p02.jpg","alt":"Percuil river 2"},{"src":"img/gallery/2026/p03.jpg","alt":"Lobster"},{"src":"img/gallery/2026/p04.jpg","alt":"Barrel jellyfish"},{"src":"img/gallery/2026/p05.jpg","alt":"Emergency coffee"},{"src":"img/gallery/2026/p06.jpg","alt":"Emergency Pasty"},{"src":"img/gallery/2026/p07.jpg","alt":"Big crab"},{"src":"img/gallery/2026/p08.jpg","alt":"Holiday memory"}]};
   const now=new Date().getFullYear();
-  const yearHtml=y=>'<details class="gal-year"><summary>'+y+'</summary><div class="gal-body"><div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div></div></details>';
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  function body(y){
+    const ph=GALLERY[y];
+    if(ph&&ph.length) return '<div class="gal-grid">'+ph.map(p=>'<img loading="lazy" src="'+p.src+'" alt="'+esc(p.alt)+'">').join('')+'</div>';
+    return '<div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>';
+  }
+  function yearHtml(y){
+    const n=(GALLERY[y]||[]).length;
+    return '<details class="gal-year"><summary><span>'+y+(n?' <b class="gal-count">'+n+'</b>':'')+'</span></summary><div class="gal-body">'+body(y)+'</div></details>';
+  }
   let html='';
   for(let dec=Math.floor(now/10)*10; dec>=1970; dec-=10){
     const hi=Math.min(dec+9, now), lo=Math.max(dec, 1970);
-    let years=''; for(let y=hi; y>=lo; y--) years+=yearHtml(y);
-    html+='<details class="gal-decade"><summary>'+dec+'s</summary><div class="gal-decade-body">'+years+'</div></details>';
+    let years='', dn=0;
+    for(let y=hi; y>=lo; y--){ years+=yearHtml(y); dn+=(GALLERY[y]||[]).length; }
+    html+='<details class="gal-decade"><summary><span>'+dec+'s'+(dn?' <b class="gal-count">'+dn+'</b>':'')+'</span></summary><div class="gal-decade-body">'+years+'</div></details>';
   }
   box.innerHTML=html;
 })();

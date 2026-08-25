@@ -1671,6 +1671,8 @@ loadWeather(); loadMarine();
   function reset(){ app.style.transform=''; ptr.style.transform='translateY(-56px)'; ptr.style.opacity='0'; ring.style.transform=''; }
   document.addEventListener('touchstart', e=>{
     if(refreshing || e.touches.length!==1){ pulling=false; return; }
+    // Don't start a pull-to-refresh on the swipeable hero banner (avoids jitter while swiping photos).
+    if(e.target.closest('#hero')){ pulling=false; return; }
     if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true; dist=0; trans(false); }
     else pulling=false;
   }, {passive:true});

@@ -1389,7 +1389,7 @@ loadWeather(); loadMarine();
         || (t.closest('.tile')?.querySelector('b')?.textContent)
         || (t.closest('.medialist') ? t.closest('li')?.querySelector('b')?.textContent : '')
         || t.alt || '';
-      open(t.currentSrc||t.src, fc);
+      open(t.dataset.full||t.currentSrc||t.src, fc);
     }
   });
   document.getElementById('lb-close').addEventListener('click',close);
@@ -1537,7 +1537,7 @@ loadWeather(); loadMarine();
   const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   function body(y){
     const ph=GALLERY[y];
-    if(ph&&ph.length) return '<div class="gal-grid">'+ph.map(p=>'<img loading="lazy" src="'+p.src+'" alt="'+esc(p.alt)+'">').join('')+'</div>';
+    if(ph&&ph.length) return '<div class="gal-grid">'+ph.map(p=>{const thumb=p.src.replace(/\/p(\d+\.jpg)$/,'/t$1');return '<img loading="lazy" decoding="async" src="'+thumb+'" data-full="'+p.src+'" alt="'+esc(p.alt)+'">';}).join('')+'</div>';
     return '<div class="gal-empty"><div class="ic">📷</div><div>Add your favourite memories here</div></div>';
   }
   function yearHtml(y){

@@ -325,10 +325,11 @@
 
   /* Lightbox */
   .lightbox{position:fixed; inset:0; z-index:100; background:rgba(6,22,30,.94); display:none;
-    align-items:center; justify-content:center; padding:20px; padding-top:calc(20px + var(--safe-top))}
+    align-items:center; justify-content:center;
+    padding:10px; padding-top:calc(10px + var(--safe-top)); padding-bottom:calc(10px + var(--safe-bot))}
   .lightbox.open{display:flex}
-  .lightbox img{max-width:100%; max-height:82vh; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.6)}
-  .lightbox .cap{position:absolute; bottom:calc(24px + var(--safe-bot)); left:0; right:0; text-align:center; color:#fff; font-size:.85rem; padding:0 20px}
+  .lightbox img{max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; border-radius:10px; box-shadow:0 10px 40px rgba(0,0,0,.6)}
+  .lightbox .cap{position:absolute; bottom:calc(10px + var(--safe-bot)); left:0; right:0; text-align:center; color:#fff; font-size:.85rem; padding:6px 20px; text-shadow:0 1px 6px rgba(0,0,0,.9)}
   .lightbox .x{position:absolute; top:calc(14px + var(--safe-top)); right:16px; width:40px; height:40px; border-radius:50%;
     background:rgba(255,255,255,.16); color:#fff; border:0; font-size:1.4rem; cursor:pointer; line-height:1}
 
@@ -418,6 +419,7 @@
         <div class="hero-imgs">
           <img class="on" src="img/hero-boats.jpg" alt="Boats on the foreshore at Portscatho" />
           <img src="img/hero-flowers.jpg" alt="Wildflowers above Gerrans Bay" />
+          <img src="img/hero-team.jpg" alt="Family at the beach in Portscatho" />
           <img src="img/porthcurnick.jpg" alt="Porthcurnick Beach" />
           <img src="img/regatta.jpg" alt="Portscatho regatta day" />
           <img src="img/harbour-boat.jpg" alt="Portscatho harbour slipway" />
@@ -639,14 +641,6 @@
     <section class="view" id="view-tides">
       <h2 style="margin:2px 2px 12px">Weather & tides</h2>
 
-      <div class="card" id="card-forecast">
-        <h2>🌤️ Forecast <button class="refresh" id="wx-refresh">refresh</button></h2>
-        <div id="wx-now" class="loading">Loading live weather…</div>
-        <div id="wx-forecast"></div>
-        <div id="wx-pressure" class="wx-baro" style="display:none"></div>
-        <p class="small muted" style="margin:8px 0 0">Live data from Open-Meteo for Portscatho (50.19°N, 5.00°W). Times shown in UK time.</p>
-      </div>
-
       <div class="card" id="card-tide">
         <h2>🕐 Tide times</h2>
         <div class="tide-chart" id="tide-chart" style="display:none"></div>
@@ -658,6 +652,14 @@
         <a class="btn" style="margin-top:9px" target="_blank" rel="noopener" href="https://easytide.admiralty.co.uk/?PortID=0033">
           <span class="em">⚓</span><span><b>Official Admiralty EasyTide</b><small>UKHO predictions — the authority, and for dates beyond the table</small></span><span class="arr">›</span></a>
         <div class="callout"><b>Rule of twelfths:</b> the tide moves slowest around high & low water and fastest in the middle two hours — handy for timing a beach walk or a swim.</div>
+      </div>
+
+      <div class="card" id="card-forecast">
+        <h2>🌤️ Forecast <button class="refresh" id="wx-refresh">refresh</button></h2>
+        <div id="wx-now" class="loading">Loading live weather…</div>
+        <div id="wx-forecast"></div>
+        <div id="wx-pressure" class="wx-baro" style="display:none"></div>
+        <p class="small muted" style="margin:8px 0 0">Live data from Open-Meteo for Portscatho (50.19°N, 5.00°W). Times shown in UK time.</p>
       </div>
 
       <div class="card" id="card-wind">
@@ -1557,6 +1559,11 @@ loadWeather(); loadMarine();
     html+='<details class="gal-decade"><summary><span>'+dec+'s'+(dn?' <b class="gal-count">'+dn+'</b>':'')+'</span></summary><div class="gal-decade-body">'+years+'</div></details>';
   }
   box.innerHTML=html;
+  // Accordion: opening one decade collapses the others (one open at a time, or none).
+  const decs=[...box.querySelectorAll('.gal-decade')];
+  decs.forEach(d=>d.addEventListener('toggle',()=>{
+    if(d.open) decs.forEach(o=>{ if(o!==d) o.open=false; });
+  }));
 })();
 
 /* ---------- Header activity tip (tide/time/weather sensitive) ---------- */
@@ -1581,16 +1588,24 @@ loadWeather(); loadMarine();
     const now=new Date(), h=now.getHours(), wx=window.__wx||null;
     const {nearLow, nearHigh}=tideProximity(now);
     const code=wx?wx.code:null, temp=wx?wx.temp:null, wind=wx?wx.wind:null, gust=wx?wx.gust:null, pp=wx?wx.precipProb:null;
+    const sunrise=wx&&wx.sunrise?new Date(wx.sunrise):null;
     const sunset=wx&&wx.sunset?new Date(wx.sunset):null;
+    const night = (sunrise&&sunset) ? (now<sunrise || now>sunset) : (h<6 || h>=21);
     const rainy = code!=null && (code>=51 || (pp!=null && pp>=60));
     const stormy = (gust!=null && gust>=40) || (wind!=null && wind>=33);
+    const clearSky = code!=null && code<=1;
     const sunny = code!=null && code<=2;
     const warm = temp!=null && temp>=17;
     const calm = wind==null || wind<15;
     const nearSunset = sunset && sunset>now && (sunset-now)/60000<=45 && !rainy && !stormy;
     let msg;
-    if(stormy) msg='🌬️ Wild out there — watch the waves crash over the harbour wall!';
-    else if(rainy) msg='🌧️ A wet one — pasty from Ralph’s or a coffee at Tatams?';
+    if(stormy) msg = night ? '🌬️ Wild night — the sea’s pounding the harbour wall!' : '🌬️ Wild out there — watch the waves crash over the harbour wall!';
+    else if(rainy) msg = night ? '🌧️ Wet night — cosy in with a cuppa' : '🌧️ A wet one — pasty from Ralph’s or a coffee at Tatams?';
+    else if(night){
+      if(clearSky) msg='✨ Clear night — grand stars over the Roseland, look up!';
+      else if(h>=23 || h<5) msg='🌙 All quiet — the harbour rests under the night sky';
+      else msg='🌆 Evening — a pint at the Plume or a stroll by the harbour?';
+    }
     else if(nearSunset) msg='🌅 Sunset soon — the harbour’s the spot to watch it';
     else if(nearLow) msg='🦐 Low tide — perfect for rockpooling & beach walks';
     else if(sunny && warm && calm) msg='☀️ Beach weather — Porthcurnick or Towan?';

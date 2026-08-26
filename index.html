@@ -321,14 +321,16 @@
   .tile .t{padding:8px 10px 9px}
   .tile .t b{display:block; font-size:.9rem; line-height:1.2}
   .tile .t small{color:var(--ink2); font-size:.75rem; display:block; margin-top:2px}
-  .tile .status{display:inline-flex; align-items:center; gap:5px; margin-top:4px; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:20px; background:#eef2f4; color:#5f6b73}
+  .tile .status{display:inline-flex; flex-direction:column; align-items:flex-start; gap:3px; margin-top:4px}
   .tile .status:empty{display:none}
-  .tile .status i{width:7px; height:7px; border-radius:50%; background:currentColor; flex:none}
-  .tile .status.open{color:#1e7a3a; background:#e4f4e8}
-  .tile .status.soon{color:#9a6412; background:#fbefda}
-  .tile .status.closed{color:#a5342a; background:#f7e2df}
-  .tile .status.unk{color:#5f6b73; background:#eef2f4}
-  .tile .status.prov{border:1px dashed currentColor}
+  .tile .pill{display:inline-flex; align-items:center; gap:5px; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:20px; background:#eef2f4; color:#5f6b73}
+  .tile .pill i{width:7px; height:7px; border-radius:50%; background:currentColor; flex:none}
+  .tile .pill.open{color:#1e7a3a; background:#e4f4e8}
+  .tile .pill.soon{color:#9a6412; background:#fbefda}
+  .tile .pill.closed{color:#a5342a; background:#f7e2df}
+  .tile .pill.unk{color:#5f6b73; background:#eef2f4}
+  .tile .pill.prov{border:1px dashed currentColor}
+  .tile .status .then{font-size:.68rem; font-weight:700; color:#9a6412; padding-left:3px}
 
   /* Home gallery strip */
   .gallery{display:flex; gap:9px; overflow-x:auto; padding:2px 0 6px; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory}
@@ -1736,9 +1738,13 @@ loadWeather(); loadMarine();
     for(const iv of (week[(day+6)%7]||[])){ const ch=iv[2], cm=iv[3];
       if(ch>=24){ const cc=(ch-24)*60+cm; if(mins<cc)
         return (cc-mins<=30) ? {cls:'soon', txt:'Closes '+fmt(ch,cm)} : {cls:'open', txt:'Open · till '+fmt(ch,cm)}; } }
-    for(const [oh,om,ch,cm] of (week[day]||[])){
-      const o=oh*60+om, c=ch*60+cm;
-      if(mins>=o && mins<c) return (c-mins<=30) ? {cls:'soon', txt:'Closes '+fmt(ch,cm)} : {cls:'open', txt:'Open · till '+fmt(ch,cm)};
+    const today=week[day]||[];
+    for(let i=0;i<today.length;i++){
+      const [oh,om,ch,cm]=today[i], o=oh*60+om, c=ch*60+cm;
+      if(mins>=o && mins<c){
+        const l=today[i+1], next=l?('Then '+fmt(l[0],l[1])+'–'+fmt(l[2],l[3])):null; // a later session today
+        return (c-mins<=30) ? {cls:'soon', txt:'Closes '+fmt(ch,cm), next} : {cls:'open', txt:'Open · till '+fmt(ch,cm), next};
+      }
       if(mins<o) return (o-mins<=30) ? {cls:'soon', txt:'Opens '+fmt(oh,om)} : {cls:'closed', txt:'Closed · opens '+fmt(oh,om)};
     }
     for(let i=1;i<=7;i++){ const d=(day+i)%7, iv=week[d]||[];
@@ -1748,7 +1754,9 @@ loadWeather(); loadMarine();
   function render(){
     const now=new Date();
     spans.forEach(s=>{ const v=HOURS[s.dataset.v], st=status(v, now);
-      s.className='status '+st.cls+(v&&v.draft?' prov':''); s.innerHTML='<i></i>'+st.txt; });
+      let html='<span class="pill '+st.cls+(v&&v.draft?' prov':'')+'"><i></i>'+st.txt+'</span>';
+      if(st.next) html+='<span class="then">'+st.next+'</span>';
+      s.className='status'; s.innerHTML=html; });
   }
   render(); setInterval(render, 60000);
 })();

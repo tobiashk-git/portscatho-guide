@@ -405,9 +405,9 @@
     flex:1; background:none; border:0; padding:8px 2px 7px; cursor:pointer;
     display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--ink2); font-size:.66rem; font-weight:600;
   }
-  nav.tabs button .ic{font-size:1.32rem; line-height:1}
-  nav.tabs button.active{color:var(--sea)}
-  nav.tabs button.active .ic{transform:translateY(-1px)}
+  nav.tabs button .ic{font-size:1.3rem; line-height:1; padding:3px 11px; border-radius:16px; transition:background .18s ease, transform .18s ease}
+  nav.tabs button.active{color:var(--sea); font-weight:800}
+  nav.tabs button.active .ic{background:rgba(31,125,156,.16); transform:translateY(-1px)}
 
   .loading{color:var(--ink2); font-size:.9rem}
   .err{color:var(--bad); font-size:.85rem}

@@ -1714,11 +1714,11 @@ loadWeather(); loadMarine();
   // Days: 0=Sun..6=Sat.  T=Tatams (CONFIRMED). The rest are DRAFTS from web sources (draft:true) — verify.
   const T=[[8,0,14,30]];                       // Tatams ~8am–2:30pm
   const H=[[10,0,16,0]];                        // 10am–4pm café day
-  const PLUME=[[9,0,15,0],[18,0,23,0]];         // Plume Mon–Sat: 9–3 & 6–11
+  const PL=[[8,30,23,0]];                        // Plume: daily 8:30am–11pm (confirmed)
   const HOURS={
     'tatams':{week:[ T, [], T, T, T, T, T ]},                                   // closed Mondays (confirmed)
     'hidden-hut':{week:[ H, H, H, H, H, H, H ], draft:true, note:'seasonal'},    // ~daily 10–4 in season
-    'plume':{week:[ [[12,0,22,30]], PLUME, PLUME, PLUME, PLUME, PLUME, PLUME ], draft:true}, // Sun 12–10:30
+    'plume':{week:[ PL, PL, PL, PL, PL, PL, PL ]},                               // confirmed: daily 8:30am–11pm
     'boathouse':{week:(now)=>{               // confirmed: summer 10–4 (+ 5–9 eve Thu–Sat); Wed shut except in August
       const aug=now.getMonth()===7, d=[[10,0,16,0]], de=[[10,0,16,0],[17,0,21,0]];
       return [ d, d, d, aug?de:[], de, de, de ]; // Sun/Mon/Tue = 10–4 · Wed closed (open in Aug) · Thu–Sat = 10–4 & 5–9

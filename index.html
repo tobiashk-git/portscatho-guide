@@ -283,6 +283,10 @@
   .gal-decade>summary::-webkit-details-marker{display:none}
   .gal-decade>summary::after{content:"▸"; font-size:1rem; opacity:.9; transition:transform .2s}
   .gal-decade[open]>summary::after{transform:rotate(90deg)}
+  /* Solo mode: opened decade locks to the top while its years scroll beneath */
+  .gal-decade.solo{overflow:visible; margin-bottom:0}
+  .gal-decade.solo>summary{position:sticky; z-index:6; border-radius:14px; box-shadow:0 5px 16px rgba(0,0,0,.22)}
+  .gal-decade.solo>summary::after{content:"✕"; font-size:.95rem}
   .gal-decade-body{padding:11px}
   .gal-decade-body .gal-year{box-shadow:none; margin-bottom:8px; border-radius:11px}
   .gal-decade-body .gal-year:last-child{margin-bottom:0}
@@ -1598,11 +1602,33 @@ loadWeather(); loadMarine();
     html+='<details class="gal-decade"><summary style="background:'+decGrad(dec)+'"><span>'+dec+'s'+(dn?' <b class="gal-count">'+dn+'</b>':'')+'</span></summary><div class="gal-decade-body">'+years+'</div></details>';
   }
   box.innerHTML=html;
-  // Accordion: opening one decade collapses the others (one open at a time, or none).
+  // Drill-in: opening a decade hides the others, locks its bar to the top, years scroll beneath.
   const decs=[...box.querySelectorAll('.gal-decade')];
-  decs.forEach(d=>d.addEventListener('toggle',()=>{
-    if(d.open) decs.forEach(o=>{ if(o!==d) o.open=false; });
-  }));
+  const hdr=document.querySelector('header');
+  const hdrH=()=>hdr.getBoundingClientRect().height;
+  function applySolo(){
+    const open=decs.find(d=>d.open), h=hdrH();
+    decs.forEach(d=>{
+      const on=open&&d===open;
+      d.style.display=(open&&!on)?'none':'';
+      d.classList.toggle('solo', !!on);
+      d.querySelector(':scope > summary').style.top = on ? (h+'px') : '';
+    });
+  }
+  function scrollToDecade(d){
+    const y=Math.max(0, d.getBoundingClientRect().top + window.scrollY - hdrH());
+    window.scrollTo({top:y, behavior:'instant'});
+  }
+  decs.forEach(d=>{
+    d.querySelector(':scope > summary').addEventListener('click', e=>{
+      e.preventDefault();                       // take control of open/close
+      const willOpen=!d.open;
+      decs.forEach(o=>{ o.open = (o===d && willOpen); });
+      applySolo();
+      setTimeout(()=>scrollToDecade(d), 30);    // move it to the top (or, on close, keep it in view)
+    });
+  });
+  window.addEventListener('resize', ()=>{ const o=decs.find(d=>d.open); if(o) o.querySelector(':scope > summary').style.top=hdrH()+'px'; });
 })();
 
 /* ---------- Header activity tip (tide/time/weather sensitive) ---------- */

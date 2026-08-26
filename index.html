@@ -1713,7 +1713,7 @@ loadWeather(); loadMarine();
   if(!spans.length) return;
   // Weekly hours: day 0=Sun..6=Sat; each day = array of [openH,openM,closeH,closeM] intervals; [] = closed that day.
   // ONLY confirmed hours are filled in; the rest stay {unknown:true} so we never show a false open/closed.
-  // Days: 0=Sun..6=Sat.  T=Tatams (CONFIRMED). The rest are DRAFTS from web sources (draft:true) — verify.
+  // Days: 0=Sun..6=Sat. Each day = array of [openH,openM,closeH,closeM] intervals ([]=closed). All hours user-confirmed (2026-08-26).
   const T=[[8,0,14,30]];                       // Tatams ~8am–2:30pm
   const H=[[10,0,16,0]];                        // 10am–4pm café day
   const PL=[[8,30,23,0]];                        // Plume: daily 8:30am–11pm (confirmed)

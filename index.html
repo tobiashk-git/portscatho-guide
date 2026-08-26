@@ -1427,8 +1427,9 @@ loadWeather(); loadMarine();
   function loadFrom(t){ img.src=t.dataset.full||t.currentSrc||t.src; cap.textContent=capOf(t); img.style.opacity='1'; resetZoom(false); }
   function updateArrows(){ const show=gallery.length>1?'':'none'; prevBtn.style.display=show; nextBtn.style.display=show; }
   function openImg(t){
-    const grid=t.closest('.gal-grid');    // browse within the one year's photos only
-    if(grid){ gallery=[...grid.querySelectorAll('img')]; gIdx=gallery.indexOf(t); }
+    // browse within one set: a gallery year's photos, or the "taste of Portscatho" strip
+    const set=t.closest('.gal-grid') || t.closest('.gallery');
+    if(set){ gallery=[...set.querySelectorAll('img')]; gIdx=gallery.indexOf(t); }
     else { gallery=[]; gIdx=-1; }
     loadFrom(t); updateArrows(); lb.classList.add('open');
   }

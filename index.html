@@ -279,7 +279,7 @@
   .walk-map .ic{font-size:2rem}
   /* Family gallery */
   .gal-decade{background:var(--card); border:1px solid var(--line); border-radius:14px; margin-bottom:10px; box-shadow:var(--shadow); overflow:hidden}
-  .gal-decade>summary{cursor:pointer; padding:14px 16px; font-weight:800; font-size:1.2rem; color:#fff; background:linear-gradient(150deg,var(--sea),var(--sea2)); list-style:none; display:flex; align-items:center; justify-content:space-between}
+  .gal-decade>summary{cursor:pointer; padding:14px 16px; font-weight:800; font-size:1.2rem; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.32); background:linear-gradient(150deg,var(--sea),var(--sea2)); list-style:none; display:flex; align-items:center; justify-content:space-between}
   .gal-decade>summary::-webkit-details-marker{display:none}
   .gal-decade>summary::after{content:"▸"; font-size:1rem; opacity:.9; transition:transform .2s}
   .gal-decade[open]>summary::after{transform:rotate(90deg)}
@@ -1586,12 +1586,16 @@ loadWeather(); loadMarine();
     const n=(GALLERY[y]||[]).length;
     return '<details class="gal-year"><summary><span>'+y+(n?' <b class="gal-count">'+n+'</b>':'')+'</span></summary><div class="gal-body">'+body(y)+'</div></details>';
   }
+  // "Aged to vivid" — decade bars ramp from warm/faded sepia (oldest) to vivid sea-blue (newest).
+  const DGRAD={2020:['#159ccf','#10b7c2'],2010:['#2287a8','#1a8f9b'],2000:['#3c7681','#33707a'],
+    1990:['#5f6d78','#53616b'],1980:['#7b6150','#684f42'],1970:['#857049','#70603e']};
+  const decGrad=dec=>{const g=DGRAD[dec]||DGRAD[2020]; return 'linear-gradient(150deg,'+g[0]+' 0%,'+g[1]+' 100%)';};
   let html='';
   for(let dec=Math.floor(now/10)*10; dec>=1970; dec-=10){
     const hi=Math.min(dec+9, now), lo=Math.max(dec, 1970);
     let years='', dn=0;
     for(let y=hi; y>=lo; y--){ years+=yearHtml(y); dn+=(GALLERY[y]||[]).length; }
-    html+='<details class="gal-decade"><summary><span>'+dec+'s'+(dn?' <b class="gal-count">'+dn+'</b>':'')+'</span></summary><div class="gal-decade-body">'+years+'</div></details>';
+    html+='<details class="gal-decade"><summary style="background:'+decGrad(dec)+'"><span>'+dec+'s'+(dn?' <b class="gal-count">'+dn+'</b>':'')+'</span></summary><div class="gal-decade-body">'+years+'</div></details>';
   }
   box.innerHTML=html;
   // Accordion: opening one decade collapses the others (one open at a time, or none).

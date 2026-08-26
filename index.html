@@ -1719,7 +1719,10 @@ loadWeather(); loadMarine();
     'tatams':{week:[ T, [], T, T, T, T, T ]},                                   // closed Mondays (confirmed)
     'hidden-hut':{week:[ H, H, H, H, H, H, H ], draft:true, note:'seasonal'},    // ~daily 10–4 in season
     'plume':{week:[ [[12,0,22,30]], PLUME, PLUME, PLUME, PLUME, PLUME, PLUME ], draft:true}, // Sun 12–10:30
-    'boathouse':{week:[ H, H, [], [], H, H, H ], draft:true, note:'seasonal'},   // Thu–Mon 10–4, shut Tue/Wed
+    'boathouse':{week:(now)=>{               // confirmed: summer 10–4 (+ 5–9 eve Thu–Sat); Wed shut except in August
+      const aug=now.getMonth()===7, d=[[10,0,16,0]], de=[[10,0,16,0],[17,0,21,0]];
+      return [ d, d, d, aug?de:[], de, de, de ]; // Sun/Mon/Tue = 10–4 · Wed closed (open in Aug) · Thu–Sat = 10–4 & 5–9
+    }},
     'ralphs':{week:[ [[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]] ], draft:true}, // daily 7–7
     'harbour-club':{week:[ [[12,0,24,0]], [[17,0,23,0]],[[17,0,23,0]],[[17,0,23,0]],[[17,0,23,0]],[[17,0,23,0]], [[12,0,24,0]] ], draft:true} // Mon–Fri 5–11pm, Sat/Sun 12–midnight
   };
@@ -1727,13 +1730,14 @@ loadWeather(); loadMarine();
   const fmt=(h,m)=>{ if(h>=24) return 'midnight'; const ap=h<12?'am':'pm'; const hh=h%12||12; return hh+(m?':'+String(m).padStart(2,'0'):'')+ap;};
   function status(v, now){
     if(!v || v.unknown) return {cls:'unk', txt:(v&&v.note)||'Hours vary — check ahead'};
+    const week = typeof v.week==='function' ? v.week(now) : v.week;
     const day=now.getDay(), mins=now.getHours()*60+now.getMinutes();
-    for(const [oh,om,ch,cm] of (v.week[day]||[])){
+    for(const [oh,om,ch,cm] of (week[day]||[])){
       const o=oh*60+om, c=ch*60+cm;
       if(mins>=o && mins<c) return (c-mins<=30) ? {cls:'soon', txt:'Closes '+fmt(ch,cm)} : {cls:'open', txt:'Open · till '+fmt(ch,cm)};
       if(mins<o) return (o-mins<=30) ? {cls:'soon', txt:'Opens '+fmt(oh,om)} : {cls:'closed', txt:'Closed · opens '+fmt(oh,om)};
     }
-    for(let i=1;i<=7;i++){ const d=(day+i)%7, iv=v.week[d]||[];
+    for(let i=1;i<=7;i++){ const d=(day+i)%7, iv=week[d]||[];
       if(iv.length){ const [oh,om]=iv[0]; return {cls:'closed', txt:'Closed · opens '+(i===1?'tomorrow':DAY[d])+' '+fmt(oh,om)}; } }
     return {cls:'closed', txt:'Closed'};
   }

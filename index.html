@@ -517,7 +517,7 @@
           <div class="tile"><img src="img/plume.jpg" alt="The Plume of Feathers pub"><div class="t"><b>The Plume of Feathers</b><small>The village pub — pints, food & a proper local welcome. Call <a href="tel:01872580321">01872 580321</a>.</small></div></div>
           <div class="tile"><img src="img/explore/boathouse.jpg" alt="The Boathouse café"><div class="t"><b>The Boathouse</b><small>Fresh crab & fish & chips to take away. Pre-order <a href="tel:01872580326">01872 580326</a>.</small></div></div>
           <div class="tile"><img src="img/explore/ralphs.jpg" alt="Ralph's store, Portscatho"><div class="t"><b>Ralph's</b><small>The village store on the harbour — foodstore, bakery, deli & ice cream.</small></div></div>
-          <div class="tile"><img src="img/explore/tatams.jpg" alt="Tatams coffee, Portscatho"><div class="t"><b>Tatams</b><small>Cracking coffee & cake by the harbour beach, with a big sea view.</small></div></div>
+          <div class="tile"><img src="img/explore/tatams.jpg" alt="Tatams coffee, Portscatho"><div class="t"><b>Tatams</b><small>Cracking coffee & cake by the harbour beach, with a big sea view. Open ~8am–2:30pm · <b>closed Mondays</b> (the Boathouse or Plume do coffee then).</small></div></div>
           <div class="tile"><img src="img/explore/harbour-club.jpg" alt="Portscatho seafront, home of the Harbour Club"><div class="t"><b>The Harbour Club</b><small>Friendly seafront social club & bar — a hub of village life.</small></div></div>
         </div>
         <details class="credits">
@@ -725,7 +725,7 @@
         <div class="divider"></div>
         <p class="small muted" style="margin:0 0 9px">…and the emergencies that <i>really</i> matter 😄</p>
         <div class="tiles">
-          <div class="tile"><img src="img/coffee-emergency.jpg" alt="Coffee by the sea" style="object-position:center 84%"><div class="t"><b>☕ Coffee emergency</b><small>In the event of caffeine shortage, proceed directly to <b>Tatams</b> by the harbour.</small></div></div>
+          <div class="tile"><img src="img/coffee-emergency.jpg" alt="Coffee by the sea" style="object-position:center 84%"><div class="t"><b>☕ Coffee emergency</b><small>In the event of caffeine shortage, proceed directly to <b>Tatams</b> by the harbour (~8am–2:30pm). Shut Mondays? The <b>Boathouse</b> or <b>Plume</b> have you covered.</small></div></div>
           <div class="tile"><img src="img/pasty-emergency.jpg" alt="A Cornish pasty" style="object-position:center 80%"><div class="t"><b>🥟 Pasty emergency</b><small>In the event of pasty deficiency, head straight to <b>Ralph's</b>.</small></div></div>
         </div>
       </div>
@@ -1663,9 +1663,15 @@ loadWeather(); loadMarine();
     const warm = temp!=null && temp>=17;
     const calm = wind==null || wind<15;
     const nearSunset = sunset && sunset>now && (sunset-now)/60000<=45 && !rainy && !stormy;
+    // Tatams coffee: open ~8am–2:30pm, shut Mondays — don't send anyone down for coffee when it's closed.
+    const isMon = now.getDay()===1;
+    const mins = h*60 + now.getMinutes();
+    const tatamsOpen = !isMon && mins>=8*60 && mins<14*60+30;
     let msg;
     if(stormy) msg = night ? '🌬️ Wild night — the sea’s pounding the harbour wall!' : '🌬️ Wild out there — watch the waves crash over the harbour wall!';
-    else if(rainy) msg = night ? '🌧️ Wet night — cosy in with a cuppa' : '🌧️ A wet one — pasty from Ralph’s or a coffee at Tatams?';
+    else if(rainy) msg = night ? '🌧️ Wet night — cosy in with a cuppa'
+      : tatamsOpen ? '🌧️ A wet one — pasty from Ralph’s or a coffee at Tatams?'
+      : '🌧️ A wet one — pasty from Ralph’s or a coffee at the Boathouse?';
     else if(night){
       if(clearSky) msg='✨ Clear night — grand stars over the Roseland, look up!';
       else if(h>=23 || h<5) msg='🌙 All quiet — the harbour rests under the night sky';
@@ -1676,7 +1682,9 @@ loadWeather(); loadMarine();
     else if(sunny && warm && calm) msg='☀️ Beach weather — Porthcurnick or Towan?';
     else if(nearHigh && warm) msg='🌊 High water — grand for a dip off the beach';
     else if(wind!=null && wind>=20) msg='🌬️ Breezy today — a bracing cliff walk?';
-    else if(h<10) msg='☕ Morning! A coffee at Tatams to start the day';
+    else if(h<10) msg = tatamsOpen ? '☕ Morning! A coffee at Tatams to start the day'
+      : isMon ? '☕ Monday! Tatams is shut — coffee at the Boathouse or Plume'
+      : '☕ Early start — Tatams opens at 8; the Boathouse for a coffee till then';
     else if(h>=19) msg='🌙 Evening — a stroll along the seafront?';
     else if(sunny) msg='A grand day for a wander round the village';
     else msg='Whatever the weather, the Roseland’s calling';

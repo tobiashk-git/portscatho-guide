@@ -328,7 +328,7 @@
     align-items:center; justify-content:center;
     padding:10px; padding-top:calc(10px + var(--safe-top)); padding-bottom:calc(10px + var(--safe-bot))}
   .lightbox.open{display:flex}
-  .lightbox img{width:100%; height:100%; object-fit:contain; border-radius:10px}
+  .lightbox img{width:100%; height:100%; object-fit:contain; border-radius:10px; touch-action:none; transform-origin:center center; will-change:transform}
   .lightbox .cap{position:absolute; bottom:calc(10px + var(--safe-bot)); left:0; right:0; text-align:center; color:#fff; font-size:.85rem; padding:6px 20px; text-shadow:0 1px 6px rgba(0,0,0,.9)}
   .lightbox .x{position:absolute; top:calc(14px + var(--safe-top)); right:16px; width:40px; height:40px; border-radius:50%;
     background:rgba(255,255,255,.16); color:#fff; border:0; font-size:1.4rem; cursor:pointer; line-height:1}
@@ -1384,11 +1384,16 @@ loadWeather(); loadMarine();
   hero.addEventListener('pointercancel',endDrag);
 })();
 
-/* ---------- Lightbox (tap any photo to zoom) ---------- */
+/* ---------- Lightbox (tap to open, pinch/double-tap to zoom, drag to pan) ---------- */
 (function(){
   const lb=document.getElementById('lightbox'), img=document.getElementById('lb-img'), cap=document.getElementById('lb-cap');
-  function open(src,caption){ img.src=src; cap.textContent=caption||''; lb.classList.add('open'); }
-  function close(){ lb.classList.remove('open'); img.src=''; }
+  let scale=1, tx=0, ty=0;
+  function apply(anim){ img.style.transition=anim?'transform .2s ease':'none'; img.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')'; }
+  function resetZoom(anim){ scale=1; tx=0; ty=0; apply(anim); }
+  function clamp(){ const w=img.offsetWidth, h=img.offsetHeight, mx=(scale-1)*w/2, my=(scale-1)*h/2;
+    tx=Math.max(-mx,Math.min(mx,tx)); ty=Math.max(-my,Math.min(my,ty)); }
+  function open(src,caption){ img.src=src; cap.textContent=caption||''; resetZoom(false); lb.classList.add('open'); }
+  function close(){ lb.classList.remove('open'); img.src=''; resetZoom(false); }
   document.addEventListener('click',e=>{
     const t=e.target;
     if(t.tagName==='IMG' && (t.closest('.gallery')||t.closest('.gal-grid')||t.closest('.tile')||t.classList.contains('card-photo')||t.classList.contains('fish-ph')||t.closest('.medialist')||t.closest('.storm-grid')||t.closest('figure.ph'))){
@@ -1400,7 +1405,32 @@ loadWeather(); loadMarine();
     }
   });
   document.getElementById('lb-close').addEventListener('click',close);
-  lb.addEventListener('click',e=>{ if(e.target===lb) close(); });
+  lb.addEventListener('click',e=>{ if(e.target===lb && scale<=1.02) close(); });
+
+  // --- touch: pinch zoom, pan, double-tap ---
+  const dist=t=>Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY);
+  let startDist=0, startScale=1, pan=null, startTx=0, startTy=0, lastTap=0;
+  img.addEventListener('touchstart',e=>{
+    if(e.touches.length===2){ e.preventDefault(); startDist=dist(e.touches); startScale=scale; pan=null; }
+    else if(e.touches.length===1){
+      const now=Date.now();
+      if(now-lastTap<300){ e.preventDefault(); scale=scale>1?1:2.5; if(scale===1){tx=0;ty=0;} else clamp(); apply(true); lastTap=0; return; }
+      lastTap=now;
+      if(scale>1){ pan={x:e.touches[0].clientX,y:e.touches[0].clientY}; startTx=tx; startTy=ty; }
+    }
+  },{passive:false});
+  img.addEventListener('touchmove',e=>{
+    if(e.touches.length===2){ e.preventDefault();
+      scale=Math.min(5, Math.max(1, startScale*dist(e.touches)/startDist)); clamp(); apply(false); }
+    else if(e.touches.length===1 && pan && scale>1){ e.preventDefault();
+      tx=startTx+(e.touches[0].clientX-pan.x); ty=startTy+(e.touches[0].clientY-pan.y); clamp(); apply(false); }
+  },{passive:false});
+  img.addEventListener('touchend',e=>{
+    if(e.touches.length===0){ if(scale<=1) resetZoom(true); else { clamp(); apply(true); } pan=null; }
+  },{passive:false});
+  // desktop: wheel to zoom (handy for testing/laptops)
+  img.addEventListener('wheel',e=>{ e.preventDefault();
+    scale=Math.min(5, Math.max(1, scale*(e.deltaY<0?1.12:0.89))); if(scale===1){tx=0;ty=0;} else clamp(); apply(false); },{passive:false});
 })();
 
 /* ---------- Rock Pool Explorer ---------- */

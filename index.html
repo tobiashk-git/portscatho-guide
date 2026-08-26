@@ -328,6 +328,7 @@
   .tile .status.soon{color:#9a6412; background:#fbefda}
   .tile .status.closed{color:#a5342a; background:#f7e2df}
   .tile .status.unk{color:#5f6b73; background:#eef2f4}
+  .tile .status.prov{border:1px dashed currentColor}
 
   /* Home gallery strip */
   .gallery{display:flex; gap:9px; overflow-x:auto; padding:2px 0 6px; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory}
@@ -527,6 +528,7 @@
           <div class="tile"><img src="img/explore/tatams.jpg" alt="Tatams coffee, Portscatho"><div class="t"><b>Tatams</b><span class="status" data-v="tatams"></span><small>Cracking coffee & cake by the harbour beach, with a big sea view. <b>Closed Mondays</b> (the Boathouse or Plume do coffee then).</small></div></div>
           <div class="tile"><img src="img/explore/harbour-club.jpg" alt="Portscatho seafront, home of the Harbour Club"><div class="t"><b>The Harbour Club</b><span class="status" data-v="harbour-club"></span><small>Friendly seafront social club & bar — a hub of village life.</small></div></div>
         </div>
+        <p class="small muted" style="margin:9px 2px 0">🕒 Live open/closed status. Tatams' hours are confirmed; the rest (dashed) are a guide — please confirm before a special trip, as hours can be seasonal.</p>
         <details class="credits">
           <summary>Explore photo credits</summary>
           <ul id="explore-credits"><li>Loading…</li></ul>
@@ -1709,17 +1711,20 @@ loadWeather(); loadMarine();
   if(!spans.length) return;
   // Weekly hours: day 0=Sun..6=Sat; each day = array of [openH,openM,closeH,closeM] intervals; [] = closed that day.
   // ONLY confirmed hours are filled in; the rest stay {unknown:true} so we never show a false open/closed.
-  const T=[[8,0,14,30]]; // Tatams: ~8am–2:30pm
+  // Days: 0=Sun..6=Sat.  T=Tatams (CONFIRMED). The rest are DRAFTS from web sources (draft:true) — verify.
+  const T=[[8,0,14,30]];                       // Tatams ~8am–2:30pm
+  const H=[[10,0,16,0]];                        // 10am–4pm café day
+  const PLUME=[[9,0,15,0],[18,0,23,0]];         // Plume Mon–Sat: 9–3 & 6–11
   const HOURS={
-    'tatams':{week:[ T, [], T, T, T, T, T ]},          // closed Mondays
-    'hidden-hut':{unknown:true, note:'Seasonal — check ahead'},
-    'plume':{unknown:true},
-    'boathouse':{unknown:true},
-    'ralphs':{unknown:true},
-    'harbour-club':{unknown:true}
+    'tatams':{week:[ T, [], T, T, T, T, T ]},                                   // closed Mondays (confirmed)
+    'hidden-hut':{week:[ H, H, H, H, H, H, H ], draft:true, note:'seasonal'},    // ~daily 10–4 in season
+    'plume':{week:[ [[12,0,22,30]], PLUME, PLUME, PLUME, PLUME, PLUME, PLUME ], draft:true}, // Sun 12–10:30
+    'boathouse':{week:[ H, H, [], [], H, H, H ], draft:true, note:'seasonal'},   // Thu–Mon 10–4, shut Tue/Wed
+    'ralphs':{week:[ [[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]] ], draft:true}, // daily 7–7
+    'harbour-club':{week:[ [[12,0,24,0]], [[17,0,23,0]],[[17,0,23,0]],[[17,0,23,0]],[[17,0,23,0]],[[17,0,23,0]], [[12,0,24,0]] ], draft:true} // Mon–Fri 5–11pm, Sat/Sun 12–midnight
   };
   const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const fmt=(h,m)=>{const ap=h<12?'am':'pm'; const hh=h%12||12; return hh+(m?':'+String(m).padStart(2,'0'):'')+ap;};
+  const fmt=(h,m)=>{ if(h>=24) return 'midnight'; const ap=h<12?'am':'pm'; const hh=h%12||12; return hh+(m?':'+String(m).padStart(2,'0'):'')+ap;};
   function status(v, now){
     if(!v || v.unknown) return {cls:'unk', txt:(v&&v.note)||'Hours vary — check ahead'};
     const day=now.getDay(), mins=now.getHours()*60+now.getMinutes();
@@ -1734,7 +1739,8 @@ loadWeather(); loadMarine();
   }
   function render(){
     const now=new Date();
-    spans.forEach(s=>{ const st=status(HOURS[s.dataset.v], now); s.className='status '+st.cls; s.innerHTML='<i></i>'+st.txt; });
+    spans.forEach(s=>{ const v=HOURS[s.dataset.v], st=status(v, now);
+      s.className='status '+st.cls+(v&&v.draft?' prov':''); s.innerHTML='<i></i>'+st.txt; });
   }
   render(); setInterval(render, 60000);
 })();

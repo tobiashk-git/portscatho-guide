@@ -1673,7 +1673,8 @@ loadWeather(); loadMarine();
     d.querySelector(':scope > summary').addEventListener('click', e=>{
       e.preventDefault();                       // take control of open/close
       const willOpen=!d.open;
-      decs.forEach(o=>{ o.open = (o===d && willOpen); });
+      decs.forEach(o=>{ o.open = (o===d && willOpen);
+        if(!o.open) o.querySelectorAll('.gal-year[open]').forEach(y=>y.open=false); }); // collapse years of any closed decade
       applySolo();
       setTimeout(()=>scrollToDecade(d), 30);    // move it to the top (or, on close, keep it in view)
     });

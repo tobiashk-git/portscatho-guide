@@ -321,6 +321,13 @@
   .tile .t{padding:8px 10px 9px}
   .tile .t b{display:block; font-size:.9rem; line-height:1.2}
   .tile .t small{color:var(--ink2); font-size:.75rem; display:block; margin-top:2px}
+  .tile .status{display:inline-flex; align-items:center; gap:5px; margin-top:4px; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:20px; background:#eef2f4; color:#5f6b73}
+  .tile .status:empty{display:none}
+  .tile .status i{width:7px; height:7px; border-radius:50%; background:currentColor; flex:none}
+  .tile .status.open{color:#1e7a3a; background:#e4f4e8}
+  .tile .status.soon{color:#9a6412; background:#fbefda}
+  .tile .status.closed{color:#a5342a; background:#f7e2df}
+  .tile .status.unk{color:#5f6b73; background:#eef2f4}
 
   /* Home gallery strip */
   .gallery{display:flex; gap:9px; overflow-x:auto; padding:2px 0 6px; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory}
@@ -513,12 +520,12 @@
       <div class="card">
         <h2>🍴 Eat & drink</h2>
         <div class="tiles">
-          <div class="tile"><img src="img/explore/porthcurnick-cove.jpg" alt="Porthcurnick, home of the Hidden Hut"><div class="t"><b>The Hidden Hut</b><small>Beach café above Porthcurnick — pasties, cake & famous Feast Nights (book online).</small><a class="more" href="https://hiddenhut.co.uk" target="_blank" rel="noopener">Learn more</a></div></div>
-          <div class="tile"><img src="img/plume.jpg" alt="The Plume of Feathers pub"><div class="t"><b>The Plume of Feathers</b><small>The village pub — pints, food & a proper local welcome. Call <a href="tel:01872580321">01872 580321</a>.</small></div></div>
-          <div class="tile"><img src="img/explore/boathouse.jpg" alt="The Boathouse café"><div class="t"><b>The Boathouse</b><small>Fresh crab & fish & chips to take away. Pre-order <a href="tel:01872580326">01872 580326</a>.</small></div></div>
-          <div class="tile"><img src="img/explore/ralphs.jpg" alt="Ralph's store, Portscatho"><div class="t"><b>Ralph's</b><small>The village store on the harbour — foodstore, bakery, deli & ice cream.</small></div></div>
-          <div class="tile"><img src="img/explore/tatams.jpg" alt="Tatams coffee, Portscatho"><div class="t"><b>Tatams</b><small>Cracking coffee & cake by the harbour beach, with a big sea view. Open ~8am–2:30pm · <b>closed Mondays</b> (the Boathouse or Plume do coffee then).</small></div></div>
-          <div class="tile"><img src="img/explore/harbour-club.jpg" alt="Portscatho seafront, home of the Harbour Club"><div class="t"><b>The Harbour Club</b><small>Friendly seafront social club & bar — a hub of village life.</small></div></div>
+          <div class="tile"><img src="img/explore/porthcurnick-cove.jpg" alt="Porthcurnick, home of the Hidden Hut"><div class="t"><b>The Hidden Hut</b><span class="status" data-v="hidden-hut"></span><small>Beach café above Porthcurnick — pasties, cake & famous Feast Nights (book online).</small><a class="more" href="https://hiddenhut.co.uk" target="_blank" rel="noopener">Learn more</a></div></div>
+          <div class="tile"><img src="img/plume.jpg" alt="The Plume of Feathers pub"><div class="t"><b>The Plume of Feathers</b><span class="status" data-v="plume"></span><small>The village pub — pints, food & a proper local welcome. Call <a href="tel:01872580321">01872 580321</a>.</small></div></div>
+          <div class="tile"><img src="img/explore/boathouse.jpg" alt="The Boathouse café"><div class="t"><b>The Boathouse</b><span class="status" data-v="boathouse"></span><small>Fresh crab & fish & chips to take away. Pre-order <a href="tel:01872580326">01872 580326</a>.</small></div></div>
+          <div class="tile"><img src="img/explore/ralphs.jpg" alt="Ralph's store, Portscatho"><div class="t"><b>Ralph's</b><span class="status" data-v="ralphs"></span><small>The village store on the harbour — foodstore, bakery, deli & ice cream.</small></div></div>
+          <div class="tile"><img src="img/explore/tatams.jpg" alt="Tatams coffee, Portscatho"><div class="t"><b>Tatams</b><span class="status" data-v="tatams"></span><small>Cracking coffee & cake by the harbour beach, with a big sea view. <b>Closed Mondays</b> (the Boathouse or Plume do coffee then).</small></div></div>
+          <div class="tile"><img src="img/explore/harbour-club.jpg" alt="Portscatho seafront, home of the Harbour Club"><div class="t"><b>The Harbour Club</b><span class="status" data-v="harbour-club"></span><small>Friendly seafront social club & bar — a hub of village life.</small></div></div>
         </div>
         <details class="credits">
           <summary>Explore photo credits</summary>
@@ -1694,6 +1701,42 @@ loadWeather(); loadMarine();
   fetch('tides.json').then(r=>r.json()).then(d=>{ TIDES=d.days; render(); }).catch(()=>{});
   render();
   setInterval(render, 300000);
+})();
+
+/* ---------- Eat & drink open/closed status (offline schedule) ---------- */
+(function(){
+  const spans=[...document.querySelectorAll('.tile .status[data-v]')];
+  if(!spans.length) return;
+  // Weekly hours: day 0=Sun..6=Sat; each day = array of [openH,openM,closeH,closeM] intervals; [] = closed that day.
+  // ONLY confirmed hours are filled in; the rest stay {unknown:true} so we never show a false open/closed.
+  const T=[[8,0,14,30]]; // Tatams: ~8am–2:30pm
+  const HOURS={
+    'tatams':{week:[ T, [], T, T, T, T, T ]},          // closed Mondays
+    'hidden-hut':{unknown:true, note:'Seasonal — check ahead'},
+    'plume':{unknown:true},
+    'boathouse':{unknown:true},
+    'ralphs':{unknown:true},
+    'harbour-club':{unknown:true}
+  };
+  const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const fmt=(h,m)=>{const ap=h<12?'am':'pm'; const hh=h%12||12; return hh+(m?':'+String(m).padStart(2,'0'):'')+ap;};
+  function status(v, now){
+    if(!v || v.unknown) return {cls:'unk', txt:(v&&v.note)||'Hours vary — check ahead'};
+    const day=now.getDay(), mins=now.getHours()*60+now.getMinutes();
+    for(const [oh,om,ch,cm] of (v.week[day]||[])){
+      const o=oh*60+om, c=ch*60+cm;
+      if(mins>=o && mins<c) return (c-mins<=30) ? {cls:'soon', txt:'Closes '+fmt(ch,cm)} : {cls:'open', txt:'Open · till '+fmt(ch,cm)};
+      if(mins<o) return (o-mins<=30) ? {cls:'soon', txt:'Opens '+fmt(oh,om)} : {cls:'closed', txt:'Closed · opens '+fmt(oh,om)};
+    }
+    for(let i=1;i<=7;i++){ const d=(day+i)%7, iv=v.week[d]||[];
+      if(iv.length){ const [oh,om]=iv[0]; return {cls:'closed', txt:'Closed · opens '+(i===1?'tomorrow':DAY[d])+' '+fmt(oh,om)}; } }
+    return {cls:'closed', txt:'Closed'};
+  }
+  function render(){
+    const now=new Date();
+    spans.forEach(s=>{ const st=status(HOURS[s.dataset.v], now); s.className='status '+st.cls; s.innerHTML='<i></i>'+st.txt; });
+  }
+  render(); setInterval(render, 60000);
 })();
 
 /* ---------- Header weather scene (background graphic of current weather) ---------- */

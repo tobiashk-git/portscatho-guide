@@ -530,7 +530,7 @@
           <div class="tile"><img src="img/explore/tatams.jpg" alt="Tatams coffee, Portscatho"><div class="t"><b>Tatams</b><span class="status" data-v="tatams"></span><small>Cracking coffee & cake by the harbour beach, with a big sea view. <b>Closed Mondays</b> (the Boathouse or Plume do coffee then).</small></div></div>
           <div class="tile"><img src="img/explore/harbour-club.jpg" alt="Portscatho seafront, home of the Harbour Club"><div class="t"><b>The Harbour Club</b><span class="status" data-v="harbour-club"></span><small>Friendly seafront social club & bar — a hub of village life.</small></div></div>
         </div>
-        <p class="small muted" style="margin:9px 2px 0">🕒 Live open/closed status. Tatams' hours are confirmed; the rest (dashed) are a guide — please confirm before a special trip, as hours can be seasonal.</p>
+        <p class="small muted" style="margin:9px 2px 0">🕒 Live open/closed status. Hours can vary seasonally — worth a quick check before a special trip.</p>
         <details class="credits">
           <summary>Explore photo credits</summary>
           <ul id="explore-credits"><li>Loading…</li></ul>
@@ -1719,13 +1719,13 @@ loadWeather(); loadMarine();
   const PL=[[8,30,23,0]];                        // Plume: daily 8:30am–11pm (confirmed)
   const HOURS={
     'tatams':{week:[ T, [], T, T, T, T, T ]},                                   // closed Mondays (confirmed)
-    'hidden-hut':{week:[ H, H, H, H, H, H, H ], draft:true, note:'seasonal'},    // ~daily 10–4 in season
+    'hidden-hut':{week:[ H, H, H, H, H, H, H ]},                                 // confirmed: daily 10–4 (seasonal café)
     'plume':{week:[ PL, PL, PL, PL, PL, PL, PL ]},                               // confirmed: daily 8:30am–11pm
     'boathouse':{week:(now)=>{               // confirmed: summer 10–4 (+ 5–9 eve Thu–Sat); Wed shut except in August
       const aug=now.getMonth()===7, d=[[10,0,16,0]], de=[[10,0,16,0],[17,0,21,0]];
       return [ d, d, d, aug?de:[], de, de, de ]; // Sun/Mon/Tue = 10–4 · Wed closed (open in Aug) · Thu–Sat = 10–4 & 5–9
     }},
-    'ralphs':{week:[ [[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]] ], draft:true}, // daily 7–7
+    'ralphs':{week:[ [[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]],[[7,0,19,0]] ]}, // confirmed: daily 7–7
     'harbour-club':{week:[ [[12,0,23,0]], [[12,0,23,0]],[[12,0,23,0]],[[12,0,23,0]],[[12,0,23,0]], [[12,0,25,0]],[[12,0,25,0]] ]} // confirmed: daily 12–11pm, Fri/Sat to 1am
   };
   const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];

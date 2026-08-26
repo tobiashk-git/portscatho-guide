@@ -1427,7 +1427,8 @@ loadWeather(); loadMarine();
   function loadFrom(t){ img.src=t.dataset.full||t.currentSrc||t.src; cap.textContent=capOf(t); img.style.opacity='1'; resetZoom(false); }
   function updateArrows(){ const show=gallery.length>1?'':'none'; prevBtn.style.display=show; nextBtn.style.display=show; }
   function openImg(t){
-    if(t.closest('.gal-grid')){ gallery=[...document.querySelectorAll('.gal-grid img')]; gIdx=gallery.indexOf(t); }
+    const dec=t.closest('.gal-decade');   // browse within the open decade
+    if(dec){ gallery=[...dec.querySelectorAll('.gal-grid img')]; gIdx=gallery.indexOf(t); }
     else { gallery=[]; gIdx=-1; }
     loadFrom(t); updateArrows(); lb.classList.add('open');
   }

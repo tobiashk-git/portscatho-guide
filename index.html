@@ -329,9 +329,9 @@
     padding:10px; padding-top:calc(10px + var(--safe-top)); padding-bottom:calc(10px + var(--safe-bot))}
   .lightbox.open{display:flex}
   .lightbox img{width:100%; height:100%; object-fit:contain; border-radius:10px; touch-action:none; transform-origin:center center; will-change:transform}
-  .lightbox .cap{position:absolute; bottom:calc(10px + var(--safe-bot)); left:0; right:0; text-align:center; color:#fff; font-size:.85rem; padding:6px 20px; text-shadow:0 1px 6px rgba(0,0,0,.9)}
-  .lightbox .x{position:absolute; top:calc(14px + var(--safe-top)); right:16px; width:40px; height:40px; border-radius:50%;
-    background:rgba(255,255,255,.16); color:#fff; border:0; font-size:1.4rem; cursor:pointer; line-height:1}
+  .lightbox .cap{position:absolute; z-index:3; bottom:calc(10px + var(--safe-bot)); left:0; right:0; text-align:center; color:#fff; font-size:.85rem; padding:6px 20px; text-shadow:0 1px 6px rgba(0,0,0,.9); pointer-events:none}
+  .lightbox .x{position:absolute; z-index:4; top:calc(14px + var(--safe-top)); right:16px; width:46px; height:46px; border-radius:50%;
+    background:rgba(255,255,255,.22); color:#fff; border:0; font-size:1.5rem; cursor:pointer; line-height:1; -webkit-tap-highlight-color:transparent}
 
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:11px}
   .stat{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px; box-shadow:var(--shadow)}

@@ -1707,7 +1707,7 @@ loadWeather(); loadMarine();
     const sunrise=wx&&wx.sunrise?new Date(wx.sunrise):null;
     const sunset=wx&&wx.sunset?new Date(wx.sunset):null;
     const night = (sunrise&&sunset) ? (now<sunrise || now>sunset) : (h<6 || h>=21);
-    const rainy = code!=null && (code>=51 || (pp!=null && pp>=60));
+    const rainy = code!=null && code>=51;   // wet NOW (current weather code), not the day's forecast max
     const stormy = (gust!=null && gust>=40) || (wind!=null && wind>=33);
     const clearSky = code!=null && code<=1;
     const sunny = code!=null && code<=2;
@@ -1720,9 +1720,13 @@ loadWeather(); loadMarine();
     const tatamsOpen = !isMon && mins>=8*60 && mins<14*60+30;
     let msg;
     if(stormy) msg = night ? '🌬️ Wild night — the sea’s pounding the harbour wall!' : '🌬️ Wild out there — watch the waves crash over the harbour wall!';
-    else if(rainy) msg = night ? '🌧️ Wet night — cosy in with a cuppa'
-      : tatamsOpen ? '🌧️ A wet one — pasty from Ralph’s or a coffee at Tatams?'
-      : '🌧️ A wet one — pasty from Ralph’s or a coffee at the Boathouse?';
+    else if(rainy){                                    // wet-weather suggestion, matched to the time of day
+      if(night) msg='🌧️ Wet night — cosy in with a cuppa';
+      else if(mins < 11*60+30) msg = tatamsOpen ? '🌧️ A wet one — duck into Tatams for a coffee?' : '🌧️ A wet start — put the kettle on and wait it out';
+      else if(mins < 14*60+30) msg='🌧️ A wet one — grab a pasty from Ralph’s and hunker down';
+      else if(mins < 18*60) msg='🌧️ A soggy afternoon — a hot drink & a browse at Ralph’s?';
+      else msg='🌧️ A wet evening — a pint by the fire at the Plume?';
+    }
     else if(night){
       if(clearSky) msg='✨ Clear night — grand stars over the Roseland, look up!';
       else if(h>=23 || h<5) msg='🌙 All quiet — the harbour rests under the night sky';

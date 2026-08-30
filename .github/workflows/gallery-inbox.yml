@@ -37,8 +37,10 @@ jobs:
         run: pip install pillow pillow-heif
 
       - name: Optimise and add to the gallery
+        # 'auto' = use the year at the FRONT of the filename (e.g. "2015 harbour.jpg"
+        # -> 2015); anything without a leading year defaults to the current year.
         if: steps.check.outputs.has == '1'
-        run: python tools/add_gallery_photos.py "$(date +%Y)" photo-inbox/ --clean
+        run: python tools/add_gallery_photos.py auto photo-inbox/ --clean
 
       - name: Commit and push
         if: steps.check.outputs.has == '1'

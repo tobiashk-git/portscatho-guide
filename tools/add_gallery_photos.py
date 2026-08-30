@@ -93,7 +93,9 @@ def main():
     if mode != "auto" and not re.fullmatch(r"(19|20)\d{2}", mode):
         sys.exit("First argument must be a 4-digit year or 'auto'. Got: " + mode)
 
-    files = gather(sys.argv[2:])
+    rest = sys.argv[2:]
+    clean = "--clean" in rest                        # delete source files after adding (used for the inbox)
+    files = gather([a for a in rest if not a.startswith("-")])
     if not files:
         sys.exit("No images found to add.")
 
@@ -118,6 +120,9 @@ def main():
         alt = clean_alt(f)
         adds[year].append({"src": "img/gallery/%s/%s" % (year, pname), "alt": alt})
         print('  + %s/%s   "%s"' % (year, pname, alt))
+        if clean:
+            try: os.remove(f)
+            except OSError: pass
 
     # --- update the GALLERY manifest inside index.html ---
     html = open(INDEX, encoding="utf-8").read()

@@ -3,15 +3,17 @@
 The family gallery lives in this repo. To add photos to the **shared** copy everyone
 sees, run the helper script, review, and push. No local-only copy — it goes to master.
 
-## From a browser Claude Code session (e.g. on holiday, phone or laptop)
+## Everyday way (phone-only, automatic) — the photo inbox
 
-1. Open **claude.ai/code**, signed into your account, on the `portscatho-guide` repo.
-2. **Attach the day's photos** to a chat message.
-3. Ask Claude:
+Upload the day's photos to the **`photo-inbox/`** folder from your phone
+(github.com → repo → `photo-inbox` → Add file → Upload files → commit to master).
+A GitHub Action (`.github/workflows/gallery-inbox.yml`) then optimises them, adds
+them to the current year, empties the inbox, and pushes — no laptop, no Claude
+session needed. See `photo-inbox/README.md`.
 
-   > Run `tools/add_gallery_photos.py 2026 <the attached photos>`, then commit and push.
-
-That's it — Claude saves the attached files, runs the script, and pushes.
+> Note: attaching a photo in a Claude Code chat does **not** work for this — a
+> cloud session receives the image to *look at*, not as a *file* it can process.
+> The photos must reach the repo (the inbox upload above), where they're real files.
 
 ## What the script does
 

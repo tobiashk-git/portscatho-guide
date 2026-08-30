@@ -1732,7 +1732,8 @@ loadWeather(); loadMarine();
     else if(night){
       if(clearSky) msg='✨ Clear night — grand stars over the Roseland, look up!';
       else if(h>=23 || h<6) msg='🌙 All quiet — the harbour rests under the night sky';
-      else msg='🌆 Evening — a pint at the Plume or a stroll by the harbour?';
+      else if(mins < 22*60+45) msg='🌆 Evening — a pint at the Plume or a stroll by the harbour?'; // Plume open till 11pm (last orders ~10:45)
+      else msg='🌙 Winding down — a last stroll along the seafront?';
     }
     else if(nearSunset) msg='🌅 Sunset soon — the harbour’s the spot to watch it';
     else if(nearLow) msg='🦐 Low tide — perfect for rockpooling & beach walks';

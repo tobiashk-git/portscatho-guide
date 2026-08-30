@@ -1719,6 +1719,8 @@ loadWeather(); loadMarine();
     const mins = h*60 + now.getMinutes();
     const tatamsOpen = !isMon && mins>=8*60 && mins<14*60+30;
     const earlyAM = mins>=6*60 && mins<8*60;   // before the shops open — dog-walk o'clock
+    const dinner  = mins>=18*60 && mins<19*60;                 // 6–7pm dinnertime
+    const boathouseEve = [4,5,6].indexOf(now.getDay())>=0;     // Thu/Fri/Sat — Boathouse does evenings (5–9pm)
     let msg;
     if(stormy) msg = night ? '🌬️ Wild night — the sea’s pounding the harbour wall!' : '🌬️ Wild out there — watch the waves crash over the harbour wall!';
     else if(rainy){                                    // wet-weather suggestion, matched to the time of day
@@ -1735,6 +1737,8 @@ loadWeather(); loadMarine();
       else if(mins < 22*60+45) msg='🌆 Evening — a pint at the Plume or a stroll by the harbour?'; // Plume open till 11pm (last orders ~10:45)
       else msg='🌙 Winding down — a last stroll along the seafront?';
     }
+    else if(dinner) msg = boathouseEve ? '🍽️ Dinnertime — fish & chips from the Boathouse, or a table at the Plume'
+      : '🍽️ Dinnertime — a table at the Plume?';
     else if(nearSunset) msg='🌅 Sunset soon — the harbour’s the spot to watch it';
     else if(nearLow) msg='🦐 Low tide — perfect for rockpooling & beach walks';
     else if(sunny && warm && calm) msg='☀️ Beach weather — Porthcurnick or Towan?';

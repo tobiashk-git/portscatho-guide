@@ -1718,18 +1718,20 @@ loadWeather(); loadMarine();
     const isMon = now.getDay()===1;
     const mins = h*60 + now.getMinutes();
     const tatamsOpen = !isMon && mins>=8*60 && mins<14*60+30;
+    const earlyAM = mins>=6*60 && mins<8*60;   // before the shops open — dog-walk o'clock
     let msg;
     if(stormy) msg = night ? '🌬️ Wild night — the sea’s pounding the harbour wall!' : '🌬️ Wild out there — watch the waves crash over the harbour wall!';
     else if(rainy){                                    // wet-weather suggestion, matched to the time of day
       if(night) msg='🌧️ Wet night — cosy in with a cuppa';
-      else if(mins < 11*60+30) msg = tatamsOpen ? '🌧️ A wet one — duck into Tatams for a coffee?' : '🌧️ A wet start — put the kettle on and wait it out';
+      else if(mins < 11*60+30) msg = (mins>=8*60+30) ? '🌧️ A wet one — a warm coffee at the Plume?' : '🌧️ A wet start — put the kettle on and wait it out';
       else if(mins < 14*60+30) msg='🌧️ A wet one — grab a pasty from Ralph’s and hunker down';
       else if(mins < 18*60) msg='🌧️ A soggy afternoon — a hot drink & a browse at Ralph’s?';
       else msg='🌧️ A wet evening — a pint by the fire at the Plume?';
     }
+    else if(earlyAM) msg='🐾 Early one — is it time for walkies?';
     else if(night){
       if(clearSky) msg='✨ Clear night — grand stars over the Roseland, look up!';
-      else if(h>=23 || h<5) msg='🌙 All quiet — the harbour rests under the night sky';
+      else if(h>=23 || h<6) msg='🌙 All quiet — the harbour rests under the night sky';
       else msg='🌆 Evening — a pint at the Plume or a stroll by the harbour?';
     }
     else if(nearSunset) msg='🌅 Sunset soon — the harbour’s the spot to watch it';
@@ -1737,9 +1739,11 @@ loadWeather(); loadMarine();
     else if(sunny && warm && calm) msg='☀️ Beach weather — Porthcurnick or Towan?';
     else if(nearHigh && warm) msg='🌊 High water — grand for a dip off the beach';
     else if(wind!=null && wind>=20) msg='🌬️ Breezy today — a bracing cliff walk?';
-    else if(h<10) msg = tatamsOpen ? '☕ Morning! A coffee at Tatams to start the day'
-      : isMon ? '☕ Monday! Tatams is shut — coffee at the Boathouse or Plume'
-      : '☕ Early start — Tatams opens at 8; the Boathouse for a coffee till then';
+    else if(h<10){
+      if(tatamsOpen) msg='☕ Morning! A coffee at Tatams to start the day';
+      else if(isMon) msg='☕ Monday — Tatams is shut; a coffee at the Plume?';
+      else msg='☕ Morning — the village is waking up';
+    }
     else if(h>=19) msg='🌙 Evening — a stroll along the seafront?';
     else if(sunny) msg='A grand day for a wander round the village';
     else msg='Whatever the weather, the Roseland’s calling';

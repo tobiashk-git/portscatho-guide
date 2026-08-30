@@ -1737,8 +1737,8 @@ loadWeather(); loadMarine();
       else if(mins < 22*60+45) msg='🌆 Evening — a pint at the Plume or a stroll by the harbour?'; // Plume open till 11pm (last orders ~10:45)
       else msg='🌙 Winding down — a last stroll along the seafront?';
     }
-    else if(dinner) msg = boathouseEve ? '🍽️ Dinnertime — fish & chips from the Boathouse, or a table at the Plume'
-      : '🍽️ Dinnertime — a table at the Plume?';
+    else if(dinner) msg = boathouseEve ? '🍽️ Dinnertime — what’s cooking? …or fish & chips from the Boathouse?'
+      : '🍽️ Dinnertime — what’s cooking? …or are we eating out at the Plume?';
     else if(nearSunset) msg='🌅 Sunset soon — the harbour’s the spot to watch it';
     else if(nearLow) msg='🦐 Low tide — perfect for rockpooling & beach walks';
     else if(sunny && warm && calm) msg='☀️ Beach weather — Porthcurnick or Towan?';

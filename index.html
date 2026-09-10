@@ -273,6 +273,18 @@
   .rp-reset:active{transform:scale(.96)}
   .rp-tide{border-radius:12px; padding:9px 13px; font-size:.86rem; font-weight:600; margin:0 2px 10px; border:1px solid #c3e4f0; background:#eaf6fb; color:var(--sea)}
   .rp-tide.now{background:#e7f5ea; border-color:#bfe3c9; color:var(--good)}
+  /* Rock pool — big "you found it" reveal popup */
+  .rp-reveal{display:none; position:fixed; inset:0; z-index:60; align-items:center; justify-content:center; padding:22px; background:rgba(8,40,52,.72); animation:rp-fade .2s ease}
+  .rp-reveal.open{display:flex}
+  .rp-reveal-card{background:var(--card); border-radius:20px; padding:18px; max-width:340px; width:100%; text-align:center; box-shadow:0 18px 50px rgba(0,0,0,.42); animation:rp-pop .42s cubic-bezier(.2,1.3,.4,1); cursor:pointer}
+  .rp-reveal-badge{font-weight:800; color:var(--sea2); font-size:.98rem; letter-spacing:.02em; margin-bottom:12px}
+  .rp-reveal img{width:100%; max-height:min(46vh,300px); aspect-ratio:1/1; object-fit:cover; border-radius:14px; background:#dfeef2}
+  .rp-reveal-name{font-weight:800; font-size:1.4rem; color:var(--ink); margin:13px 0 4px}
+  .rp-reveal-fact{font-size:.83rem; color:var(--ink2); line-height:1.45; margin:0 2px}
+  .rp-reveal-close{margin-top:15px; background:var(--teal); color:#fff; border:0; font-weight:800; font-size:.95rem; padding:11px 22px; border-radius:999px; cursor:pointer; box-shadow:var(--shadow); width:100%}
+  .rp-reveal-close:active{transform:scale(.98)}
+  @keyframes rp-fade{from{opacity:0}to{opacity:1}}
+  @keyframes rp-pop{from{opacity:0; transform:scale(.82) translateY(10px)}to{opacity:1; transform:none}}
   .wmeta{font-size:.8rem; color:var(--ink2); margin-bottom:2px}
   .wmeta span{margin-right:12px}
   .walk-map{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; text-align:center; min-height:150px; border:2px dashed var(--line); border-radius:14px; background:#f4f7f2; color:var(--ink2); padding:18px}
@@ -924,6 +936,16 @@
       <div class="rp-celebrate" id="rp-celebrate" role="button" tabindex="0">🎉 You found all 9 — Rock Pool Champion! &nbsp;↻ Play again?</div>
       <ul class="medialist" id="rp-panels"></ul>
       <details class="credits" id="rp-credits-wrap" style="display:none"><summary>Creature photo credits</summary><ul id="rp-credits"></ul></details>
+
+      <div class="rp-reveal" id="rp-reveal" role="dialog" aria-live="polite">
+        <div class="rp-reveal-card" role="button" tabindex="0">
+          <div class="rp-reveal-badge">✨ You found a…</div>
+          <img id="rp-reveal-img" src="" alt="">
+          <div class="rp-reveal-name" id="rp-reveal-name"></div>
+          <div class="rp-reveal-fact" id="rp-reveal-fact"></div>
+          <button class="rp-reveal-close" id="rp-reveal-close" type="button">Nice! ✓</button>
+        </div>
+      </div>
     </section>
   </main>
 </div>
@@ -1551,7 +1573,22 @@ loadWeather(); loadMarine();
     const rp=RP.find(r=>r.id===id), li=panelsEl.querySelector('.rp-panel[data-id="'+id+'"]');
     if(rp && li) li.outerHTML=unlocked(rp);
     found++; updateProgress();
+    if(rp) showReveal(rp);
   }
+  // Big celebratory reveal — the same photo that unlocks below, popped up with a message
+  const reveal=document.getElementById('rp-reveal'),
+        revealImg=document.getElementById('rp-reveal-img'),
+        revealName=document.getElementById('rp-reveal-name'),
+        revealFact=document.getElementById('rp-reveal-fact');
+  function showReveal(rp){
+    revealImg.src='img/rockpool/'+rp.id+'.jpg'; revealImg.alt=rp.name;
+    revealName.textContent=rp.emoji+' '+rp.name;
+    revealFact.textContent=rp.desc;
+    reveal.classList.add('open');
+  }
+  function closeReveal(){ reveal.classList.remove('open'); }
+  reveal.addEventListener('click', closeReveal);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && reveal.classList.contains('open')) closeReveal(); });
   function reset(){
     found=0;
     scene.querySelectorAll('.rp-hot.found').forEach(h=>h.classList.remove('found'));

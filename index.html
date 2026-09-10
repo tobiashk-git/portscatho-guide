@@ -1013,9 +1013,11 @@ renderFish();
 (function(){
   const nextEl=document.getElementById('bus-next'), todayEl=document.getElementById('bus-today');
   if(!nextEl) return;
-  // Route 50 Go Cornwall Bus — Truro → Portscatho (arrival at Portscatho). Same every day. Valid Aug–Oct 2026.
-  const ARR=['09:23','11:23','13:23','15:23','17:23']; // Portscatho arrival times (dep Truro 08:35/10:35/12:35/14:35/16:35)
-  const DEP=['08:35','10:35','12:35','14:35','16:35'];
+  // Route 50 Go Cornwall Bus — Truro → Portscatho (arrival at Portscatho). Daily, same every day.
+  // Real timetable from bustimes.org (BODS operator data), valid 10 Sep–1 Oct 2026. Paired by index.
+  // NB the 14:35 & 15:20 take the long way round (via the St Mawes loop) so run ~1h40, not the usual ~50m.
+  const DEP=['06:40','08:00','10:10','11:40','13:10','14:35','15:20','16:15','16:45','17:45']; // dep Truro
+  const ARR=['07:25','09:04','10:58','12:28','13:58','16:17','17:09','17:35','17:35','18:38']; // arr Portscatho
   const LIVE='https://bustimes.org/services/50-truro-probus-tregony-portscatho-st-mawes-4';
   const mins=t=>{const[h,m]=t.split(':').map(Number);return h*60+m;};
   function render(){

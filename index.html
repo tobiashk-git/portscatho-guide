@@ -1021,19 +1021,20 @@ renderFish();
   function render(){
     const now=new Date(), nowMin=now.getHours()*60+now.getMinutes();
     const idx=ARR.findIndex(t=>mins(t)>nowMin);
-    const list=ARR.map((t,i)=>{
+    const fmtLine=arr=>arr.map((t,i)=>{
       if(idx>=0 && i===idx) return '<b>'+t+'</b>';
       if(idx>=0 && i<idx) return '<span style="opacity:.4">'+t+'</span>';
       return t;
     }).join(' · ');
     const live=' &nbsp;<a class="refresh" href="'+LIVE+'" target="_blank" rel="noopener">live ›</a>';
+    const lines='🚏 Truro dep · '+fmtLine(DEP)+'<br>📍 Ptho arr · '+fmtLine(ARR);
     if(idx>=0){
       const gap=mins(ARR[idx])-nowMin, h=Math.floor(gap/60), m=gap%60;
-      nextEl.textContent='Next arrives '+ARR[idx];
-      todayEl.innerHTML='dep Truro '+DEP[idx]+' · in '+(h>0?h+'h ':'')+m+'m<br>'+list+live;
+      nextEl.textContent='Next: dep '+DEP[idx]+' → arr '+ARR[idx];
+      todayEl.innerHTML=lines+'<br>in '+(h>0?h+'h ':'')+m+'m'+live;
     } else {
-      nextEl.textContent='No more today · first '+ARR[0]+' tomorrow';
-      todayEl.innerHTML='Daily arrivals into Portscatho: '+list+live;
+      nextEl.textContent='No more today · first dep '+DEP[0]+' → arr '+ARR[0]+' tomorrow';
+      todayEl.innerHTML=lines+live;
     }
   }
   render(); setInterval(render, 60000);
@@ -1657,11 +1658,11 @@ loadWeather(); loadMarine();
   }
   // "Aged to vivid" — decade bars ramp from warm/faded sepia (oldest) to vivid sea-blue (newest).
   const DGRAD={2020:['#159ccf','#10b7c2'],2010:['#2287a8','#1a8f9b'],2000:['#3c7681','#33707a'],
-    1990:['#5f6d78','#53616b'],1980:['#7b6150','#684f42'],1970:['#857049','#70603e']};
+    1990:['#5f6d78','#53616b'],1980:['#7b6150','#684f42'],1970:['#857049','#70603e'],1960:['#8f8168','#786a54']};
   const decGrad=dec=>{const g=DGRAD[dec]||DGRAD[2020]; return 'linear-gradient(150deg,'+g[0]+' 0%,'+g[1]+' 100%)';};
   let html='';
-  for(let dec=Math.floor(now/10)*10; dec>=1970; dec-=10){
-    const hi=Math.min(dec+9, now), lo=Math.max(dec, 1970);
+  for(let dec=Math.floor(now/10)*10; dec>=1960; dec-=10){
+    const hi=Math.min(dec+9, now), lo=Math.max(dec, 1960);
     let years='', dn=0;
     for(let y=hi; y>=lo; y--){ years+=yearHtml(y); dn+=(GALLERY[y]||[]).length; }
     html+='<details class="gal-decade"><summary style="background:'+decGrad(dec)+'"><span>'+dec+'s'+(dn?' <b class="gal-count">'+dn+'</b>':'')+'</span></summary><div class="gal-decade-body">'+years+'</div></details>';

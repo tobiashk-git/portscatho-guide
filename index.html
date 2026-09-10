@@ -358,6 +358,13 @@
   .stat .lab{font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink2)}
   .stat .val{font-size:1.5rem; font-weight:800; color:var(--sea); line-height:1.1; margin-top:2px}
   .stat .sub{font-size:.78rem; color:var(--ink2)}
+  /* Bus times — pill grid to tidy the busy panel */
+  .bus-row{display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:7px}
+  .bus-lab{font-weight:700; color:var(--ink2); font-size:.72rem; letter-spacing:.02em; margin-right:1px}
+  .bt{padding:2px 7px; border-radius:8px; background:var(--sand); color:var(--ink); border:1px solid var(--line); font-size:.78rem; font-variant-numeric:tabular-nums; white-space:nowrap; line-height:1.55}
+  .bt-now{background:var(--sea2); color:#fff; border-color:var(--sea2); font-weight:800; box-shadow:0 1px 4px rgba(18,120,156,.35)}
+  .bt-past{background:transparent; color:var(--ink2); border-color:transparent; opacity:.45}
+  .bus-foot{margin-top:8px; font-size:.76rem; color:var(--ink2)}
 
   .btn{display:flex; align-items:center; gap:10px; width:100%; text-align:left;
     background:var(--card); border:1px solid var(--line); border-radius:14px; padding:13px 14px;
@@ -1024,19 +1031,21 @@ renderFish();
     const now=new Date(), nowMin=now.getHours()*60+now.getMinutes();
     const idx=ARR.findIndex(t=>mins(t)>nowMin);
     const fmtLine=arr=>arr.map((t,i)=>{
-      if(idx>=0 && i===idx) return '<b>'+t+'</b>';
-      if(idx>=0 && i<idx) return '<span style="opacity:.4">'+t+'</span>';
-      return t;
-    }).join(' · ');
-    const live=' &nbsp;<a class="refresh" href="'+LIVE+'" target="_blank" rel="noopener">live ›</a>';
-    const lines='🚏 Truro dep · '+fmtLine(DEP)+'<br>📍 Ptho arr · '+fmtLine(ARR);
+      let c='bt';
+      if(idx>=0 && i===idx) c+=' bt-now';
+      else if(idx>=0 && i<idx) c+=' bt-past';
+      return '<span class="'+c+'">'+t+'</span>';
+    }).join('');
+    const live='<a class="refresh" href="'+LIVE+'" target="_blank" rel="noopener">live ›</a>';
+    const lines='<div class="bus-row"><span class="bus-lab">🚏 Truro dep</span>'+fmtLine(DEP)+'</div>'+
+                '<div class="bus-row"><span class="bus-lab">📍 Ptho arr</span>'+fmtLine(ARR)+'</div>';
     if(idx>=0){
       const gap=mins(ARR[idx])-nowMin, h=Math.floor(gap/60), m=gap%60;
       nextEl.textContent='Next: dep '+DEP[idx]+' → arr '+ARR[idx];
-      todayEl.innerHTML=lines+'<br>in '+(h>0?h+'h ':'')+m+'m'+live;
+      todayEl.innerHTML=lines+'<div class="bus-foot">next in '+(h>0?h+'h ':'')+m+'m &nbsp;·&nbsp; '+live+'</div>';
     } else {
       nextEl.textContent='No more today · first dep '+DEP[0]+' → arr '+ARR[0]+' tomorrow';
-      todayEl.innerHTML=lines+live;
+      todayEl.innerHTML=lines+'<div class="bus-foot">'+live+'</div>';
     }
   }
   render(); setInterval(render, 60000);

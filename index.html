@@ -551,7 +551,7 @@
           <div class="tile"><img src="img/plume.jpg" alt="The Plume of Feathers pub"><div class="t"><b>The Plume of Feathers</b><span class="status" data-v="plume"></span><small>The village pub — pints, food & a proper local welcome. Call <a href="tel:01872580321">01872 580321</a>.</small></div></div>
           <div class="tile"><img src="img/explore/boathouse.jpg" alt="The Boathouse café"><div class="t"><b>The Boathouse</b><span class="status" data-v="boathouse"></span><small>Fresh crab & fish & chips to take away. Pre-order <a href="tel:01872580326">01872 580326</a>.</small></div></div>
           <div class="tile"><img src="img/explore/ralphs.jpg" alt="Ralph's store, Portscatho"><div class="t"><b>Ralph's</b><span class="status" data-v="ralphs"></span><small>The village store on the harbour — foodstore, bakery, deli & ice cream.</small></div></div>
-          <div class="tile"><img src="img/explore/tatams.jpg" alt="Tatams coffee, Portscatho"><div class="t"><b>Tatams</b><span class="status" data-v="tatams"></span><small>Cracking coffee & cake by the harbour beach, with a big sea view. <b style="color:#c0392b">Closed Mondays</b> (the Boathouse or Plume do coffee then).</small></div></div>
+          <div class="tile"><img src="img/explore/tatams.jpg" alt="Tatams coffee, Portscatho"><div class="t"><b>Tatams</b><span class="status" data-v="tatams"></span><small>Cracking coffee & cake by the harbour beach, with a big sea view. Open daily 8am — to 3pm Mon–Thu, 4pm Fri–Sun.</small></div></div>
           <div class="tile"><img src="img/explore/harbour-club.jpg" alt="Portscatho seafront, home of the Harbour Club"><div class="t"><b>The Harbour Club</b><span class="status" data-v="harbour-club"></span><small>Friendly seafront social club & bar — a hub of village life.</small></div></div>
         </div>
         <p class="small muted" style="margin:9px 2px 0">🕒 Live open/closed status. Hours can vary seasonally — worth a quick check before a special trip.</p>
@@ -775,7 +775,7 @@
         <div class="divider"></div>
         <p class="small muted" style="margin:0 0 9px">…and the emergencies that <i>really</i> matter 😄</p>
         <div class="tiles">
-          <div class="tile"><img src="img/coffee-emergency.jpg" alt="Coffee by the sea" style="object-position:center 84%"><div class="t"><b>☕ Coffee emergency</b><small>In the event of caffeine shortage, proceed directly to <b>Tatams</b> by the harbour (~8am–2:30pm). Shut Mondays? The <b>Boathouse</b> or <b>Plume</b> have you covered.</small></div></div>
+          <div class="tile"><img src="img/coffee-emergency.jpg" alt="Coffee by the sea" style="object-position:center 84%"><div class="t"><b>☕ Coffee emergency</b><small>In the event of caffeine shortage, proceed directly to <b>Tatams</b> by the harbour (8am — to 3pm Mon–Thu, 4pm Fri–Sun). Outside those hours, the <b>Boathouse</b> or <b>Plume</b> have you covered.</small></div></div>
           <div class="tile"><img src="img/pasty-emergency.jpg" alt="A Cornish pasty" style="object-position:center 80%"><div class="t"><b>🥟 Pasty emergency</b><small>In the event of pasty deficiency, head straight to <b>Ralph's</b>.</small></div></div>
         </div>
       </div>
@@ -1778,10 +1778,10 @@ loadWeather(); loadMarine();
     const warm = temp!=null && temp>=17;
     const calm = wind==null || wind<15;
     const nearSunset = sunset && sunset>now && (sunset-now)/60000<=45 && !rainy && !stormy;
-    // Tatams coffee: open ~8am–2:30pm, shut Mondays — don't send anyone down for coffee when it's closed.
-    const isMon = now.getDay()===1;
+    // Tatams coffee: open 8am every day now — to 3pm Mon–Thu, 4pm Fri–Sun.
     const mins = h*60 + now.getMinutes();
-    const tatamsOpen = !isMon && mins>=8*60 && mins<14*60+30;
+    const tatDay = now.getDay();
+    const tatamsOpen = mins>=8*60 && mins < ((tatDay===5||tatDay===6||tatDay===0) ? 16*60 : 15*60);
     const earlyAM = mins>=6*60 && mins<8*60;   // before the shops open — dog-walk o'clock
     const dinner  = mins>=18*60 && mins<19*60;                 // 6–7pm dinnertime
     const boathouseEve = [4,5,6].indexOf(now.getDay())>=0;     // Thu/Fri/Sat — Boathouse does evenings (5–9pm)
@@ -1810,7 +1810,6 @@ loadWeather(); loadMarine();
     else if(wind!=null && wind>=20) msg='🌬️ Breezy today — a bracing cliff walk?';
     else if(h<10){
       if(tatamsOpen) msg='☕ Morning! A coffee at Tatams to start the day';
-      else if(isMon) msg='☕ Monday — Tatams is shut; a coffee at the Plume?';
       else msg='☕ Morning — the village is waking up';
     }
     else if(h>=19) msg='🌙 Evening — a stroll along the seafront?';
@@ -1831,11 +1830,12 @@ loadWeather(); loadMarine();
   // Weekly hours: day 0=Sun..6=Sat; each day = array of [openH,openM,closeH,closeM] intervals; [] = closed that day.
   // ONLY confirmed hours are filled in; the rest stay {unknown:true} so we never show a false open/closed.
   // Days: 0=Sun..6=Sat. Each day = array of [openH,openM,closeH,closeM] intervals ([]=closed). All hours user-confirmed (2026-08-26).
-  const T=[[8,0,14,30]];                       // Tatams ~8am–2:30pm
+  const T3=[[8,0,15,0]];                        // Tatams Mon–Thu: 8am–3pm
+  const T4=[[8,0,16,0]];                        // Tatams Fri–Sun: 8am–4pm
   const H=[[10,0,16,0]];                        // 10am–4pm café day
   const PL=[[8,30,23,0]];                        // Plume: daily 8:30am–11pm (confirmed)
   const HOURS={
-    'tatams':{week:[ T, [], T, T, T, T, T ]},                                   // closed Mondays (confirmed)
+    'tatams':{week:[ T4, T3, T3, T3, T3, T4, T4 ]},                             // Mon–Thu 8am–3pm, Fri–Sun 8am–4pm (confirmed 2026-09-12)
     'hidden-hut':{week:[ H, H, H, H, H, H, H ]},                                 // confirmed: daily 10–4 (seasonal café)
     'plume':{week:[ PL, PL, PL, PL, PL, PL, PL ]},                               // confirmed: daily 8:30am–11pm
     'boathouse':{week:(now)=>{               // confirmed: summer 10–4 (+ 5–9 eve Thu–Sat); Wed shut except in August
